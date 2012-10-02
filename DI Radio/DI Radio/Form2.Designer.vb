@@ -53,6 +53,7 @@ Partial Class Form2
         Me.UpdatesAtStart = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.ChangeWholeBackground = New System.Windows.Forms.CheckBox()
         Me.RestoreColours = New System.Windows.Forms.Button()
         Me.BackgroundColour = New System.Windows.Forms.PictureBox()
         Me.PeakColour = New System.Windows.Forms.PictureBox()
@@ -110,7 +111,6 @@ Partial Class Form2
         Me.ValidateWorker = New System.ComponentModel.BackgroundWorker()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
-        Me.ChangeWholeBackground = New System.Windows.Forms.CheckBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -526,6 +526,18 @@ Partial Class Form2
         Me.GroupBox4.TabIndex = 1
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Colours"
+        '
+        'ChangeWholeBackground
+        '
+        Me.Helper.SetHelpString(Me.ChangeWholeBackground, "Select this check box to make the application use the same background colour as t" & _
+        "he visualisation.")
+        Me.ChangeWholeBackground.Location = New System.Drawing.Point(5, 183)
+        Me.ChangeWholeBackground.Name = "ChangeWholeBackground"
+        Me.Helper.SetShowHelp(Me.ChangeWholeBackground, True)
+        Me.ChangeWholeBackground.Size = New System.Drawing.Size(274, 18)
+        Me.ChangeWholeBackground.TabIndex = 15
+        Me.ChangeWholeBackground.Text = "Change the whole background"
+        Me.ChangeWholeBackground.UseVisualStyleBackColor = True
         '
         'RestoreColours
         '
@@ -1189,18 +1201,6 @@ Partial Class Form2
         '
         Me.OnlyModifiers.IsBalloon = True
         Me.OnlyModifiers.ToolTipTitle = "You can't use only modifier keys"
-        '
-        'ChangeWholeBackground
-        '
-        Me.Helper.SetHelpString(Me.ChangeWholeBackground, "Select this check box to make the application use the same background colour as t" & _
-        "he visualisation.")
-        Me.ChangeWholeBackground.Location = New System.Drawing.Point(5, 183)
-        Me.ChangeWholeBackground.Name = "ChangeWholeBackground"
-        Me.Helper.SetShowHelp(Me.ChangeWholeBackground, True)
-        Me.ChangeWholeBackground.Size = New System.Drawing.Size(274, 18)
-        Me.ChangeWholeBackground.TabIndex = 15
-        Me.ChangeWholeBackground.Text = "Change the whole background"
-        Me.ChangeWholeBackground.UseVisualStyleBackColor = True
         '
         'Form2
         '

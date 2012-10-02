@@ -1,11 +1,12 @@
 ﻿' DI Radio Player by ViRUS
-' Source code for version 1.6 Beta 1
+' Source code for version 1.6
 '
 '
 ' I've done my best to document the most relevant parts of this source code, but if you still find yourself having problems
 ' with it, feel free to drop me an e-mail at newvirus@live.com.ar
-' You can use this source code in your own projects without any concerns, but please, be a good fellow programmer and cite your
-' sources. Just a simple link to http://www.tobiass.eu and a mention of my program will do :)
+'
+' This source code is protected by the BSD license and you should have received a "BSD License.txt" file with it.
+' If you haven't, please drop me an e-mail at newvirus@live.com.ar with information on where you downloaded the source code
 ' 
 '
 ' I'm currently struggling getting custom Hotkeys to work properly. Sometimes they do work, other times a hotkey will do other action
@@ -51,7 +52,7 @@ Public Class Form1
     Public Visualisation As Boolean
     Public VisualisationType As Integer
     Public HighQualityVis As Boolean
-    Public LinearRepresentation As Boolean
+    Public LinealRepresentation As Boolean
     Public FullSoundRange As Boolean
     Public Smoothness As Integer
     Public MainColour As Integer
@@ -113,7 +114,7 @@ Public Class Form1
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 16    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 17    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -307,7 +308,7 @@ Public Class Form1
                 writer.WriteLine(Form2.Visualisation.Name & "=" & Visualisation)
                 writer.WriteLine(Form2.VisualisationType.Name & "=" & VisualisationType)
                 writer.WriteLine(Form2.HighQualityVis.Name & "=" & HighQualityVis)
-                writer.WriteLine(Form2.LinealRepresentation.Name & "=" & LinearRepresentation)
+                writer.WriteLine(Form2.LinealRepresentation.Name & "=" & LinealRepresentation)
                 writer.WriteLine(Form2.FullSoundRange.Name & "=" & FullSoundRange)
                 writer.WriteLine(Form2.Smoothness.Name & "=" & Smoothness)
                 writer.WriteLine(Form2.MainColour.Name & "=" & MainColour)
@@ -436,8 +437,20 @@ Public Class Form1
         If PlayStop.Tag = "Play" And SelectedServer.Items.Count > 0 Then
 
             RadioString.Text = "Connecting, please wait..."
-            RadioString.BackColor = SystemColors.Control
-            RadioString.ForeColor = SystemColors.ControlText
+
+            If ChangeWholeBackground = True Then
+                RadioString.BackColor = Color.FromArgb(BackgroundColour)
+            Else
+                RadioString.BackColor = SystemColors.Control
+            End If
+
+            If BackgroundColour < -8323328 Then
+                RadioString.ForeColor = Color.White
+                TimerString.ForeColor = Color.White
+            Else
+                RadioString.ForeColor = Color.Black
+                TimerString.ForeColor = Color.Black
+            End If
 
             PlayStop.Enabled = False
             StationChooser.Enabled = False
@@ -454,8 +467,19 @@ Public Class Form1
             ToolTip.SetToolTip(PlayStop, "Stop")
         Else
 
-            RadioString.BackColor = SystemColors.Control
-            RadioString.ForeColor = SystemColors.ControlText
+            If ChangeWholeBackground = True Then
+                RadioString.BackColor = Color.FromArgb(BackgroundColour)
+            Else
+                RadioString.BackColor = SystemColors.Control
+            End If
+
+            If BackgroundColour < -8323328 Then
+                RadioString.ForeColor = Color.White
+                TimerString.ForeColor = Color.White
+            Else
+                RadioString.ForeColor = Color.Black
+                TimerString.ForeColor = Color.Black
+            End If
 
             If Bufer.IsBusy = True Then
 
@@ -1290,7 +1314,7 @@ Public Class Form1
 
             Catch ex As Exception
 
-               If ex.Message.Contains("403") Then
+                If ex.Message.Contains("403") Then
                     Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Wrong or expired premium key?", MsgBoxStyle.Exclamation, "Error getting servers list")
                 Else
                     Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message, MsgBoxStyle.Exclamation, "Error getting servers list")
@@ -1496,8 +1520,20 @@ again:
                     RadioString.Text = "Now playing"
                 End Try
 
-                RadioString.BackColor = SystemColors.Control
-                RadioString.ForeColor = SystemColors.WindowText
+
+                If ChangeWholeBackground = True Then
+                    RadioString.BackColor = Color.FromArgb(BackgroundColour)
+                Else
+                    RadioString.BackColor = SystemColors.Control
+                End If
+
+                If BackgroundColour < -8323328 Then
+                    RadioString.ForeColor = Color.White
+                    TimerString.ForeColor = Color.White
+                Else
+                    RadioString.ForeColor = Color.Black
+                    TimerString.ForeColor = Color.Black
+                End If
 
                 _mySync = New SYNCPROC(AddressOf MetaSync)
                 Bass.BASS_ChannelSetSync(stream, BASSSync.BASS_SYNC_META, 0, _mySync, IntPtr.Zero)
@@ -1648,25 +1684,25 @@ again:
 
 
                 If VisualisationType = 0 Then
-                    drawing.CreateSpectrumBean(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinearRepresentation, FullSoundRange, HighQualityVis)
+                    drawing.CreateSpectrumBean(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
                     VisualisationBox.Image = SpectrumImage
                 ElseIf VisualisationType = 1 Then
-                    drawing.CreateSpectrumDot(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinearRepresentation, FullSoundRange, False)
+                    drawing.CreateSpectrumDot(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
                     VisualisationBox.Image = SpectrumImage
                 ElseIf VisualisationType = 2 Then
-                    drawing.CreateSpectrum(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), LinearRepresentation, FullSoundRange, False)
+                    drawing.CreateSpectrum(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), LinealRepresentation, FullSoundRange, False)
                     VisualisationBox.Image = SpectrumImage
                 ElseIf VisualisationType = 3 Then
-                    drawing.CreateSpectrumEllipse(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 3, 1, LinearRepresentation, FullSoundRange, HighQualityVis)
+                    drawing.CreateSpectrumEllipse(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 3, 1, LinealRepresentation, FullSoundRange, HighQualityVis)
                     VisualisationBox.Image = SpectrumImage
                 ElseIf VisualisationType = 4 Then
-                    drawing.CreateSpectrumLine(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinearRepresentation, FullSoundRange, False)
+                    drawing.CreateSpectrumLine(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
                     VisualisationBox.Image = SpectrumImage
                 ElseIf VisualisationType = 5 Then
-                    drawing.CreateSpectrumLinePeak(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(PeakColour), Color.FromArgb(BackgroundColour), 5, 5, 1, 100, LinearRepresentation, FullSoundRange, False)
+                    drawing.CreateSpectrumLinePeak(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(PeakColour), Color.FromArgb(BackgroundColour), 5, 5, 1, 100, LinealRepresentation, FullSoundRange, False)
                     VisualisationBox.Image = SpectrumImage
                 ElseIf VisualisationType = 6 Then
-                    drawing.CreateSpectrumWave(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinearRepresentation, FullSoundRange, HighQualityVis)
+                    drawing.CreateSpectrumWave(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
                     VisualisationBox.Image = SpectrumImage
                 ElseIf VisualisationType = 7 Then
                     drawing.CreateWaveForm(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), Color.FromArgb(BackgroundColour), 5, FullSoundRange, False, HighQualityVis)
@@ -1893,8 +1929,20 @@ again:
             Dim raw As String = String.Concat(Bass.BASS_ChannelGetTagsMETA(stream))
             Dim tabla() As String = Split(raw, "='")
             RadioString.Text = tabla(1).Replace("StreamUrl", Nothing).Replace("';", Nothing)
-            RadioString.BackColor = SystemColors.Control
-            RadioString.ForeColor = SystemColors.WindowText
+
+            If ChangeWholeBackground = True Then
+                RadioString.BackColor = Color.FromArgb(BackgroundColour)
+            Else
+                RadioString.BackColor = SystemColors.Control
+            End If
+
+            If BackgroundColour < -8323328 Then
+                RadioString.ForeColor = Color.White
+                TimerString.ForeColor = Color.White
+            Else
+                RadioString.ForeColor = Color.Black
+                TimerString.ForeColor = Color.Black
+            End If
         Next
 
     End Sub
@@ -1914,15 +1962,15 @@ again:
             writer.WriteLine(Form2.NotificationIcon.Name & "=True")
             writer.WriteLine(Form2.NoTaskbarButton.Name & "=False")
             writer.WriteLine(Form2.GoogleSearch.Name & "=True")
-            writer.WriteLine(Form2.PremiumFormats.Name & "=False")
-            writer.WriteLine("DIFormat=0")
-            writer.WriteLine("SKYFormat=0")
-            writer.WriteLine("JazzFormat=0")
             writer.WriteLine(Form2.ListenKey.Name & "=")
+            writer.WriteLine(Form2.PremiumFormats.Name & "=False")
+            writer.WriteLine("DIFormat=1")
+            writer.WriteLine("SKYFormat=1")
+            writer.WriteLine("JazzFormat=1")
             writer.WriteLine(Form2.BetaVersions.Name & "=False")
             writer.WriteLine(Form2.UpdatesAtStart.Name & "=True")
             writer.WriteLine(Form2.Visualisation.Name & "=True")
-            writer.WriteLine(Form2.VisualisationType.Name & "=0")
+            writer.WriteLine(Form2.VisualisationType.Name & "=5")
             writer.WriteLine(Form2.HighQualityVis.Name & "=False")
             writer.WriteLine(Form2.LinealRepresentation.Name & "=False")
             writer.WriteLine(Form2.FullSoundRange.Name & "=False")
@@ -2009,7 +2057,7 @@ again:
                     End If
 
 
-                ElseIf splitter(0) = Form2.ListenKey.Name Then
+                ElseIf splitter(0) = Form2.ListenKey.Name OrElse splitter(0) = "PremiumKey" Then
 
                     ListenKey = splitter(1)
 
@@ -2047,7 +2095,7 @@ again:
                 ElseIf splitter(0) = Form2.HighQualityVis.Name Then
                     HighQualityVis = splitter(1)
                 ElseIf splitter(0) = Form2.LinealRepresentation.Name Then
-                    LinearRepresentation = splitter(1)
+                    LinealRepresentation = splitter(1)
                 ElseIf splitter(0) = Form2.FullSoundRange.Name Then
                     FullSoundRange = splitter(1)
                 ElseIf splitter(0) = Form2.Smoothness.Name Then
@@ -2069,6 +2117,14 @@ again:
                         ToolStrip1.BackColor = Color.FromArgb(BackgroundColour)
                         StationChooser.BackColor = Color.FromArgb(BackgroundColour)
                         Label1.BackColor = Color.FromArgb(BackgroundColour)
+
+                        If BackgroundColour < -8323328 Then
+                            RadioString.ForeColor = Color.White
+                            TimerString.ForeColor = Color.White
+                        Else
+                            RadioString.ForeColor = Color.Black
+                            TimerString.ForeColor = Color.Black
+                        End If
 
                     End If
                 ElseIf splitter(0) = Form2.MultimediaKeys.Name Then
@@ -2137,24 +2193,24 @@ again:
             If FullSoundRange = True Then
 
                 If VisualisationType = 0 Then
-                    drawing.ScaleFactorLinear = 0.6
-                    drawing.ScaleFactorLinearBoost = 0.2
-                    drawing.ScaleFactorSqr = 0.3
+                    drawing.ScaleFactorLinear = 1
+                    drawing.ScaleFactorLinearBoost = 0
+                    drawing.ScaleFactorSqr = 1
                     drawing.ScaleFactorSqrBoost = 0
                 ElseIf VisualisationType = 1 Then
                     drawing.ScaleFactorLinear = 3
                     drawing.ScaleFactorLinearBoost = 0.34
-                    drawing.ScaleFactorSqr = 0.5
+                    drawing.ScaleFactorSqr = 1
                     drawing.ScaleFactorSqrBoost = 0.04
                 ElseIf VisualisationType = 2 Then
                     drawing.ScaleFactorLinear = 0.6
                     drawing.ScaleFactorLinearBoost = 0.1
-                    drawing.ScaleFactorSqr = 0.3
+                    drawing.ScaleFactorSqr = 1
                     drawing.ScaleFactorSqrBoost = 0
                 ElseIf VisualisationType = 3 Then
                     drawing.ScaleFactorLinear = 1.5
                     drawing.ScaleFactorLinearBoost = 0.07
-                    drawing.ScaleFactorSqr = 0.3
+                    drawing.ScaleFactorSqr = 1
                     drawing.ScaleFactorSqrBoost = 0
                 ElseIf VisualisationType = 4 Then
                     drawing.ScaleFactorLinear = 3
@@ -2226,7 +2282,7 @@ again:
 
         Catch ex As Exception
 
-            MsgBox("There were some invalid values in the options file. Not all options were loaded", MsgBoxStyle.Exclamation)
+            MsgBox("There was an error loading your options.ini file:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please close the application and open it again.", MsgBoxStyle.Exclamation, "Invalid options.ini file")
 
         End Try
 

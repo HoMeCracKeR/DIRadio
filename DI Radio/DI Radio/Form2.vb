@@ -78,7 +78,7 @@
         BetaVersions.Checked = Form1.BetaVersions
         VisualisationType.SelectedIndex = Form1.VisualisationType
         HighQualityVis.Checked = Form1.HighQualityVis
-        LinealRepresentation.Checked = Form1.LinearRepresentation
+        LinealRepresentation.Checked = Form1.LinealRepresentation
         FullSoundRange.Checked = Form1.FullSoundRange
         PlayNewOnChannelChange.Checked = Form1.PlayNewOnChannelChange
 
@@ -289,6 +289,12 @@
     End Sub
 
     Private Sub Smoothness_Scroll(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Smoothness.Scroll
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub ChangeWholeBackground_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles ChangeWholeBackground.CheckedChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -1176,30 +1182,30 @@
 
         Form1.VisualisationType = VisualisationType.SelectedIndex
         Form1.HighQualityVis = HighQualityVis.Checked
-        Form1.LinearRepresentation = LinealRepresentation.Checked
+        Form1.LinealRepresentation = LinealRepresentation.Checked
         Form1.FullSoundRange = FullSoundRange.Checked
 
         If FullSoundRange.Checked = True Then
 
             If VisualisationType.SelectedIndex = 0 Then
-                Form1.drawing.ScaleFactorLinear = 0.6
-                Form1.drawing.ScaleFactorLinearBoost = 0.2
-                Form1.drawing.ScaleFactorSqr = 0.3
+                Form1.drawing.ScaleFactorLinear = 1
+                Form1.drawing.ScaleFactorLinearBoost = 0
+                Form1.drawing.ScaleFactorSqr = 1
                 Form1.drawing.ScaleFactorSqrBoost = 0
             ElseIf VisualisationType.SelectedIndex = 1 Then
                 Form1.drawing.ScaleFactorLinear = 3
                 Form1.drawing.ScaleFactorLinearBoost = 0.34
-                Form1.drawing.ScaleFactorSqr = 0.5
+                Form1.drawing.ScaleFactorSqr = 1
                 Form1.drawing.ScaleFactorSqrBoost = 0.04
             ElseIf VisualisationType.SelectedIndex = 2 Then
                 Form1.drawing.ScaleFactorLinear = 0.6
                 Form1.drawing.ScaleFactorLinearBoost = 0.1
-                Form1.drawing.ScaleFactorSqr = 0.3
+                Form1.drawing.ScaleFactorSqr = 1
                 Form1.drawing.ScaleFactorSqrBoost = 0
             ElseIf VisualisationType.SelectedIndex = 3 Then
                 Form1.drawing.ScaleFactorLinear = 1.5
                 Form1.drawing.ScaleFactorLinearBoost = 0.07
-                Form1.drawing.ScaleFactorSqr = 0.3
+                Form1.drawing.ScaleFactorSqr = 1
                 Form1.drawing.ScaleFactorSqrBoost = 0
             ElseIf VisualisationType.SelectedIndex = 4 Then
                 Form1.drawing.ScaleFactorLinear = 3
@@ -1285,6 +1291,14 @@
 
             If Form1.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Form1.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Form1.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
                 Form1.RadioString.BackColor = BackgroundColour.BackColor
+
+                If BackgroundColour.BackColor.ToArgb() < -8323328 Then
+                    Form1.RadioString.ForeColor = Color.White
+                    Form1.TimerString.ForeColor = Color.White
+                Else
+                    Form1.RadioString.ForeColor = Color.Black
+                    Form1.TimerString.ForeColor = Color.Black
+                End If
             End If
 
         Else
@@ -1296,6 +1310,8 @@
 
             If Form1.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Form1.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Form1.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
                 Form1.RadioString.BackColor = SystemColors.Control
+                Form1.RadioString.ForeColor = SystemColors.WindowText
+                Form1.TimerString.ForeColor = SystemColors.WindowText
             End If
 
         End If
