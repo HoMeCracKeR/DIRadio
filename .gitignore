@@ -5,7 +5,6 @@
 *.pydevproject
 .project
 .metadata
-bin/
 tmp/
 *.tmp
 *.bak
@@ -42,8 +41,6 @@ local.properties
 *.sln.docstates
 
 # Build results
-[Dd]ebug/
-[Rr]elease/
 *_i.c
 *_p.c
 *.ilk
@@ -97,7 +94,6 @@ DocProject/Help/html
 publish
 
 # Others
-[Bb]in
 [Oo]bj
 sql
 TestResults
@@ -161,3 +157,8 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+# Other things
+.config
+.exe
+DI Radio.vshost.exe.manifest
