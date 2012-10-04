@@ -159,6 +159,10 @@ pip-log.txt
 .DS_Store
 
 # Other things
-.config
-.exe
+*.config
+*.exe
 DI Radio.vshost.exe.manifest
+!\bin
+\servers
+*.ini
+*.xml
