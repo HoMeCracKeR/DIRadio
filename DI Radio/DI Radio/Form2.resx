@@ -1280,7 +1280,9 @@ http://www.sky.fm/member/listen_key
 to get a new one and change your password at
 https://www.di.fm/member/profile or
 https://www.jazzradio.com/member/profile or
-https://www.sky.fm/member/profile</value>
+https://www.sky.fm/member/profile
+
+This application is open source! Head over to https://github.com/ViRUS2012/DIRadio to download the complete source code, make comments, suggestions, or to submit your own improvements!</value>
   </data>
   <metadata name="ApplicationLogo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

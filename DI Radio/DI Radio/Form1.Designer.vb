@@ -71,12 +71,15 @@ Partial Class Form1
         Me.RefreshFavorites = New System.Windows.Forms.LinkLabel()
         Me.GetUpdates = New System.ComponentModel.BackgroundWorker()
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
+        Me.ServerMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyTitleMenu.SuspendLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ControlsPanel.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
+        Me.ServerMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'CopyTitleMenu
@@ -353,6 +356,7 @@ Partial Class Form1
         'SelectedServer
         '
         Me.SelectedServer.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.SelectedServer.ContextMenuStrip = Me.ServerMenu
         Me.SelectedServer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.SelectedServer.FormattingEnabled = True
         Me.SelectedServer.Location = New System.Drawing.Point(191, 59)
@@ -480,6 +484,19 @@ Partial Class Form1
         '
         Me.FadeOut.Interval = 1
         '
+        'ServerMenu
+        '
+        Me.ServerMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyServerURLToolStripMenuItem})
+        Me.ServerMenu.Name = "ServerMenu"
+        Me.ServerMenu.Size = New System.Drawing.Size(168, 26)
+        '
+        'CopyServerURLToolStripMenuItem
+        '
+        Me.CopyServerURLToolStripMenuItem.Image = CType(resources.GetObject("CopyServerURLToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.CopyServerURLToolStripMenuItem.Name = "CopyServerURLToolStripMenuItem"
+        Me.CopyServerURLToolStripMenuItem.Size = New System.Drawing.Size(167, 22)
+        Me.CopyServerURLToolStripMenuItem.Text = "Copy server URL"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -503,6 +520,7 @@ Partial Class Form1
         Me.ControlsPanel.ResumeLayout(False)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
+        Me.ServerMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -553,5 +571,7 @@ Partial Class Form1
     Friend WithEvents JazzRadio As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents SKYFM As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents ServerMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents CopyServerURLToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

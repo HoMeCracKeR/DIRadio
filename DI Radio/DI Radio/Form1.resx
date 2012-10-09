@@ -6569,6 +6569,21 @@
   <metadata name="SelectedServer.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="ServerMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>1219, 17</value>
+  </metadata>
+  <data name="CopyServerURLToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAACw8AAAsPAZL5A6UAAAAGYktHRAAAAAAAAPlDu38AAAAHdElNRQfVChoUCC+DFDSb
+        AAABMklEQVQ4T52Ty06DQBSGeUNNfB5zVl6gtdWFl9SlSx/CBQhduHDBE4grLkPDIBQoHOfQTAsFC3GS
+        PyTDnO//z5yMcjPXTq61Cxij2Z16phwudXJ5jogwRmTyJ2C1CiEMWUe0TyKDQcByacHi+fFTHMQxEu2/
+        KrIF6aRNr0rhNmqRSQtACQSwBgjgUdGZDoDuQCYggGWZvaJ/HQAVm+b7/xMwFkAQ+IMJZGutBFVVge/7
+        YBj6qAR5niPnfH8HWZaB53nguu5gAsYYpmmCuqHvAZxHEMccoihqAQ4nMZ2p2FQ9hfnt5FSMjqJLlVVV
+        dkZIsZ8W90jf9TpF5/trm6DnbRR5nrUAVNQEOM62WOijFxDHcd1nkvzgZlNgURRo27ZI8LBz7n0XRBM9
+        voh2jr2Ft2bxL+Z22eGRP11PAAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="Marquee.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -6628,10 +6643,10 @@
   <data name="StationChooser.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACqSURBVDhPY2AYcMDR93caZ+PHP5z9//+TikF6GUCaudvf
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACqSURBVDhPY2AYcMDR93caZ8OHP5z9//+TikF6GUCaudvf
         /edpfIQdNz35z93xAWw4sjoQG6SXASQB0owLfPj+93/6hrdwzTB1ID0gvQQNgGmQ7nyCYhGKAbi8ANIE
         A54LX+I2ANkLIIVc3T/AzkMXR+bj9AJVDIDFiNXM56R7AVds4A1EfNEIMhB/NBJKSMD4BicaXAkJmBwn
-        c/Z//ElqMgalQpDeAc+LDADy5zt/iaN6dgAAAABJRU5ErkJggg==
+        c/Z/+ElqMgalQpDeAc+LDADZyztyE7ZMlwAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="EditFavorites.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

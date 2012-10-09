@@ -114,7 +114,7 @@ Public Class Form1
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 19    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 20    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -823,7 +823,13 @@ Public Class Form1
             Dim executable As String = Application.ExecutablePath
             Dim tabla() As String = Split(executable, "\")
 
-            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & StationChooser.Text & "\myfavorites.pls")
+            Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & StationChooser.Text & "\myfavorites."
+
+            If My.Computer.FileSystem.FileExists(file & "pls") Then
+                Kill(file & "pls")
+            ElseIf My.Computer.FileSystem.FileExists(file & "asx") Then
+                Kill(file & "asx")
+            End If
 
             If PlayStop.Tag = "Stop" Then
                 RefreshFavorites.Enabled = False
@@ -1193,11 +1199,11 @@ Public Class Form1
 
         My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers")
 
-        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & StationChooser.Text & "\" & channel & ".pls"
-        Dim fileWMA As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & StationChooser.Text & "\" & channel & ".asx"
+        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & StationChooser.Text & "\" & channel & "."
 
         Dim EndString As String
         Dim IsWMA As Boolean
+        Dim fileExtension As String
 
 
         If ListenKey = Nothing = False And PremiumFormats = True Then
@@ -1302,124 +1308,99 @@ Public Class Form1
         End If
 
 
+
+        If IsWMA = True Then
+            fileExtension = "asx"
+        Else
+            fileExtension = "pls"
+        End If
+
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim PLS As String
-        Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
-        If IsWMA = True And My.Computer.FileSystem.FileExists(fileWMA) = False Then
+        Try
 
-            Try
+            PLS = WebClient.DownloadString("http://listen." & StationChooser.Tag & "/" & EndString & "/" & channel.Replace("my", Nothing) & "." & fileExtension & "?" & ListenKey)
 
-                PLS = WebClient.DownloadString("http://listen." & StationChooser.Tag & "/" & EndString & "/" & channel.Replace("my", Nothing) & ".asx?" & ListenKey)
+        Catch ex As Exception
 
-            Catch ex As Exception
+            Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
-                If ex.Message.Contains("403") Then
-                    Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Wrong or expired premium key?", MsgBoxStyle.Exclamation, "Error getting servers list")
-                Else
-                    Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message, MsgBoxStyle.Exclamation, "Error getting servers list")
-                End If
+            If ex.Message.Contains("403") Then
+                Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Wrong or expired premium key?", MsgBoxStyle.Exclamation, "Error getting servers list")
+            Else
+                Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message, MsgBoxStyle.Exclamation, "Error getting servers list")
+            End If
 
-                Marquee.Hide()
-                SelectedServer.Enabled = False
-                If PlayStop.Tag = "Play" Then
-                    PlayStop.Enabled = False
-                End If
-                StationChooser.Enabled = True
-                RestartPlayback = False
-                Exit Sub
-            End Try
+            Marquee.Hide()
 
-            Dim writer As New IO.StreamWriter(fileWMA, False)
-            writer.Write(PLS)
-            writer.Close()
+            SelectedServer.Enabled = False
+            If PlayStop.Tag = "Play" Then
+                PlayStop.Enabled = False
+            End If
 
-        ElseIf IsWMA = False And My.Computer.FileSystem.FileExists(file) = False Then
+            StationChooser.Enabled = True
+            RestartPlayback = False
+            Exit Sub
 
-            Try
+        End Try
 
-                PLS = WebClient.DownloadString("http://listen." & StationChooser.Tag & "/" & EndString & "/" & channel.Replace("my", Nothing) & ".pls?" & ListenKey)
-
-            Catch ex As Exception
-
-                If ex.Message.Contains("403") Then
-                    Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Wrong or expired premium key?", MsgBoxStyle.Exclamation, "Error getting servers list")
-                Else
-                    Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message, MsgBoxStyle.Exclamation, "Error getting servers list")
-                End If
-
-                Marquee.Hide()
-                SelectedServer.Enabled = False
-                If PlayStop.Tag = "Play" Then
-                    PlayStop.Enabled = False
-                End If
-                StationChooser.Enabled = True
-                RestartPlayback = False
-                Exit Sub
-            End Try
-
-            Dim writer As New IO.StreamWriter(file, False)
-            writer.Write(PLS)
-            writer.Close()
-
-        End If
+        Dim writer As New IO.StreamWriter(file & fileExtension, False)
+        writer.Write(PLS)
+        writer.Close()
 
         Dim serverno As Integer = 1
 
-        If IsWMA = False Then
+        Dim reader As New IO.StreamReader(file & fileExtension)
+        Dim Favourite As String
 
-            Dim reader As New IO.StreamReader(file)
+        Do While (reader.Peek > -1)
+            Dim check As String = reader.ReadLine
 
-            Do While (reader.Peek > -1)
-                Dim check As String = reader.ReadLine
+            If check.StartsWith("<ref href") Then
 
-                If check.ToLower.StartsWith("file") Then
+                Dim first As String
+                Dim second As String
 
-                    Dim item As New ListViewItem("Server #" & serverno)
-                    item.Tag = check.Replace("File" & serverno & "=", Nothing)
-                    ServersArray.Items.Add(item.Tag)
+                first = check.Replace("<ref href=""", Nothing)
+                second = first.Replace("""/>", Nothing)
+                Dim item As New ListViewItem("Server #" & serverno)
+                item.Tag = second
+                ServersArray.Items.Add(item.Tag)
+
+                If Favourite = Nothing = False Then
+                    SelectedServer.Items.Add(Favourite)
+                    Favourite = Nothing
+                Else
                     SelectedServer.Items.Add(item.Text)
-                    serverno += 1
+                End If
 
-                ElseIf check.ToLower.StartsWith("title") And SelectedChannel.Text = "My Favorites" Then
+                serverno += 1
 
-                    Dim FullLine As String = check
-                    Dim Splitter As String() = Split(FullLine, " - ")
+            ElseIf check.ToLower.StartsWith("file") Then
+
+                Dim item As New ListViewItem("Server #" & serverno)
+                item.Tag = check.Replace("File" & serverno & "=", Nothing)
+                ServersArray.Items.Add(item.Tag)
+                SelectedServer.Items.Add(item.Text)
+                serverno += 1
+
+            ElseIf check.ToLower.StartsWith("title") And SelectedChannel.Text = "My Favorites" OrElse check.ToLower.StartsWith("<title>") And SelectedChannel.Text = "My Favorites" Then
+
+                Dim FullLine As String = check
+                Dim Splitter As String() = Split(FullLine, " - ")
+
+                If check.ToLower.StartsWith("<title>") = False Then
                     SelectedServer.Items.Item(SelectedServer.Items.Count - 1) = Splitter(1)
-
+                Else
+                    Favourite = Splitter(1).Replace("</title>", Nothing)
                 End If
 
-            Loop
+            End If
 
-            reader.Close()
+        Loop
 
-        ElseIf IsWMA = True Then
-
-            Dim reader As New IO.StreamReader(fileWMA)
-
-            Do While (reader.Peek > -1)
-                Dim check As String = reader.ReadLine
-
-                If check.StartsWith("<ref href") Then
-                    Dim first As String
-                    Dim second As String
-
-                    first = check.Replace("<ref href=""", Nothing)
-                    second = first.Replace("""/>", Nothing)
-                    Dim item As New ListViewItem("Server #" & serverno)
-                    item.Tag = second
-                    ServersArray.Items.Add(item.Tag)
-                    SelectedServer.Items.Add(item.Text)
-                    serverno += 1
-
-                End If
-
-            Loop
-
-            reader.Close()
-
-        End If
-
+        reader.Close()
 
     End Sub
 
