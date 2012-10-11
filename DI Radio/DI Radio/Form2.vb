@@ -148,6 +148,13 @@
             CustomShowHide.Text = KeyConverter.ConvertToString(HumanModifiersShowHide + KeyShowHide).Replace("None", Nothing)
         End If
 
+        Band0.Value = Form1.Band0
+        Band1.Value = Form1.Band1
+        Band2.Value = Form1.Band2
+        Band3.Value = Form1.Band3
+        Band4.Value = Form1.Band4
+        Band5.Value = Form1.Band5
+
         If Form1.GetUpdates.IsBusy = True Then
             LookNow.Enabled = False
             UndefinedProgress.Show()
@@ -557,6 +564,170 @@
         Apply.Enabled = True
     End Sub
 
+    Private Sub Band0_ValueChanged(sender As Object, e As System.EventArgs) Handles Band0.ValueChanged
+        If Band0.Value >= 0 Then
+            Band1db.Text = "+" & Band0.Value & "dB"
+        Else
+            Band1db.Text = Band0.Value & "dB"
+        End If
+
+        Form1.UpdateEq(0, Band0.Value)
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub Band1_ValueChanged(sender As Object, e As System.EventArgs) Handles Band1.ValueChanged
+        If Band1.Value >= 0 Then
+            Band2db.Text = "+" & Band1.Value & "dB"
+        Else
+            Band2db.Text = Band1.Value & "dB"
+        End If
+
+        Form1.UpdateEq(1, Band1.Value)
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub Band2_ValueChanged(sender As Object, e As System.EventArgs) Handles Band2.ValueChanged
+        If Band2.Value >= 0 Then
+            Band3db.Text = "+" & Band2.Value & "dB"
+        Else
+            Band3db.Text = Band2.Value & "dB"
+        End If
+
+        Form1.UpdateEq(2, Band2.Value)
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub Band3_ValueChanged(sender As Object, e As System.EventArgs) Handles Band3.ValueChanged
+        If Band3.Value >= 0 Then
+            Band4db.Text = "+" & Band3.Value & "dB"
+        Else
+            Band4db.Text = Band3.Value & "dB"
+        End If
+
+        Form1.UpdateEq(3, Band3.Value)
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub Band4_ValueChanged(sender As Object, e As System.EventArgs) Handles Band4.ValueChanged
+        If Band4.Value >= 0 Then
+            Band5db.Text = "+" & Band4.Value & "dB"
+        Else
+            Band5db.Text = Band4.Value & "dB"
+        End If
+
+        Form1.UpdateEq(4, Band4.Value)
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub Band5_ValueChanged(sender As Object, e As System.EventArgs) Handles Band5.ValueChanged
+        If Band5.Value >= 0 Then
+            Band6db.Text = "+" & Band5.Value & "dB"
+        Else
+            Band6db.Text = Band5.Value & "dB"
+        End If
+
+        Form1.UpdateEq(5, Band5.Value)
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub Zero_Click(sender As System.Object, e As System.EventArgs) Handles Zero.Click
+        Band0.Value = 0
+        Band1.Value = 0
+        Band2.Value = 0
+        Band3.Value = 0
+        Band4.Value = 0
+        Band5.Value = 0
+    End Sub
+
+    Private Sub RestoreEq_Click(sender As System.Object, e As System.EventArgs) Handles RestoreEq.Click
+        Band0.Value = Form1.Band0
+        Band1.Value = Form1.Band1
+        Band2.Value = Form1.Band2
+        Band3.Value = Form1.Band3
+        Band4.Value = Form1.Band4
+        Band5.Value = Form1.Band5
+    End Sub
+
+    Private Sub AutoEq_Click(sender As System.Object, e As System.EventArgs) Handles AutoEq.Click
+        Dim Highest As Integer
+
+        Highest = Band0.Value
+
+        If Highest < Band1.Value Then
+            Highest = Band1.Value
+        End If
+
+        If Highest < Band2.Value Then
+            Highest = Band2.Value
+        End If
+
+        If Highest < Band3.Value Then
+            Highest = Band3.Value
+        End If
+
+        If Highest < Band4.Value Then
+            Highest = Band4.Value
+        End If
+
+        If Highest < Band5.Value Then
+            Highest = Band5.Value
+        End If
+
+        Try
+            Band0.Value -= Highest
+        Catch
+            Band0.Value = Band0.Minimum
+        End Try
+
+        Try
+            Band1.Value -= Highest
+        Catch
+            Band1.Value = Band1.Minimum
+        End Try
+
+        Try
+            Band2.Value -= Highest
+        Catch
+            Band2.Value = Band2.Minimum
+        End Try
+
+        Try
+            Band3.Value -= Highest
+        Catch
+            Band3.Value = Band3.Minimum
+        End Try
+
+        Try
+            Band4.Value -= Highest
+        Catch
+            Band4.Value = Band4.Minimum
+        End Try
+
+        Try
+            Band5.Value -= Highest
+        Catch
+            Band5.Value = Band5.Minimum
+        End Try
+    End Sub
+
     Private Sub DevFacebook_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DevFacebook.Click
         Process.Start("www.facebook.com/rodbernard")
     End Sub
@@ -591,6 +762,13 @@
 
     Private Sub Cancel_Click(sender As System.Object, e As System.EventArgs) Handles Cancel.Click
         Me.Close()
+
+        Form1.UpdateEq(0, Form1.Band0)
+        Form1.UpdateEq(1, Form1.Band1)
+        Form1.UpdateEq(2, Form1.Band2)
+        Form1.UpdateEq(3, Form1.Band3)
+        Form1.UpdateEq(4, Form1.Band4)
+        Form1.UpdateEq(5, Form1.Band5)
     End Sub
 
     Private Sub Apply_Click(sender As System.Object, e As System.EventArgs) Handles Apply.Click
@@ -1384,6 +1562,12 @@
             Form1.RegisterHotKey(Form1.Handle, 6, Form1.ModifiersShowHide, Form1.KeyShowHide)
         End If
 
+        Form1.Band0 = Band0.Value
+        Form1.Band1 = Band1.Value
+        Form1.Band2 = Band2.Value
+        Form1.Band3 = Band3.Value
+        Form1.Band4 = Band4.Value
+        Form1.Band5 = Band5.Value
     End Sub
 
 End Class

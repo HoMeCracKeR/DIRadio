@@ -111,6 +111,28 @@ Partial Class Form2
         Me.ValidateWorker = New System.ComponentModel.BackgroundWorker()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
+        Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.AutoEq = New System.Windows.Forms.Button()
+        Me.RestoreEq = New System.Windows.Forms.Button()
+        Me.Zero = New System.Windows.Forms.Button()
+        Me.Band6db = New System.Windows.Forms.Label()
+        Me.Band5db = New System.Windows.Forms.Label()
+        Me.Band4db = New System.Windows.Forms.Label()
+        Me.Band3db = New System.Windows.Forms.Label()
+        Me.Band2db = New System.Windows.Forms.Label()
+        Me.Band1db = New System.Windows.Forms.Label()
+        Me.Label18 = New System.Windows.Forms.Label()
+        Me.Label17 = New System.Windows.Forms.Label()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.Band5 = New System.Windows.Forms.TrackBar()
+        Me.Band4 = New System.Windows.Forms.TrackBar()
+        Me.Band3 = New System.Windows.Forms.TrackBar()
+        Me.Band2 = New System.Windows.Forms.TrackBar()
+        Me.Band1 = New System.Windows.Forms.TrackBar()
+        Me.Band0 = New System.Windows.Forms.TrackBar()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -131,6 +153,13 @@ Partial Class Form2
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DILogo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.TabPage5.SuspendLayout()
+        CType(Me.Band5, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Band4, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Band3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Band2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Band1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Band0, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -141,6 +170,7 @@ Partial Class Form2
         Me.TabControl1.Controls.Add(Me.TabPage1)
         Me.TabControl1.Controls.Add(Me.TabPage2)
         Me.TabControl1.Controls.Add(Me.TabPage3)
+        Me.TabControl1.Controls.Add(Me.TabPage5)
         Me.TabControl1.Controls.Add(Me.TabPage4)
         Me.TabControl1.Location = New System.Drawing.Point(10, 10)
         Me.TabControl1.Margin = New System.Windows.Forms.Padding(2)
@@ -1202,6 +1232,262 @@ Partial Class Form2
         Me.OnlyModifiers.IsBalloon = True
         Me.OnlyModifiers.ToolTipTitle = "You can't use only modifier keys"
         '
+        'TabPage5
+        '
+        Me.TabPage5.Controls.Add(Me.AutoEq)
+        Me.TabPage5.Controls.Add(Me.RestoreEq)
+        Me.TabPage5.Controls.Add(Me.Zero)
+        Me.TabPage5.Controls.Add(Me.Band6db)
+        Me.TabPage5.Controls.Add(Me.Band5db)
+        Me.TabPage5.Controls.Add(Me.Band4db)
+        Me.TabPage5.Controls.Add(Me.Band3db)
+        Me.TabPage5.Controls.Add(Me.Band2db)
+        Me.TabPage5.Controls.Add(Me.Band1db)
+        Me.TabPage5.Controls.Add(Me.Label18)
+        Me.TabPage5.Controls.Add(Me.Label17)
+        Me.TabPage5.Controls.Add(Me.Label16)
+        Me.TabPage5.Controls.Add(Me.Label15)
+        Me.TabPage5.Controls.Add(Me.Label14)
+        Me.TabPage5.Controls.Add(Me.Label13)
+        Me.TabPage5.Controls.Add(Me.Band5)
+        Me.TabPage5.Controls.Add(Me.Band4)
+        Me.TabPage5.Controls.Add(Me.Band3)
+        Me.TabPage5.Controls.Add(Me.Band2)
+        Me.TabPage5.Controls.Add(Me.Band1)
+        Me.TabPage5.Controls.Add(Me.Band0)
+        Me.TabPage5.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage5.Name = "TabPage5"
+        Me.TabPage5.Size = New System.Drawing.Size(287, 391)
+        Me.TabPage5.TabIndex = 4
+        Me.TabPage5.Text = "Equalizer"
+        Me.TabPage5.UseVisualStyleBackColor = True
+        '
+        'AutoEq
+        '
+        Me.Helper.SetHelpString(Me.AutoEq, resources.GetString("AutoEq.HelpString"))
+        Me.AutoEq.Location = New System.Drawing.Point(125, 363)
+        Me.AutoEq.Name = "AutoEq"
+        Me.Helper.SetShowHelp(Me.AutoEq, True)
+        Me.AutoEq.Size = New System.Drawing.Size(75, 23)
+        Me.AutoEq.TabIndex = 41
+        Me.AutoEq.Text = "Auto level"
+        Me.AutoEq.UseVisualStyleBackColor = True
+        '
+        'RestoreEq
+        '
+        Me.Helper.SetHelpString(Me.RestoreEq, "Clicking this button will move the sliders to the last applied settings.")
+        Me.RestoreEq.Location = New System.Drawing.Point(44, 363)
+        Me.RestoreEq.Name = "RestoreEq"
+        Me.Helper.SetShowHelp(Me.RestoreEq, True)
+        Me.RestoreEq.Size = New System.Drawing.Size(75, 23)
+        Me.RestoreEq.TabIndex = 40
+        Me.RestoreEq.Text = "Restore"
+        Me.RestoreEq.UseVisualStyleBackColor = True
+        '
+        'Zero
+        '
+        Me.Helper.SetHelpString(Me.Zero, "Clicking this button will set the sliders to the +0dB position, meaning that the " & _
+        "equalizer will be disabled.")
+        Me.Zero.Location = New System.Drawing.Point(206, 363)
+        Me.Zero.Name = "Zero"
+        Me.Helper.SetShowHelp(Me.Zero, True)
+        Me.Zero.Size = New System.Drawing.Size(75, 23)
+        Me.Zero.TabIndex = 39
+        Me.Zero.Text = "Zero all"
+        Me.Zero.UseVisualStyleBackColor = True
+        '
+        'Band6db
+        '
+        Me.Band6db.Location = New System.Drawing.Point(240, 347)
+        Me.Band6db.Name = "Band6db"
+        Me.Band6db.Size = New System.Drawing.Size(45, 13)
+        Me.Band6db.TabIndex = 38
+        Me.Band6db.Text = "+0dB"
+        Me.Band6db.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Band5db
+        '
+        Me.Band5db.Location = New System.Drawing.Point(195, 347)
+        Me.Band5db.Name = "Band5db"
+        Me.Band5db.Size = New System.Drawing.Size(42, 13)
+        Me.Band5db.TabIndex = 37
+        Me.Band5db.Text = "+0dB"
+        Me.Band5db.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Band4db
+        '
+        Me.Band4db.Location = New System.Drawing.Point(146, 347)
+        Me.Band4db.Name = "Band4db"
+        Me.Band4db.Size = New System.Drawing.Size(44, 13)
+        Me.Band4db.TabIndex = 36
+        Me.Band4db.Text = "+0dB"
+        Me.Band4db.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Band3db
+        '
+        Me.Band3db.Location = New System.Drawing.Point(99, 347)
+        Me.Band3db.Name = "Band3db"
+        Me.Band3db.Size = New System.Drawing.Size(42, 13)
+        Me.Band3db.TabIndex = 35
+        Me.Band3db.Text = "+0dB"
+        Me.Band3db.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Band2db
+        '
+        Me.Band2db.Location = New System.Drawing.Point(51, 347)
+        Me.Band2db.Name = "Band2db"
+        Me.Band2db.Size = New System.Drawing.Size(42, 13)
+        Me.Band2db.TabIndex = 34
+        Me.Band2db.Text = "+0dB"
+        Me.Band2db.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Band1db
+        '
+        Me.Band1db.Location = New System.Drawing.Point(2, 347)
+        Me.Band1db.Name = "Band1db"
+        Me.Band1db.Size = New System.Drawing.Size(42, 13)
+        Me.Band1db.TabIndex = 33
+        Me.Band1db.Text = "+0dB"
+        Me.Band1db.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label18
+        '
+        Me.Label18.Location = New System.Drawing.Point(240, 334)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(45, 13)
+        Me.Label18.TabIndex = 32
+        Me.Label18.Text = "14 kHz"
+        Me.Label18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label17
+        '
+        Me.Label17.Location = New System.Drawing.Point(195, 334)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(42, 13)
+        Me.Label17.TabIndex = 31
+        Me.Label17.Text = "5 kHz"
+        Me.Label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label16
+        '
+        Me.Label16.Location = New System.Drawing.Point(146, 334)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(44, 13)
+        Me.Label16.TabIndex = 30
+        Me.Label16.Text = "1.8 kHz"
+        Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label15
+        '
+        Me.Label15.Location = New System.Drawing.Point(99, 334)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(42, 13)
+        Me.Label15.TabIndex = 29
+        Me.Label15.Text = "622 Hz"
+        Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label14
+        '
+        Me.Label14.Location = New System.Drawing.Point(51, 334)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(42, 13)
+        Me.Label14.TabIndex = 28
+        Me.Label14.Text = "220 Hz"
+        Me.Label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label13
+        '
+        Me.Label13.Location = New System.Drawing.Point(2, 334)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(42, 13)
+        Me.Label13.TabIndex = 27
+        Me.Label13.Text = "80 Hz"
+        Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Band5
+        '
+        Me.Band5.AutoSize = False
+        Me.Band5.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.Band5.LargeChange = 1
+        Me.Band5.Location = New System.Drawing.Point(243, 4)
+        Me.Band5.Maximum = 15
+        Me.Band5.Minimum = -15
+        Me.Band5.Name = "Band5"
+        Me.Band5.Orientation = System.Windows.Forms.Orientation.Vertical
+        Me.Band5.Size = New System.Drawing.Size(42, 327)
+        Me.Band5.TabIndex = 26
+        Me.Band5.TickStyle = System.Windows.Forms.TickStyle.Both
+        '
+        'Band4
+        '
+        Me.Band4.AutoSize = False
+        Me.Band4.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.Band4.LargeChange = 1
+        Me.Band4.Location = New System.Drawing.Point(195, 4)
+        Me.Band4.Maximum = 15
+        Me.Band4.Minimum = -15
+        Me.Band4.Name = "Band4"
+        Me.Band4.Orientation = System.Windows.Forms.Orientation.Vertical
+        Me.Band4.Size = New System.Drawing.Size(42, 327)
+        Me.Band4.TabIndex = 25
+        Me.Band4.TickStyle = System.Windows.Forms.TickStyle.Both
+        '
+        'Band3
+        '
+        Me.Band3.AutoSize = False
+        Me.Band3.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.Band3.LargeChange = 1
+        Me.Band3.Location = New System.Drawing.Point(147, 4)
+        Me.Band3.Maximum = 15
+        Me.Band3.Minimum = -15
+        Me.Band3.Name = "Band3"
+        Me.Band3.Orientation = System.Windows.Forms.Orientation.Vertical
+        Me.Band3.Size = New System.Drawing.Size(42, 327)
+        Me.Band3.TabIndex = 24
+        Me.Band3.TickStyle = System.Windows.Forms.TickStyle.Both
+        '
+        'Band2
+        '
+        Me.Band2.AutoSize = False
+        Me.Band2.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.Band2.LargeChange = 1
+        Me.Band2.Location = New System.Drawing.Point(99, 4)
+        Me.Band2.Maximum = 15
+        Me.Band2.Minimum = -15
+        Me.Band2.Name = "Band2"
+        Me.Band2.Orientation = System.Windows.Forms.Orientation.Vertical
+        Me.Band2.Size = New System.Drawing.Size(42, 327)
+        Me.Band2.TabIndex = 23
+        Me.Band2.TickStyle = System.Windows.Forms.TickStyle.Both
+        '
+        'Band1
+        '
+        Me.Band1.AutoSize = False
+        Me.Band1.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.Band1.LargeChange = 1
+        Me.Band1.Location = New System.Drawing.Point(51, 4)
+        Me.Band1.Maximum = 15
+        Me.Band1.Minimum = -15
+        Me.Band1.Name = "Band1"
+        Me.Band1.Orientation = System.Windows.Forms.Orientation.Vertical
+        Me.Band1.Size = New System.Drawing.Size(42, 327)
+        Me.Band1.TabIndex = 22
+        Me.Band1.TickStyle = System.Windows.Forms.TickStyle.Both
+        '
+        'Band0
+        '
+        Me.Band0.AutoSize = False
+        Me.Band0.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.Band0.LargeChange = 1
+        Me.Band0.Location = New System.Drawing.Point(3, 4)
+        Me.Band0.Maximum = 15
+        Me.Band0.Minimum = -15
+        Me.Band0.Name = "Band0"
+        Me.Band0.Orientation = System.Windows.Forms.Orientation.Vertical
+        Me.Band0.Size = New System.Drawing.Size(42, 327)
+        Me.Band0.TabIndex = 21
+        Me.Band0.TickStyle = System.Windows.Forms.TickStyle.Both
+        '
         'Form2
         '
         Me.AcceptButton = Me.OK
@@ -1250,6 +1536,13 @@ Partial Class Form2
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DILogo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.TabPage5.ResumeLayout(False)
+        CType(Me.Band5, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Band4, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Band3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Band2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Band1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Band0, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1340,4 +1633,26 @@ Partial Class Form2
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
     Friend WithEvents StationSelector As System.Windows.Forms.ComboBox
     Friend WithEvents ChangeWholeBackground As System.Windows.Forms.CheckBox
+    Friend WithEvents TabPage5 As System.Windows.Forms.TabPage
+    Friend WithEvents AutoEq As System.Windows.Forms.Button
+    Friend WithEvents RestoreEq As System.Windows.Forms.Button
+    Friend WithEvents Zero As System.Windows.Forms.Button
+    Friend WithEvents Band6db As System.Windows.Forms.Label
+    Friend WithEvents Band5db As System.Windows.Forms.Label
+    Friend WithEvents Band4db As System.Windows.Forms.Label
+    Friend WithEvents Band3db As System.Windows.Forms.Label
+    Friend WithEvents Band2db As System.Windows.Forms.Label
+    Friend WithEvents Band1db As System.Windows.Forms.Label
+    Friend WithEvents Label18 As System.Windows.Forms.Label
+    Friend WithEvents Label17 As System.Windows.Forms.Label
+    Friend WithEvents Label16 As System.Windows.Forms.Label
+    Friend WithEvents Label15 As System.Windows.Forms.Label
+    Friend WithEvents Label14 As System.Windows.Forms.Label
+    Friend WithEvents Label13 As System.Windows.Forms.Label
+    Friend WithEvents Band5 As System.Windows.Forms.TrackBar
+    Friend WithEvents Band4 As System.Windows.Forms.TrackBar
+    Friend WithEvents Band3 As System.Windows.Forms.TrackBar
+    Friend WithEvents Band2 As System.Windows.Forms.TrackBar
+    Friend WithEvents Band1 As System.Windows.Forms.TrackBar
+    Friend WithEvents Band0 As System.Windows.Forms.TrackBar
 End Class

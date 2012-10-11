@@ -1,5 +1,5 @@
 ﻿' DI Radio Player by ViRUS
-' Source code for version 1.6
+' Source code for version 1.7 Beta 2
 '
 '
 ' I've done my best to document the most relevant parts of this source code, but if you still find yourself having problems
@@ -63,6 +63,13 @@ Public Class Form1
 
     Public MultimediaKeys As Boolean
 
+    Public Band0 As Integer = 0
+    Public Band1 As Integer = 0
+    Public Band2 As Integer = 0
+    Public Band3 As Integer = 0
+    Public Band4 As Integer = 0
+    Public Band5 As Integer = 0
+
     ' These are not on the Options dialog but are saved anyway.
 
     Public DIChannel As Integer = 0     ' -> Last used Digitally Imported channel
@@ -114,7 +121,7 @@ Public Class Form1
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 20    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 21    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -134,6 +141,9 @@ Public Class Form1
     Dim TotalCommandLine As String = ""
 
     Delegate Sub MsgBoxSafe(ByVal text As String, ByVal style As MsgBoxStyle, ByVal title As String)
+
+    Private EqBands As Integer() = {0, 0, 0, 0, 0, 0}
+    Dim Eq As New BASS_DX8_PARAMEQ()
 
 #End Region
 
@@ -322,6 +332,12 @@ Public Class Form1
                 writer.WriteLine(Form2.HotkeyVolumeDown.Name & "=" & HumanModifiersVolumeDown & "=" & ModifiersVolumeDown & "=" & KeyVolumeDown)
                 writer.WriteLine(Form2.HotkeyMuteUnmute.Name & "=" & HumanModifiersMuteUnmute & "=" & ModifiersMuteUnmute & "=" & KeyMuteUnmute)
                 writer.WriteLine(Form2.HotkeyShowHide.Name & "=" & HumanModifiersShowHide & "=" & ModifiersShowHide & "=" & KeyShowHide)
+                writer.WriteLine(Form2.Band0.Name & "=" & Band0)
+                writer.WriteLine(Form2.Band1.Name & "=" & Band1)
+                writer.WriteLine(Form2.Band2.Name & "=" & Band2)
+                writer.WriteLine(Form2.Band3.Name & "=" & Band3)
+                writer.WriteLine(Form2.Band4.Name & "=" & Band4)
+                writer.WriteLine(Form2.Band5.Name & "=" & Band5)
                 writer.WriteLine(StationChooser.Name & "=" & StationChooser.Text)
                 writer.WriteLine("DIChannel=" & DIChannel)
                 writer.WriteLine("SkyChannel=" & SKYChannel)
@@ -1519,6 +1535,14 @@ again:
                 _mySync = New SYNCPROC(AddressOf MetaSync)
                 Bass.BASS_ChannelSetSync(stream, BASSSync.BASS_SYNC_META, 0, _mySync, IntPtr.Zero)
 
+                SetUpEq()
+                UpdateEQ(0, Band0)
+                UpdateEQ(1, Band1)
+                UpdateEQ(2, Band2)
+                UpdateEQ(3, Band3)
+                UpdateEQ(4, Band4)
+                UpdateEQ(5, Band5)
+
                 PlayStop.Image = My.Resources.StopPlayback
                 PlayStop.Tag = "Stop"
             End If
@@ -1967,6 +1991,12 @@ again:
             writer.WriteLine(Form2.HotkeyVolumeDown.Name & "=0=0=" & Keys.VolumeDown)
             writer.WriteLine(Form2.HotkeyMuteUnmute.Name & "=0=0=" & Keys.VolumeMute)
             writer.WriteLine(Form2.HotkeyShowHide.Name & "=" & Keys.Control + Keys.Shift & "=6=" & Keys.Home)
+            writer.WriteLine(Form2.Band0.Name & "=0")
+            writer.WriteLine(Form2.Band1.Name & "=0")
+            writer.WriteLine(Form2.Band2.Name & "=0")
+            writer.WriteLine(Form2.Band3.Name & "=0")
+            writer.WriteLine(Form2.Band4.Name & "=0")
+            writer.WriteLine(Form2.Band5.Name & "=0")
             writer.WriteLine("DIChannel=0")
             writer.WriteLine("SkyChannel=0")
             writer.WriteLine("JazzChannel=0")
@@ -2130,6 +2160,18 @@ again:
                     HumanModifiersShowHide = splitter(1)
                     ModifiersShowHide = splitter(2)
                     KeyShowHide = splitter(3)
+                ElseIf splitter(0) = Form2.Band0.Name Then
+                    Band0 = splitter(1)
+                ElseIf splitter(0) = Form2.Band1.Name Then
+                    Band1 = splitter(1)
+                ElseIf splitter(0) = Form2.Band2.Name Then
+                    Band2 = splitter(1)
+                ElseIf splitter(0) = Form2.Band3.Name Then
+                    Band3 = splitter(1)
+                ElseIf splitter(0) = Form2.Band4.Name Then
+                    Band4 = splitter(1)
+                ElseIf splitter(0) = Form2.Band5.Name Then
+                    Band5 = splitter(1)
                 ElseIf splitter(0) = StationChooser.Name Then
 
                     RadioStation = splitter(1)
@@ -2302,6 +2344,39 @@ again:
     Sub DisplayMessage(ByVal text As String, ByVal style As MsgBoxStyle, ByVal title As String)
         MsgBox(text, style, title)
         Me.BringToFront()
+    End Sub
+
+    Private Sub SetUpEq()
+        EqBands(0) = Bass.BASS_ChannelSetFX(stream, BASSFXType.BASS_FX_DX8_PARAMEQ, 0)
+        EqBands(1) = Bass.BASS_ChannelSetFX(stream, BASSFXType.BASS_FX_DX8_PARAMEQ, 0)
+        EqBands(2) = Bass.BASS_ChannelSetFX(stream, BASSFXType.BASS_FX_DX8_PARAMEQ, 0)
+        EqBands(3) = Bass.BASS_ChannelSetFX(stream, BASSFXType.BASS_FX_DX8_PARAMEQ, 0)
+        EqBands(4) = Bass.BASS_ChannelSetFX(stream, BASSFXType.BASS_FX_DX8_PARAMEQ, 0)
+        EqBands(5) = Bass.BASS_ChannelSetFX(stream, BASSFXType.BASS_FX_DX8_PARAMEQ, 0)
+
+        Eq.fBandwidth = 18
+
+        Eq.fCenter = 80
+        Bass.BASS_FXSetParameters(EqBands(0), Eq)
+        Eq.fCenter = 220
+        Bass.BASS_FXSetParameters(EqBands(1), Eq)
+        Eq.fCenter = 622
+        Bass.BASS_FXSetParameters(EqBands(2), Eq)
+        Eq.fCenter = 1800
+        Bass.BASS_FXSetParameters(EqBands(3), Eq)
+        Eq.fCenter = 5000
+        Bass.BASS_FXSetParameters(EqBands(4), Eq)
+        Eq.fCenter = 140000
+        Bass.BASS_FXSetParameters(EqBands(5), Eq)
+    End Sub
+
+    Public Sub UpdateEq(band As Integer, gain As Single)
+        Dim Eq As New BASS_DX8_PARAMEQ()
+
+        If Bass.BASS_FXGetParameters(EqBands(band), Eq) Then
+            Eq.fGain = gain
+            Bass.BASS_FXSetParameters(EqBands(band), Eq)
+        End If
     End Sub
 
 #End Region
