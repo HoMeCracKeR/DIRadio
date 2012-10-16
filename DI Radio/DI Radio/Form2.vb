@@ -1335,8 +1335,47 @@
 
         End If
 
+        If ListenKey.Text = Form1.ListenKey = False Then
+            Form1.ListenKey = ListenKey.Text
+
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\Digitally Imported\*.*")
+            Catch
+            End Try
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\JazzRadio\*.*")
+            Catch
+            End Try
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\SKY.FM\*.*")
+            Catch
+            End Try
+
+
+            If Form1.SelectedChannel.Text = "My Favorites" Then
+                Form1.OldFav = Form1.SelectedServer.Text
+            End If
+
+            If Form1.PlayStop.Tag = "Stop" And Form1.PlayStop.Enabled = True Then
+                Form1.PlayStop_Click(Me, Nothing)
+                Form1.RestartPlayback = True
+            End If
+
+            If Form1.SelectedChannel.Text = Nothing = False Then
+
+                If Form1.PLSDownloader.IsBusy = False Then
+                    Form1.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                End If
+
+            Else
+                Form1.SelectedServer.Enabled = False
+                Form1.SelectedServer.Items.Add("Pick a server")
+                Form1.SelectedServer.SelectedIndex = 0
+            End If
+
+        End If
+
         Form1.PremiumFormats = PremiumFormats.Checked
-        Form1.ListenKey = ListenKey.Text
         Form1.UpdatesAtStart = UpdatesAtStart.Checked
         Form1.BetaVersions = BetaVersions.Checked
         Form1.Visualisation = Visualisation.Checked

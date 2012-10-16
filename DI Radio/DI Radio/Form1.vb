@@ -1,5 +1,5 @@
 ﻿' DI Radio Player by ViRUS
-' Source code for version 1.7 Beta 2
+' Source code for version 1.7 Beta 3
 '
 '
 ' I've done my best to document the most relevant parts of this source code, but if you still find yourself having problems
@@ -121,7 +121,7 @@ Public Class Form1
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 21    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 22    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -1331,39 +1331,43 @@ Public Class Form1
             fileExtension = "pls"
         End If
 
-        Dim WebClient As Net.WebClient = New Net.WebClient()
-        Dim PLS As String
+        If My.Computer.FileSystem.FileExists(file & fileExtension) = False Then
 
-        Try
+            Dim WebClient As Net.WebClient = New Net.WebClient()
+            Dim PLS As String
 
-            PLS = WebClient.DownloadString("http://listen." & StationChooser.Tag & "/" & EndString & "/" & channel.Replace("my", Nothing) & "." & fileExtension & "?" & ListenKey)
+            Try
 
-        Catch ex As Exception
+                PLS = WebClient.DownloadString("http://listen." & StationChooser.Tag & "/" & EndString & "/" & channel.Replace("my", Nothing) & "." & fileExtension & "?" & ListenKey)
 
-            Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+            Catch ex As Exception
 
-            If ex.Message.Contains("403") Then
-                Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Wrong or expired premium key?", MsgBoxStyle.Exclamation, "Error getting servers list")
-            Else
-                Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message, MsgBoxStyle.Exclamation, "Error getting servers list")
-            End If
+                Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
-            Marquee.Hide()
+                If ex.Message.Contains("403") Then
+                    Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Wrong or expired premium key?", MsgBoxStyle.Exclamation, "Error getting servers list")
+                Else
+                    Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message, MsgBoxStyle.Exclamation, "Error getting servers list")
+                End If
 
-            SelectedServer.Enabled = False
-            If PlayStop.Tag = "Play" Then
-                PlayStop.Enabled = False
-            End If
+                Marquee.Hide()
+                SelectedServer.Enabled = False
 
-            StationChooser.Enabled = True
-            RestartPlayback = False
-            Exit Sub
+                If PlayStop.Tag = "Play" Then
+                    PlayStop.Enabled = False
+                End If
 
-        End Try
+                StationChooser.Enabled = True
+                RestartPlayback = False
+                Exit Sub
 
-        Dim writer As New IO.StreamWriter(file & fileExtension, False)
-        writer.Write(PLS)
-        writer.Close()
+            End Try
+
+            Dim writer As New IO.StreamWriter(file & fileExtension, False)
+            writer.Write(PLS)
+            writer.Close()
+
+        End If
 
         Dim serverno As Integer = 1
 
