@@ -92,25 +92,6 @@ Partial Class Form2
         Me.HotkeyMuteUnmute = New System.Windows.Forms.CheckBox()
         Me.HotkeyVolumeDown = New System.Windows.Forms.CheckBox()
         Me.CustomVolumeDown = New System.Windows.Forms.TextBox()
-        Me.TabPage4 = New System.Windows.Forms.TabPage()
-        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-        Me.DevForums = New System.Windows.Forms.Button()
-        Me.DevMail = New System.Windows.Forms.Button()
-        Me.Label12 = New System.Windows.Forms.Label()
-        Me.DevTwitter = New System.Windows.Forms.Button()
-        Me.DevFacebook = New System.Windows.Forms.Button()
-        Me.DILogo = New System.Windows.Forms.PictureBox()
-        Me.AboutText = New System.Windows.Forms.RichTextBox()
-        Me.ApplicationLogo = New System.Windows.Forms.PictureBox()
-        Me.OK = New System.Windows.Forms.Button()
-        Me.Cancel = New System.Windows.Forms.Button()
-        Me.ColourPicker = New System.Windows.Forms.ColorDialog()
-        Me.Apply = New System.Windows.Forms.Button()
-        Me.Helper = New System.Windows.Forms.HelpProvider()
-        Me.ValidateWorker = New System.ComponentModel.BackgroundWorker()
-        Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
         Me.TabPage5 = New System.Windows.Forms.TabPage()
         Me.AutoEq = New System.Windows.Forms.Button()
         Me.RestoreEq = New System.Windows.Forms.Button()
@@ -133,6 +114,27 @@ Partial Class Form2
         Me.Band2 = New System.Windows.Forms.TrackBar()
         Me.Band1 = New System.Windows.Forms.TrackBar()
         Me.Band0 = New System.Windows.Forms.TrackBar()
+        Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.DevForums = New System.Windows.Forms.Button()
+        Me.DevMail = New System.Windows.Forms.Button()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.DevTwitter = New System.Windows.Forms.Button()
+        Me.DevFacebook = New System.Windows.Forms.Button()
+        Me.AboutText = New System.Windows.Forms.RichTextBox()
+        Me.ApplicationLogo = New System.Windows.Forms.PictureBox()
+        Me.OK = New System.Windows.Forms.Button()
+        Me.Cancel = New System.Windows.Forms.Button()
+        Me.ColourPicker = New System.Windows.Forms.ColorDialog()
+        Me.Apply = New System.Windows.Forms.Button()
+        Me.Helper = New System.Windows.Forms.HelpProvider()
+        Me.ValidateWorker = New System.ComponentModel.BackgroundWorker()
+        Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.PictureBox3 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.DILogo = New System.Windows.Forms.PictureBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -148,11 +150,6 @@ Partial Class Form2
         CType(Me.Smoothness, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage3.SuspendLayout()
         Me.GroupBox7.SuspendLayout()
-        Me.TabPage4.SuspendLayout()
-        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.DILogo, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage5.SuspendLayout()
         CType(Me.Band5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Band4, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -160,6 +157,12 @@ Partial Class Form2
         CType(Me.Band2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Band1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.TabPage4.SuspendLayout()
+        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.DILogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -218,7 +221,7 @@ Partial Class Form2
         Me.StationSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.StationSelector.FormattingEnabled = True
         Me.Helper.SetHelpString(Me.StationSelector, "Select which radio station you'd like to change the file format for.")
-        Me.StationSelector.Items.AddRange(New Object() {"Digitally Imported", "JazzRadio", "SKY.FM"})
+        Me.StationSelector.Items.AddRange(New Object() {"Digitally Imported", "JazzRadio", "RockRadio", "SKY.FM"})
         Me.StationSelector.Location = New System.Drawing.Point(4, 37)
         Me.StationSelector.Margin = New System.Windows.Forms.Padding(2)
         Me.StationSelector.Name = "StationSelector"
@@ -228,8 +231,7 @@ Partial Class Form2
         '
         'ValidateKey
         '
-        Me.Helper.SetHelpString(Me.ValidateKey, "Clicking this button will validate your Listen Key by contacting Digitally Import" & _
-        "ed's, JazzRadio's or SKY.FM's servers.")
+        Me.Helper.SetHelpString(Me.ValidateKey, resources.GetString("ValidateKey.HelpString"))
         Me.ValidateKey.Location = New System.Drawing.Point(220, 82)
         Me.ValidateKey.Name = "ValidateKey"
         Me.Helper.SetShowHelp(Me.ValidateKey, True)
@@ -253,8 +255,7 @@ Partial Class Form2
         '
         'ListenLink
         '
-        Me.Helper.SetHelpString(Me.ListenLink, "Clicking this link will open your default web browser pointing to your My Listen " & _
-        "Key page, where you'll be able to check your current Listen Key and reset it.")
+        Me.Helper.SetHelpString(Me.ListenLink, resources.GetString("ListenLink.HelpString"))
         Me.ListenLink.Location = New System.Drawing.Point(136, 61)
         Me.ListenLink.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.ListenLink.Name = "ListenLink"
@@ -1034,204 +1035,6 @@ Partial Class Form2
         Me.CustomVolumeDown.TabIndex = 13
         Me.CustomVolumeDown.Text = "Multimedia Volume Down"
         '
-        'TabPage4
-        '
-        Me.TabPage4.Controls.Add(Me.PictureBox2)
-        Me.TabPage4.Controls.Add(Me.PictureBox1)
-        Me.TabPage4.Controls.Add(Me.DevForums)
-        Me.TabPage4.Controls.Add(Me.DevMail)
-        Me.TabPage4.Controls.Add(Me.Label12)
-        Me.TabPage4.Controls.Add(Me.DevTwitter)
-        Me.TabPage4.Controls.Add(Me.DevFacebook)
-        Me.TabPage4.Controls.Add(Me.DILogo)
-        Me.TabPage4.Controls.Add(Me.AboutText)
-        Me.TabPage4.Controls.Add(Me.ApplicationLogo)
-        Me.TabPage4.Location = New System.Drawing.Point(4, 23)
-        Me.TabPage4.Margin = New System.Windows.Forms.Padding(2)
-        Me.TabPage4.Name = "TabPage4"
-        Me.TabPage4.Size = New System.Drawing.Size(287, 391)
-        Me.TabPage4.TabIndex = 3
-        Me.TabPage4.Text = "About"
-        Me.TabPage4.UseVisualStyleBackColor = True
-        '
-        'PictureBox2
-        '
-        Me.Helper.SetHelpString(Me.PictureBox2, "JazzRadio")
-        Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
-        Me.PictureBox2.Location = New System.Drawing.Point(41, 246)
-        Me.PictureBox2.Margin = New System.Windows.Forms.Padding(2)
-        Me.PictureBox2.Name = "PictureBox2"
-        Me.Helper.SetShowHelp(Me.PictureBox2, True)
-        Me.PictureBox2.Size = New System.Drawing.Size(70, 70)
-        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox2.TabIndex = 16
-        Me.PictureBox2.TabStop = False
-        Me.ToolTip.SetToolTip(Me.PictureBox2, "JazzRadio")
-        '
-        'PictureBox1
-        '
-        Me.Helper.SetHelpString(Me.PictureBox1, "SKY.FM")
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(78, 172)
-        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(2)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.Helper.SetShowHelp(Me.PictureBox1, True)
-        Me.PictureBox1.Size = New System.Drawing.Size(70, 70)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox1.TabIndex = 15
-        Me.PictureBox1.TabStop = False
-        Me.ToolTip.SetToolTip(Me.PictureBox1, "SKY.FM")
-        '
-        'DevForums
-        '
-        Me.DevForums.Image = CType(resources.GetObject("DevForums.Image"), System.Drawing.Image)
-        Me.DevForums.Location = New System.Drawing.Point(117, 356)
-        Me.DevForums.Name = "DevForums"
-        Me.DevForums.Size = New System.Drawing.Size(32, 32)
-        Me.DevForums.TabIndex = 14
-        Me.DevForums.Tag = "Application's thread on Digitally Imported Forums"
-        Me.ToolTip.SetToolTip(Me.DevForums, "Application's thread on Digitally Imported Forums")
-        Me.DevForums.UseVisualStyleBackColor = True
-        '
-        'DevMail
-        '
-        Me.DevMail.Image = CType(resources.GetObject("DevMail.Image"), System.Drawing.Image)
-        Me.DevMail.Location = New System.Drawing.Point(79, 356)
-        Me.DevMail.Name = "DevMail"
-        Me.DevMail.Size = New System.Drawing.Size(32, 32)
-        Me.DevMail.TabIndex = 13
-        Me.DevMail.Tag = "Developer's E-mail"
-        Me.ToolTip.SetToolTip(Me.DevMail, "Developer's E-mail")
-        Me.DevMail.UseVisualStyleBackColor = True
-        '
-        'Label12
-        '
-        Me.Label12.Location = New System.Drawing.Point(3, 339)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(146, 13)
-        Me.Label12.TabIndex = 11
-        Me.Label12.Text = "Contact the developer:"
-        '
-        'DevTwitter
-        '
-        Me.DevTwitter.Image = CType(resources.GetObject("DevTwitter.Image"), System.Drawing.Image)
-        Me.DevTwitter.Location = New System.Drawing.Point(41, 356)
-        Me.DevTwitter.Name = "DevTwitter"
-        Me.DevTwitter.Size = New System.Drawing.Size(32, 32)
-        Me.DevTwitter.TabIndex = 12
-        Me.DevTwitter.Tag = "Developer's Twitter"
-        Me.ToolTip.SetToolTip(Me.DevTwitter, "Developer's Twitter")
-        Me.DevTwitter.UseVisualStyleBackColor = True
-        '
-        'DevFacebook
-        '
-        Me.DevFacebook.Image = CType(resources.GetObject("DevFacebook.Image"), System.Drawing.Image)
-        Me.DevFacebook.Location = New System.Drawing.Point(3, 356)
-        Me.DevFacebook.Name = "DevFacebook"
-        Me.DevFacebook.Size = New System.Drawing.Size(32, 32)
-        Me.DevFacebook.TabIndex = 11
-        Me.DevFacebook.Tag = "Developer's Facebook"
-        Me.ToolTip.SetToolTip(Me.DevFacebook, "Developer's Facebook")
-        Me.DevFacebook.UseVisualStyleBackColor = True
-        '
-        'DILogo
-        '
-        Me.Helper.SetHelpString(Me.DILogo, "Digitally Imported")
-        Me.DILogo.Image = CType(resources.GetObject("DILogo.Image"), System.Drawing.Image)
-        Me.DILogo.Location = New System.Drawing.Point(0, 172)
-        Me.DILogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.DILogo.Name = "DILogo"
-        Me.Helper.SetShowHelp(Me.DILogo, True)
-        Me.DILogo.Size = New System.Drawing.Size(70, 70)
-        Me.DILogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.DILogo.TabIndex = 2
-        Me.DILogo.TabStop = False
-        Me.ToolTip.SetToolTip(Me.DILogo, "Digitally Imported")
-        '
-        'AboutText
-        '
-        Me.AboutText.BackColor = System.Drawing.SystemColors.ControlLightLight
-        Me.AboutText.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.AboutText.Dock = System.Windows.Forms.DockStyle.Right
-        Me.AboutText.Location = New System.Drawing.Point(152, 0)
-        Me.AboutText.Margin = New System.Windows.Forms.Padding(2)
-        Me.AboutText.Name = "AboutText"
-        Me.AboutText.ReadOnly = True
-        Me.AboutText.Size = New System.Drawing.Size(135, 391)
-        Me.AboutText.TabIndex = 1
-        Me.AboutText.Text = resources.GetString("AboutText.Text")
-        '
-        'ApplicationLogo
-        '
-        Me.Helper.SetHelpString(Me.ApplicationLogo, "")
-        Me.ApplicationLogo.Image = CType(resources.GetObject("ApplicationLogo.Image"), System.Drawing.Image)
-        Me.ApplicationLogo.Location = New System.Drawing.Point(0, 0)
-        Me.ApplicationLogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.ApplicationLogo.Name = "ApplicationLogo"
-        Me.Helper.SetShowHelp(Me.ApplicationLogo, True)
-        Me.ApplicationLogo.Size = New System.Drawing.Size(148, 148)
-        Me.ApplicationLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.ApplicationLogo.TabIndex = 0
-        Me.ApplicationLogo.TabStop = False
-        '
-        'OK
-        '
-        Me.OK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.OK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.OK.Enabled = False
-        Me.Helper.SetHelpString(Me.OK, "Clicking this button will accept any changes made while closing this window.")
-        Me.OK.Location = New System.Drawing.Point(71, 432)
-        Me.OK.Margin = New System.Windows.Forms.Padding(2)
-        Me.OK.Name = "OK"
-        Me.Helper.SetShowHelp(Me.OK, True)
-        Me.OK.Size = New System.Drawing.Size(75, 23)
-        Me.OK.TabIndex = 9
-        Me.OK.Text = "OK"
-        Me.OK.UseVisualStyleBackColor = True
-        '
-        'Cancel
-        '
-        Me.Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.Helper.SetHelpString(Me.Cancel, "Clicking this button will cancel any changes made while closing this window.")
-        Me.Cancel.Location = New System.Drawing.Point(150, 432)
-        Me.Cancel.Margin = New System.Windows.Forms.Padding(2)
-        Me.Cancel.Name = "Cancel"
-        Me.Helper.SetShowHelp(Me.Cancel, True)
-        Me.Cancel.Size = New System.Drawing.Size(75, 23)
-        Me.Cancel.TabIndex = 8
-        Me.Cancel.Text = "Close"
-        Me.Cancel.UseVisualStyleBackColor = True
-        '
-        'ColourPicker
-        '
-        Me.ColourPicker.AnyColor = True
-        Me.ColourPicker.Color = System.Drawing.Color.NavajoWhite
-        Me.ColourPicker.FullOpen = True
-        '
-        'Apply
-        '
-        Me.Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Apply.Enabled = False
-        Me.Helper.SetHelpString(Me.Apply, "Clicking this button will accept any changes made while leaving this window open." & _
-        "")
-        Me.Apply.Location = New System.Drawing.Point(230, 432)
-        Me.Apply.Margin = New System.Windows.Forms.Padding(2)
-        Me.Apply.Name = "Apply"
-        Me.Helper.SetShowHelp(Me.Apply, True)
-        Me.Apply.Size = New System.Drawing.Size(75, 23)
-        Me.Apply.TabIndex = 10
-        Me.Apply.Text = "Apply"
-        Me.Apply.UseVisualStyleBackColor = True
-        '
-        'ValidateWorker
-        '
-        '
-        'OnlyModifiers
-        '
-        Me.OnlyModifiers.IsBalloon = True
-        Me.OnlyModifiers.ToolTipTitle = "You can't use only modifier keys"
-        '
         'TabPage5
         '
         Me.TabPage5.Controls.Add(Me.AutoEq)
@@ -1488,6 +1291,230 @@ Partial Class Form2
         Me.Band0.TabIndex = 21
         Me.Band0.TickStyle = System.Windows.Forms.TickStyle.Both
         '
+        'TabPage4
+        '
+        Me.TabPage4.Controls.Add(Me.Label19)
+        Me.TabPage4.Controls.Add(Me.PictureBox3)
+        Me.TabPage4.Controls.Add(Me.PictureBox2)
+        Me.TabPage4.Controls.Add(Me.PictureBox1)
+        Me.TabPage4.Controls.Add(Me.DILogo)
+        Me.TabPage4.Controls.Add(Me.DevForums)
+        Me.TabPage4.Controls.Add(Me.DevMail)
+        Me.TabPage4.Controls.Add(Me.Label12)
+        Me.TabPage4.Controls.Add(Me.DevTwitter)
+        Me.TabPage4.Controls.Add(Me.DevFacebook)
+        Me.TabPage4.Controls.Add(Me.AboutText)
+        Me.TabPage4.Controls.Add(Me.ApplicationLogo)
+        Me.TabPage4.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage4.Margin = New System.Windows.Forms.Padding(2)
+        Me.TabPage4.Name = "TabPage4"
+        Me.TabPage4.Size = New System.Drawing.Size(287, 391)
+        Me.TabPage4.TabIndex = 3
+        Me.TabPage4.Text = "About"
+        Me.TabPage4.UseVisualStyleBackColor = True
+        '
+        'DevForums
+        '
+        Me.DevForums.Image = CType(resources.GetObject("DevForums.Image"), System.Drawing.Image)
+        Me.DevForums.Location = New System.Drawing.Point(117, 356)
+        Me.DevForums.Name = "DevForums"
+        Me.DevForums.Size = New System.Drawing.Size(32, 32)
+        Me.DevForums.TabIndex = 14
+        Me.DevForums.Tag = "Application's thread on Digitally Imported Forums"
+        Me.ToolTip.SetToolTip(Me.DevForums, "Application's thread on Digitally Imported Forums")
+        Me.DevForums.UseVisualStyleBackColor = True
+        '
+        'DevMail
+        '
+        Me.DevMail.Image = CType(resources.GetObject("DevMail.Image"), System.Drawing.Image)
+        Me.DevMail.Location = New System.Drawing.Point(79, 356)
+        Me.DevMail.Name = "DevMail"
+        Me.DevMail.Size = New System.Drawing.Size(32, 32)
+        Me.DevMail.TabIndex = 13
+        Me.DevMail.Tag = "Developer's E-mail"
+        Me.ToolTip.SetToolTip(Me.DevMail, "Developer's E-mail")
+        Me.DevMail.UseVisualStyleBackColor = True
+        '
+        'Label12
+        '
+        Me.Label12.Location = New System.Drawing.Point(3, 339)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(146, 13)
+        Me.Label12.TabIndex = 11
+        Me.Label12.Text = "Contact the developer:"
+        '
+        'DevTwitter
+        '
+        Me.DevTwitter.Image = CType(resources.GetObject("DevTwitter.Image"), System.Drawing.Image)
+        Me.DevTwitter.Location = New System.Drawing.Point(41, 356)
+        Me.DevTwitter.Name = "DevTwitter"
+        Me.DevTwitter.Size = New System.Drawing.Size(32, 32)
+        Me.DevTwitter.TabIndex = 12
+        Me.DevTwitter.Tag = "Developer's Twitter"
+        Me.ToolTip.SetToolTip(Me.DevTwitter, "Developer's Twitter")
+        Me.DevTwitter.UseVisualStyleBackColor = True
+        '
+        'DevFacebook
+        '
+        Me.DevFacebook.Image = CType(resources.GetObject("DevFacebook.Image"), System.Drawing.Image)
+        Me.DevFacebook.Location = New System.Drawing.Point(3, 356)
+        Me.DevFacebook.Name = "DevFacebook"
+        Me.DevFacebook.Size = New System.Drawing.Size(32, 32)
+        Me.DevFacebook.TabIndex = 11
+        Me.DevFacebook.Tag = "Developer's Facebook"
+        Me.ToolTip.SetToolTip(Me.DevFacebook, "Developer's Facebook")
+        Me.DevFacebook.UseVisualStyleBackColor = True
+        '
+        'AboutText
+        '
+        Me.AboutText.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.AboutText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.AboutText.Dock = System.Windows.Forms.DockStyle.Right
+        Me.AboutText.Location = New System.Drawing.Point(152, 0)
+        Me.AboutText.Margin = New System.Windows.Forms.Padding(2)
+        Me.AboutText.Name = "AboutText"
+        Me.AboutText.ReadOnly = True
+        Me.AboutText.Size = New System.Drawing.Size(135, 391)
+        Me.AboutText.TabIndex = 1
+        Me.AboutText.Text = resources.GetString("AboutText.Text")
+        '
+        'ApplicationLogo
+        '
+        Me.Helper.SetHelpString(Me.ApplicationLogo, "")
+        Me.ApplicationLogo.Image = CType(resources.GetObject("ApplicationLogo.Image"), System.Drawing.Image)
+        Me.ApplicationLogo.Location = New System.Drawing.Point(0, 0)
+        Me.ApplicationLogo.Margin = New System.Windows.Forms.Padding(2)
+        Me.ApplicationLogo.Name = "ApplicationLogo"
+        Me.Helper.SetShowHelp(Me.ApplicationLogo, True)
+        Me.ApplicationLogo.Size = New System.Drawing.Size(148, 148)
+        Me.ApplicationLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.ApplicationLogo.TabIndex = 0
+        Me.ApplicationLogo.TabStop = False
+        '
+        'OK
+        '
+        Me.OK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.OK.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.OK.Enabled = False
+        Me.Helper.SetHelpString(Me.OK, "Clicking this button will accept any changes made while closing this window.")
+        Me.OK.Location = New System.Drawing.Point(71, 432)
+        Me.OK.Margin = New System.Windows.Forms.Padding(2)
+        Me.OK.Name = "OK"
+        Me.Helper.SetShowHelp(Me.OK, True)
+        Me.OK.Size = New System.Drawing.Size(75, 23)
+        Me.OK.TabIndex = 9
+        Me.OK.Text = "OK"
+        Me.OK.UseVisualStyleBackColor = True
+        '
+        'Cancel
+        '
+        Me.Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Helper.SetHelpString(Me.Cancel, "Clicking this button will cancel any changes made while closing this window.")
+        Me.Cancel.Location = New System.Drawing.Point(150, 432)
+        Me.Cancel.Margin = New System.Windows.Forms.Padding(2)
+        Me.Cancel.Name = "Cancel"
+        Me.Helper.SetShowHelp(Me.Cancel, True)
+        Me.Cancel.Size = New System.Drawing.Size(75, 23)
+        Me.Cancel.TabIndex = 8
+        Me.Cancel.Text = "Close"
+        Me.Cancel.UseVisualStyleBackColor = True
+        '
+        'ColourPicker
+        '
+        Me.ColourPicker.AnyColor = True
+        Me.ColourPicker.Color = System.Drawing.Color.NavajoWhite
+        Me.ColourPicker.FullOpen = True
+        Me.ColourPicker.ShowHelp = True
+        '
+        'Apply
+        '
+        Me.Apply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Apply.Enabled = False
+        Me.Helper.SetHelpString(Me.Apply, "Clicking this button will accept any changes made while leaving this window open." & _
+        "")
+        Me.Apply.Location = New System.Drawing.Point(230, 432)
+        Me.Apply.Margin = New System.Windows.Forms.Padding(2)
+        Me.Apply.Name = "Apply"
+        Me.Helper.SetShowHelp(Me.Apply, True)
+        Me.Apply.Size = New System.Drawing.Size(75, 23)
+        Me.Apply.TabIndex = 10
+        Me.Apply.Text = "Apply"
+        Me.Apply.UseVisualStyleBackColor = True
+        '
+        'ValidateWorker
+        '
+        '
+        'OnlyModifiers
+        '
+        Me.OnlyModifiers.IsBalloon = True
+        Me.OnlyModifiers.ToolTipTitle = "You can't use only modifier keys"
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.Location = New System.Drawing.Point(3, 156)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(128, 14)
+        Me.Label19.TabIndex = 23
+        Me.Label19.Text = "Supported radio stations:"
+        '
+        'PictureBox3
+        '
+        Me.Helper.SetHelpString(Me.PictureBox3, "RockRadio")
+        Me.PictureBox3.Image = CType(resources.GetObject("PictureBox3.Image"), System.Drawing.Image)
+        Me.PictureBox3.Location = New System.Drawing.Point(0, 246)
+        Me.PictureBox3.Margin = New System.Windows.Forms.Padding(2)
+        Me.PictureBox3.Name = "PictureBox3"
+        Me.Helper.SetShowHelp(Me.PictureBox3, True)
+        Me.PictureBox3.Size = New System.Drawing.Size(70, 70)
+        Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox3.TabIndex = 22
+        Me.PictureBox3.TabStop = False
+        Me.ToolTip.SetToolTip(Me.PictureBox3, "RockRadio")
+        '
+        'PictureBox2
+        '
+        Me.Helper.SetHelpString(Me.PictureBox2, "JazzRadio")
+        Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
+        Me.PictureBox2.Location = New System.Drawing.Point(79, 172)
+        Me.PictureBox2.Margin = New System.Windows.Forms.Padding(2)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.Helper.SetShowHelp(Me.PictureBox2, True)
+        Me.PictureBox2.Size = New System.Drawing.Size(70, 70)
+        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox2.TabIndex = 21
+        Me.PictureBox2.TabStop = False
+        Me.ToolTip.SetToolTip(Me.PictureBox2, "JazzRadio")
+        '
+        'PictureBox1
+        '
+        Me.Helper.SetHelpString(Me.PictureBox1, "SKY.FM")
+        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
+        Me.PictureBox1.Location = New System.Drawing.Point(79, 246)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(2)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.Helper.SetShowHelp(Me.PictureBox1, True)
+        Me.PictureBox1.Size = New System.Drawing.Size(70, 70)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.TabIndex = 20
+        Me.PictureBox1.TabStop = False
+        Me.ToolTip.SetToolTip(Me.PictureBox1, "SKY.FM")
+        '
+        'DILogo
+        '
+        Me.Helper.SetHelpString(Me.DILogo, "Digitally Imported")
+        Me.DILogo.Image = CType(resources.GetObject("DILogo.Image"), System.Drawing.Image)
+        Me.DILogo.Location = New System.Drawing.Point(0, 172)
+        Me.DILogo.Margin = New System.Windows.Forms.Padding(2)
+        Me.DILogo.Name = "DILogo"
+        Me.Helper.SetShowHelp(Me.DILogo, True)
+        Me.DILogo.Size = New System.Drawing.Size(70, 70)
+        Me.DILogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.DILogo.TabIndex = 19
+        Me.DILogo.TabStop = False
+        Me.ToolTip.SetToolTip(Me.DILogo, "Digitally Imported")
+        '
         'Form2
         '
         Me.AcceptButton = Me.OK
@@ -1495,7 +1522,7 @@ Partial Class Form2
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.AutoSize = True
         Me.CancelButton = Me.Cancel
-        Me.ClientSize = New System.Drawing.Size(314, 461)
+        Me.ClientSize = New System.Drawing.Size(314, 460)
         Me.Controls.Add(Me.Apply)
         Me.Controls.Add(Me.OK)
         Me.Controls.Add(Me.Cancel)
@@ -1531,11 +1558,6 @@ Partial Class Form2
         Me.TabPage3.ResumeLayout(False)
         Me.GroupBox7.ResumeLayout(False)
         Me.GroupBox7.PerformLayout()
-        Me.TabPage4.ResumeLayout(False)
-        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.DILogo, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage5.ResumeLayout(False)
         CType(Me.Band5, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Band4, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1543,6 +1565,13 @@ Partial Class Form2
         CType(Me.Band2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Band1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.TabPage4.ResumeLayout(False)
+        Me.TabPage4.PerformLayout()
+        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.DILogo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1610,7 +1639,6 @@ Partial Class Form2
     Friend WithEvents TabPage4 As System.Windows.Forms.TabPage
     Friend WithEvents AboutText As System.Windows.Forms.RichTextBox
     Friend WithEvents ApplicationLogo As System.Windows.Forms.PictureBox
-    Friend WithEvents DILogo As System.Windows.Forms.PictureBox
     Friend WithEvents HighQualityVis As System.Windows.Forms.CheckBox
     Friend WithEvents PremiumFormats As System.Windows.Forms.CheckBox
     Friend WithEvents CustomShowHide As System.Windows.Forms.TextBox
@@ -1629,8 +1657,6 @@ Partial Class Form2
     Friend WithEvents RestoreColours As System.Windows.Forms.Button
     Friend WithEvents OnlyModifiers As System.Windows.Forms.ToolTip
     Friend WithEvents BetaVersions As System.Windows.Forms.CheckBox
-    Friend WithEvents PictureBox2 As System.Windows.Forms.PictureBox
-    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
     Friend WithEvents StationSelector As System.Windows.Forms.ComboBox
     Friend WithEvents ChangeWholeBackground As System.Windows.Forms.CheckBox
     Friend WithEvents TabPage5 As System.Windows.Forms.TabPage
@@ -1655,4 +1681,9 @@ Partial Class Form2
     Friend WithEvents Band2 As System.Windows.Forms.TrackBar
     Friend WithEvents Band1 As System.Windows.Forms.TrackBar
     Friend WithEvents Band0 As System.Windows.Forms.TrackBar
+    Friend WithEvents Label19 As System.Windows.Forms.Label
+    Friend WithEvents PictureBox3 As System.Windows.Forms.PictureBox
+    Friend WithEvents PictureBox2 As System.Windows.Forms.PictureBox
+    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
+    Friend WithEvents DILogo As System.Windows.Forms.PictureBox
 End Class

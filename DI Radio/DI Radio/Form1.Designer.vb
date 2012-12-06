@@ -59,6 +59,8 @@ Partial Class Form1
         Me.RadioString = New System.Windows.Forms.Label()
         Me.SelectedChannel = New System.Windows.Forms.ComboBox()
         Me.SelectedServer = New System.Windows.Forms.ComboBox()
+        Me.ServerMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Marquee = New System.Windows.Forms.ProgressBar()
         Me.ControlsPanel = New System.Windows.Forms.Panel()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -71,15 +73,14 @@ Partial Class Form1
         Me.RefreshFavorites = New System.Windows.Forms.LinkLabel()
         Me.GetUpdates = New System.ComponentModel.BackgroundWorker()
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
-        Me.ServerMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RockRadio = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyTitleMenu.SuspendLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.ServerMenu.SuspendLayout()
         Me.ControlsPanel.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
-        Me.ServerMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'CopyTitleMenu
@@ -364,6 +365,19 @@ Partial Class Form1
         Me.SelectedServer.Size = New System.Drawing.Size(139, 22)
         Me.SelectedServer.TabIndex = 9
         '
+        'ServerMenu
+        '
+        Me.ServerMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyServerURLToolStripMenuItem})
+        Me.ServerMenu.Name = "ServerMenu"
+        Me.ServerMenu.Size = New System.Drawing.Size(161, 26)
+        '
+        'CopyServerURLToolStripMenuItem
+        '
+        Me.CopyServerURLToolStripMenuItem.Image = CType(resources.GetObject("CopyServerURLToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.CopyServerURLToolStripMenuItem.Name = "CopyServerURLToolStripMenuItem"
+        Me.CopyServerURLToolStripMenuItem.Size = New System.Drawing.Size(160, 22)
+        Me.CopyServerURLToolStripMenuItem.Text = "Copy server URL"
+        '
         'Marquee
         '
         Me.Marquee.Anchor = System.Windows.Forms.AnchorStyles.Top
@@ -425,16 +439,17 @@ Partial Class Form1
         'StationChooser
         '
         Me.StationChooser.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.StationChooser.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DIFM, Me.JazzRadio, Me.SKYFM})
+        Me.StationChooser.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DIFM, Me.JazzRadio, Me.RockRadio, Me.SKYFM})
         Me.StationChooser.Image = CType(resources.GetObject("StationChooser.Image"), System.Drawing.Image)
         Me.StationChooser.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.StationChooser.Name = "StationChooser"
-        Me.StationChooser.Size = New System.Drawing.Size(32, 19)
+        Me.StationChooser.Size = New System.Drawing.Size(32, 20)
         Me.StationChooser.Tag = "di.fm"
         Me.StationChooser.ToolTipText = "Digitally Imported"
         '
         'DIFM
         '
+        Me.DIFM.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.DIFM.Image = CType(resources.GetObject("DIFM.Image"), System.Drawing.Image)
         Me.DIFM.Name = "DIFM"
         Me.DIFM.Size = New System.Drawing.Size(169, 22)
@@ -443,6 +458,7 @@ Partial Class Form1
         '
         'JazzRadio
         '
+        Me.JazzRadio.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.JazzRadio.Image = CType(resources.GetObject("JazzRadio.Image"), System.Drawing.Image)
         Me.JazzRadio.Name = "JazzRadio"
         Me.JazzRadio.Size = New System.Drawing.Size(169, 22)
@@ -451,6 +467,7 @@ Partial Class Form1
         '
         'SKYFM
         '
+        Me.SKYFM.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.SKYFM.Image = CType(resources.GetObject("SKYFM.Image"), System.Drawing.Image)
         Me.SKYFM.Name = "SKYFM"
         Me.SKYFM.Size = New System.Drawing.Size(169, 22)
@@ -484,24 +501,20 @@ Partial Class Form1
         '
         Me.FadeOut.Interval = 1
         '
-        'ServerMenu
+        'RockRadio
         '
-        Me.ServerMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyServerURLToolStripMenuItem})
-        Me.ServerMenu.Name = "ServerMenu"
-        Me.ServerMenu.Size = New System.Drawing.Size(168, 26)
-        '
-        'CopyServerURLToolStripMenuItem
-        '
-        Me.CopyServerURLToolStripMenuItem.Image = CType(resources.GetObject("CopyServerURLToolStripMenuItem.Image"), System.Drawing.Image)
-        Me.CopyServerURLToolStripMenuItem.Name = "CopyServerURLToolStripMenuItem"
-        Me.CopyServerURLToolStripMenuItem.Size = New System.Drawing.Size(167, 22)
-        Me.CopyServerURLToolStripMenuItem.Text = "Copy server URL"
+        Me.RockRadio.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.RockRadio.Image = CType(resources.GetObject("RockRadio.Image"), System.Drawing.Image)
+        Me.RockRadio.Name = "RockRadio"
+        Me.RockRadio.Size = New System.Drawing.Size(169, 22)
+        Me.RockRadio.Tag = "rockradio.com"
+        Me.RockRadio.Text = "RockRadio"
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(356, 442)
+        Me.ClientSize = New System.Drawing.Size(356, 441)
         Me.Controls.Add(Me.VisualisationBox)
         Me.Controls.Add(Me.ControlsPanel)
         Me.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -517,10 +530,10 @@ Partial Class Form1
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TrayMenu.ResumeLayout(False)
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ServerMenu.ResumeLayout(False)
         Me.ControlsPanel.ResumeLayout(False)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
-        Me.ServerMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -573,5 +586,6 @@ Partial Class Form1
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents ServerMenu As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents CopyServerURLToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents RockRadio As System.Windows.Forms.ToolStripMenuItem
 
 End Class

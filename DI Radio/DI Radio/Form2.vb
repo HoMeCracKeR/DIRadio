@@ -169,6 +169,7 @@
         CurrentVersion.Text = "Current version:" & Form1.Text.Replace("DI Radio Player", Nothing)
         CurrentVersion.Text = CurrentVersion.Text.Replace("SKY.FM Radio Player", Nothing)
         CurrentVersion.Text = CurrentVersion.Text.Replace("JazzRadio Radio Player", Nothing)
+        CurrentVersion.Text = CurrentVersion.Text.Replace("RockRadio Radio Player", Nothing)
 
         If Form1.LatestVersionString = Nothing = False Then
             Dim FullLine As String = Form1.LatestVersionString
@@ -462,8 +463,12 @@
                 Else
                     FileFormat.SelectedIndex = JazzSetting
                 End If
-
             End If
+        ElseIf StationSelector.Text = "RockRadio" Then
+            FileFormat.Items.Clear()
+            FileFormat.Items.Add("MP3 96k")
+            FileFormat.SelectedIndex = 0
+            FileFormat.Enabled = False
         End If
     End Sub
 
@@ -481,7 +486,7 @@
 
     Private Sub ListenLink_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles ListenLink.LinkClicked
 
-        If StationSelector.Text = "Digitally Imported" Then
+        If StationSelector.Text = "Digitally Imported" OrElse StationSelector.Text = "RockRadio" Then
             Process.Start("http://www.di.fm/member/listen_key")
         ElseIf StationSelector.Text = "JazzRadio" Then
             Process.Start("http://www.jazzradio.com/member/listen_key")
@@ -492,7 +497,7 @@
     End Sub
 
     Private Sub ListenKey_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ListenKey.TextChanged
-        If ListenKey.TextLength >= 14 Then
+        If ListenKey.TextLength = Nothing = False Then
             ValidateKey.Enabled = True
             PremiumFormats.Enabled = True
         Else
@@ -1129,7 +1134,7 @@
         Dim URL As String
         Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
-        If StationSelector.Text = "Digitally Imported" Then
+        If StationSelector.Text = "Digitally Imported" OrElse StationSelector.Text = "RockRadio" Then
             URL = Form1.DIFM.Tag
         ElseIf StationSelector.Text = "JazzRadio" Then
             URL = Form1.JazzRadio.Tag
@@ -1609,4 +1614,31 @@
         Form1.Band5 = Band5.Value
     End Sub
 
+    Private Sub ColourPicker_HelpRequest(sender As System.Object, e As System.EventArgs) Handles ColourPicker.HelpRequest
+        If ColourPicker.Tag.ToString.Contains("main") Then
+            MessageBox.Show("You're selecting the Main colour of the visualisation." & vbNewLine & "This colour is used at the top of the visualisation as the frequency levels reach higher values." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        ElseIf ColourPicker.Tag.ToString.Contains("secondary") Then
+            MessageBox.Show("You're selecting the Secondary colour of the visualisation." & vbNewLine & "This colour is used at the bottom of the visualisation and is almost always displayed." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        ElseIf ColourPicker.Tag.ToString.Contains("peaks") Then
+            MessageBox.Show("You're selecting the colour that will be used for the peaks when the Lines with peaks visualisation is selected." & vbNewLine & "The peaks are the squares displayed at the top of the lines." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        ElseIf ColourPicker.Tag.ToString.Contains("background") Then
+            MessageBox.Show("You're selecting the colour that will be used as a background on the visualisation area." & vbNewLine & "If you check the 'Change the whole background' box, this colour will be used as a background for the entire player, even when the visualisation is disabled." & vbNewLine & "If you select a colour that's too dark, the title and time displays will use a white font colour; and if you select a colour that's too bright, they will use a black font colour." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
+    End Sub
+
+    Private Sub DILogo_Click(sender As System.Object, e As System.EventArgs) Handles DILogo.Click
+        Process.Start("http://www.di.fm")
+    End Sub
+
+    Private Sub PictureBox2_Click(sender As System.Object, e As System.EventArgs) Handles PictureBox2.Click
+        Process.Start("http://www.jazzradio.com")
+    End Sub
+
+    Private Sub PictureBox3_Click(sender As System.Object, e As System.EventArgs) Handles PictureBox3.Click
+        Process.Start("http://www.rockradio.com")
+    End Sub
+
+    Private Sub PictureBox1_Click(sender As System.Object, e As System.EventArgs) Handles PictureBox1.Click
+        Process.Start("http://www.sky.fm")
+    End Sub
 End Class

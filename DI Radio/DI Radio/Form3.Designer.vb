@@ -29,6 +29,7 @@ Partial Class Form3
         '
         'Changelog
         '
+        Me.Changelog.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.Changelog.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Changelog.Location = New System.Drawing.Point(0, 0)
         Me.Changelog.Name = "Changelog"

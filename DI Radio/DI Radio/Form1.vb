@@ -1,5 +1,5 @@
 ﻿' DI Radio Player by ViRUS
-' Source code for version 1.7
+' Source code for version 1.9
 '
 '
 ' I've done my best to document the most relevant parts of this source code, but if you still find yourself having problems
@@ -75,6 +75,7 @@ Public Class Form1
     Public DIChannel As Integer = 0     ' -> Last used Digitally Imported channel
     Public SKYChannel As Integer = 0    ' -> Last used SKY.FM channel
     Public JazzChannel As Integer = 0   ' -> Last used JazzRadio channel
+    Public RockChannel As Integer = 0   ' -> Last used RockRadio channel
 
     Public RadioStation As String = "Digitally Imported"    ' -> Last used radio station
 
@@ -121,7 +122,7 @@ Public Class Form1
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 23    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 25    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -134,7 +135,7 @@ Public Class Form1
     Public oldvol As Integer                        ' -> This stores the volume when the user clicks the Mute button; to know which volume level should be used when the user clicks the Unmute button
     Dim ServersArray As New ListView                ' -> Used to store a list of available servers for a particular channel
     ' v  The following list of channels don't have a forum board and should disable the Forums button when selected
-    Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock"
+    Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel"
     Private _mySync As SYNCPROC                     ' -> Sync so BASS says when the stream title has changed
     ' v Used to get command line arguments
     Dim CommandLineArgs As System.Collections.ObjectModel.ReadOnlyCollection(Of String) = My.Application.CommandLineArgs
@@ -180,6 +181,7 @@ Public Class Form1
         My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & DIFM.Text)
         My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & JazzRadio.Text)
         My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & SKYFM.Text)
+        My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & RockRadio.Text)
 
         If IO.Directory.GetFiles(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers").Length > 0 Then
             Dim str As String
@@ -287,7 +289,7 @@ Public Class Form1
 
     Private Sub Form1_TextChanged(sender As Object, e As System.EventArgs) Handles Me.TextChanged
 
-        If PlayStop.Tag = "Play" Then
+        If TrayIcon.Text.StartsWith("DI Radio") OrElse TrayIcon.Text.StartsWith("JazzRadio Radio") OrElse TrayIcon.Text.StartsWith("SKY.FM Radio") OrElse TrayIcon.Text.StartsWith("RockRadio Radio") Then
             TrayIcon.Text = Me.Text
         End If
 
@@ -342,6 +344,7 @@ Public Class Form1
                 writer.WriteLine("DIChannel=" & DIChannel)
                 writer.WriteLine("SkyChannel=" & SKYChannel)
                 writer.WriteLine("JazzChannel=" & JazzChannel)
+                writer.WriteLine("RockChannel=" & RockChannel)
 
                 ' If volume is above 0 then save the volume, else save it as 50 so the application doesn't start muted the next time the user launches it
                 If Volume.Value > 0 Then
@@ -416,7 +419,20 @@ Public Class Form1
                 TrayIcon.Text = raw
             End If
 
-            If Me.WindowState = FormWindowState.Minimized And NotificationTitle = True And RadioString.Text.ToLower = "get digitally imported premium" = False And RadioString.Text.ToLower.Contains("adwtag") = False And RadioString.Text.ToLower = "unleash the full potential of sky.fm. get sky.fm premium now!" = False And RadioString.Text.ToLower = "it gets even better! jazzradio premium - www.jazzradio.com/join" = False And RadioString.Text.ToLower = "more of the show after these messages" = False And RadioString.Text.ToLower.Contains("photonvps.com") = False And RadioString.Text.ToLower = "blood pumping mind twisting di radio" = False And RadioString.Text.ToLower = "love thy neighbour as thyself - turn up the volume (t)" = False Then
+            If Me.WindowState = FormWindowState.Minimized And NotificationTitle = True And _
+             RadioString.Text.ToLower.Contains("photonvps.com") = False And _
+             RadioString.Text.ToLower.Contains("adwtag") = False And _
+             RadioString.Text.ToLower = "get digitally imported premium" = False And _
+             RadioString.Text.ToLower = "unleash the full potential of sky.fm. get sky.fm premium now!" = False And _
+             RadioString.Text.ToLower = "it gets even better! jazzradio premium - www.jazzradio.com/join" = False And _
+             RadioString.Text.ToLower = "more of the show after these messages" = False And _
+             RadioString.Text.ToLower = "blood pumping mind twisting di radio" = False And _
+             RadioString.Text.ToLower = "love thy neighbour as thyself - turn up the volume (t)" = False And _
+             RadioString.Text.ToLower = "di - where the beat is always on" = False And _
+             RadioString.Text.ToLower = "di - serving you non-stop trance" = False And _
+             RadioString.Text.ToLower = "di - energizing" = False And _
+             RadioString.Text.ToLower = "you are listening to di radio, the best of trance on the net (b)" = False Then
+
                 TrayIcon.BalloonTipText = RadioString.Text
 
                 If RadioString.Text.Contains("Connecting, please wait...") Then
@@ -480,7 +496,6 @@ Public Class Form1
             SelectedChannel.Enabled = False
             SelectedServer.Enabled = False
 
-            ToolTip.SetToolTip(PlayStop, "Stop")
         Else
 
             If ChangeWholeBackground = True Then
@@ -507,6 +522,7 @@ Public Class Form1
                 RadioString.Text = Nothing
                 PlayStop.Image = My.Resources.StartPlayback
                 PlayStop.Tag = "Play"
+                ToolTip.SetToolTip(PlayStop, "Play")
 
                 If SelectedServer.Items.Count < 1 Then
                     PlayStop.Enabled = False
@@ -526,7 +542,6 @@ Public Class Form1
             VisualisationBox.Image = Nothing
             TimerString.Text = "00:00"
             TrayIcon.Text = Me.Text
-            ToolTip.SetToolTip(PlayStop, "Play")
         End If
     End Sub
 
@@ -861,9 +876,11 @@ Public Class Form1
         If StationChooser.Tag = "di.fm" Then
             JazzRadio_Click(sender, e)
         ElseIf StationChooser.Tag = "jazzradio.com" Then
-            SKYFM_Click(sender, e)
+            RockRadio_Click(sender, e)
         ElseIf StationChooser.Tag = "sky.fm" Then
             DIFM_Click(sender, e)
+        ElseIf StationChooser.Tag = "rockradio.com" Then
+            SKYFM_Click(sender, e)
         End If
     End Sub
 
@@ -873,7 +890,7 @@ Public Class Form1
 
         SelectedChannel.Items.Clear()
 
-        If ListenKey = Nothing = False Then
+        If ListenKey = Nothing = False And StationChooser.Text = RockRadio.Text = False Then
             SelectedChannel.Items.Add("My Favorites")
         End If
 
@@ -1030,6 +1047,48 @@ Public Class Form1
             History.Enabled = False
             Forums.Enabled = False
 
+        ElseIf StationChooser.Text = RockRadio.Text Then
+
+            SelectedChannel.Items.Add("80s Alternative")
+            SelectedChannel.Items.Add("90s Alternative")
+            SelectedChannel.Items.Add("80s Rock")
+            SelectedChannel.Items.Add("90s Rock")
+            SelectedChannel.Items.Add("Beatles Tribute")
+            SelectedChannel.Items.Add("Black Metal")
+            SelectedChannel.Items.Add("Classic Rock")
+            SelectedChannel.Items.Add("Classic Hard Rock")
+            SelectedChannel.Items.Add("Classic Metal")
+            SelectedChannel.Items.Add("Deathcore")
+            SelectedChannel.Items.Add("Death Metal")
+            SelectedChannel.Items.Add("Hair Bands")
+            SelectedChannel.Items.Add("Hardcore")
+            SelectedChannel.Items.Add("Hard Rock")
+            SelectedChannel.Items.Add("Harder Rock")
+            SelectedChannel.Items.Add("Heavy Metal")
+            SelectedChannel.Items.Add("Jam Bands")
+            SelectedChannel.Items.Add("Indie Rock")
+            SelectedChannel.Items.Add("Metal")
+            SelectedChannel.Items.Add("Metalcore")
+            SelectedChannel.Items.Add("Modern Rock")
+            SelectedChannel.Items.Add("Nu Metal")
+            SelectedChannel.Items.Add("Pop Punk")
+            SelectedChannel.Items.Add("Pop Rock")
+            SelectedChannel.Items.Add("Power Metal")
+            SelectedChannel.Items.Add("Progressive Metal")
+            SelectedChannel.Items.Add("Progressive Rock")
+            SelectedChannel.Items.Add("Punk Rock")
+            SelectedChannel.Items.Add("Rock Ballads")
+            SelectedChannel.Items.Add("Screamo-Emo")
+            SelectedChannel.Items.Add("Ska")
+            SelectedChannel.Items.Add("Soft Rock")
+            SelectedChannel.Items.Add("Symphonic Metal")
+            SelectedChannel.Items.Add("Thrash Metal")
+
+            SelectedChannel.SelectedIndex = RockChannel
+
+            Calendar.Enabled = False
+            History.Enabled = False
+            Forums.Enabled = False
         End If
 
     End Sub
@@ -1170,6 +1229,10 @@ Public Class Form1
 
             If channel = "bestofthe80's" Then
                 channel = "the80s"
+            ElseIf channel = "christmaschannel" Then
+                channel = "christmas"
+            ElseIf channel = "90'shits" Then
+                channel = "hit90s"
             ElseIf channel = "80'srockhits" Then
                 channel = "80srock"
             ElseIf channel = "smoothjazz24'7" Then
@@ -1208,7 +1271,20 @@ Public Class Form1
                 channel = "swingnbigband"
             End If
 
+        ElseIf StationChooser.Text = RockRadio.Text Then
+
+            If channel = "90salternative" Then
+                channel = "alternative90s"
+            ElseIf channel = "80salternative" Then
+                channel = "alternative80s"
+            ElseIf channel = "80salternative" Then
+                channel = "alternative80s"
+            ElseIf channel = "screamo-emo" Then
+                channel = "screamoemo"
+            End If
+
         End If
+
 
 
         Dim executable As String = Application.ExecutablePath
@@ -1281,6 +1357,10 @@ Public Class Form1
                     IsWMA = True
                 End If
 
+            ElseIf StationChooser.Text = RockRadio.Text Then
+
+                EndString = "public3"
+
             End If
 
 
@@ -1319,18 +1399,21 @@ Public Class Form1
                     IsWMA = True
                 End If
 
+            ElseIf StationChooser.Text = RockRadio.Text Then
+
+                EndString = "public3"
+
             End If
 
 
         End If
 
-
-
-        If IsWMA = True Then
+        If IsWMA = True And StationChooser.Text = RockRadio.Text = False Then
             fileExtension = "asx"
         Else
             fileExtension = "pls"
         End If
+
 
         If My.Computer.FileSystem.FileExists(file & fileExtension) = False Then
 
@@ -1488,6 +1571,7 @@ again:
                     SelectedServer.Enabled = True
                     PlayStop.Image = My.Resources.StartPlayback
                     PlayStop.Tag = "Play"
+                    ToolTip.SetToolTip(PlayStop, "Play")
                 Else
 
                     If Bufer.CancellationPending = False And SelectedServer.Text = "My Favorites" = False Then
@@ -1497,15 +1581,17 @@ again:
                         SelectedServer.SelectedIndex = SelectedServer.SelectedIndex + 1
                         PlayStop.Image = My.Resources.StopPlayback
                         PlayStop.Tag = "Stop"
+                        ToolTip.SetToolTip(PlayStop, "Stop")
                         PlayStop.Enabled = True
                         StationChooser.Enabled = True
                         GoTo again
                     Else
                         PlayStop.Image = My.Resources.StartPlayback
                         PlayStop.Tag = "Play"
+                        ToolTip.SetToolTip(PlayStop, "Play")
                         RadioString.BackColor = Color.Red
                         RadioString.ForeColor = Color.White
-                        RadioString.Text = "Couldn't connect to channel " & SelectedServer.Text & "."
+                        RadioString.Text = "Couldn't connect to channel " & SelectedChannel.Text & "."
                         e.Cancel = True
                     End If
 
@@ -1550,6 +1636,7 @@ again:
 
                 PlayStop.Image = My.Resources.StopPlayback
                 PlayStop.Tag = "Stop"
+                ToolTip.SetToolTip(PlayStop, "Stop")
             End If
         Else
 
@@ -1617,49 +1704,51 @@ again:
     End Sub
 
     Private Sub GetUpdates_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles GetUpdates.RunWorkerCompleted
-        Dim FullLine As String = LatestVersionString
-        Dim Splitter As String() = Split(FullLine, ".")
+        If My.Computer.FileSystem.FileExists("Info.txt") Then
+            Dim FullLine As String = LatestVersionString
+            Dim Splitter As String() = Split(FullLine, ".")
 
-        If TotalVersionString > TotalVersionFixed Then
+            If TotalVersionString > TotalVersionFixed Then
 
-            Form2.LookNow.Text = "Download update"
-            Form2.LatestVersion.ForeColor = Color.Green
+                Form2.LookNow.Text = "Download update"
+                Form2.LatestVersion.ForeColor = Color.Green
 
-            If AtStartup = True Then
+                If AtStartup = True Then
 
-                If Splitter(2) > 0 And BetaVersions = True Then
-                    If MsgBox("There's a new beta version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
-                        Form2.LookNow_Click(Me, Nothing)
+                    If Splitter(2) > 0 And BetaVersions = True Then
+                        If MsgBox("There's a new beta version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
+                            Form2.LookNow_Click(Me, Nothing)
+                        End If
+                    ElseIf Splitter(2) = 0 Then
+                        If MsgBox("There's a new version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
+                            Form2.LookNow_Click(Me, Nothing)
+                        End If
                     End If
-                ElseIf Splitter(2) = 0 Then
-                    If MsgBox("There's a new version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
-                        Form2.LookNow_Click(Me, Nothing)
-                    End If
+
+
+                End If
+            End If
+
+            If Splitter(2) > 0 Then
+
+                If Splitter(1) = 9 Then
+                    Form2.LatestVersion.Text = "Latest version: " & Splitter(0) + 1 & ".0" & " Beta " & Splitter(2)
+                Else
+                    Form2.LatestVersion.Text = "Latest version: " & Splitter(0) & "." & Splitter(1) + 1 & " Beta " & Splitter(2)
                 End If
 
-
-            End If
-        End If
-
-        If Splitter(2) > 0 Then
-
-            If Splitter(1) = 9 Then
-                Form2.LatestVersion.Text = "Latest version: " & Splitter(0) + 1 & ".0" & " Beta " & Splitter(2)
             Else
-                Form2.LatestVersion.Text = "Latest version: " & Splitter(0) & "." & Splitter(1) + 1 & " Beta " & Splitter(2)
+
+                Form2.LatestVersion.Text = "Latest version: " & Splitter(0) & "." & Splitter(1)
+
             End If
 
-        Else
+            Form2.UndefinedProgress.Hide()
+            Form2.Status.Text = "Status: Idle"
+            Form2.LookNow.Enabled = True
 
-            Form2.LatestVersion.Text = "Latest version: " & Splitter(0) & "." & Splitter(1)
-
+            AtStartup = False
         End If
-
-        Form2.UndefinedProgress.Hide()
-        Form2.Status.Text = "Status: Idle"
-        Form2.LookNow.Enabled = True
-
-        AtStartup = False
     End Sub
 
 #End Region
@@ -1870,6 +1959,7 @@ again:
         StationChooser.ToolTipText = DIFM.Text
         Me.Text = Me.Text.Replace("JazzRadio", "DI")
         Me.Text = Me.Text.Replace("SKY.FM", "DI")
+        Me.Text = Me.Text.Replace("RockRadio", "DI")
     End Sub
 
     Private Sub JazzRadio_Click(sender As System.Object, e As System.EventArgs) Handles JazzRadio.Click
@@ -1879,6 +1969,7 @@ again:
         StationChooser.ToolTipText = JazzRadio.Text
         Me.Text = Me.Text.Replace("DI", "JazzRadio")
         Me.Text = Me.Text.Replace("SKY.FM", "JazzRadio")
+        Me.Text = Me.Text.Replace("RockRadio", "JazzRadio")
     End Sub
 
     Private Sub SKYFM_Click(sender As System.Object, e As System.EventArgs) Handles SKYFM.Click
@@ -1888,6 +1979,17 @@ again:
         StationChooser.ToolTipText = SKYFM.Text
         Me.Text = Me.Text.Replace("DI", "SKY.FM")
         Me.Text = Me.Text.Replace("JazzRadio", "SKY.FM")
+        Me.Text = Me.Text.Replace("RockRadio", "SKY.FM")
+    End Sub
+
+    Private Sub RockRadio_Click(sender As System.Object, e As System.EventArgs) Handles RockRadio.Click
+        StationChooser.Image = RockRadio.Image
+        StationChooser.Tag = "rockradio.com"
+        StationChooser.Text = RockRadio.Text
+        StationChooser.ToolTipText = RockRadio.Text
+        Me.Text = Me.Text.Replace("JazzRadio", "RockRadio")
+        Me.Text = Me.Text.Replace("SKY.FM", "RockRadio")
+        Me.Text = Me.Text.Replace("DI", "RockRadio")
     End Sub
 
 #End Region
@@ -2005,6 +2107,7 @@ again:
             writer.WriteLine("DIChannel=0")
             writer.WriteLine("SkyChannel=0")
             writer.WriteLine("JazzChannel=0")
+            writer.WriteLine("RockChannel=0")
             writer.WriteLine(Volume.Name & "=50")
             writer.WriteLine(SelectedServer.Name & "=0")
             writer.Close()
@@ -2193,6 +2296,10 @@ again:
 
                     JazzChannel = splitter(1)
 
+                ElseIf splitter(0) = "RockChannel" Then
+
+                    RockChannel = splitter(1)
+
                 ElseIf splitter(0) = Volume.Name Then
                     Volume.Value = splitter(1)
                 ElseIf splitter(0) = SelectedServer.Name And SelectedChannel.Text = "My Favorites" Then
@@ -2210,6 +2317,8 @@ again:
                 SKYFM_Click(Me, Nothing)
             ElseIf RadioStation = JazzRadio.Text Then
                 JazzRadio_Click(Me, Nothing)
+            ElseIf RadioStation = RockRadio.Text Then
+                RockRadio_Click(Me, Nothing)
             End If
 
             If ModifiersShowHide = 0 And KeyShowHide = 0 Then
@@ -2385,5 +2494,6 @@ again:
     End Sub
 
 #End Region
+
 
 End Class

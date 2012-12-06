@@ -13,7 +13,7 @@
             If Computer.Network.IsAvailable = False Then
                 MsgBox("This application requires an internet connection to run.", MsgBoxStyle.Critical, "Network connection unavailable")
                 Form1.TrayIcon.Visible = False
-                End
+                Form1.Close()
             End If
         End Sub
 
@@ -25,7 +25,7 @@
 
             If Computer.Network.IsAvailable = False Then
                 MsgBox("This application requires an internet connection to run.", MsgBoxStyle.Critical, "Network connection unavailable")
-                End
+                Form1.Close()
             End If
         End Sub
 
