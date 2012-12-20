@@ -1,4 +1,4 @@
-﻿Public Class Form2
+﻿Public Class Options
 
 #Region "Global declarations"
 
@@ -29,9 +29,12 @@
     Dim versionnumber As String = Application.ProductVersion
     Dim KeyConverter As New KeysConverter
 
-    Public DISetting As Integer
-    Public SKYSetting As Integer
-    Public JazzSetting As Integer
+    Public DISetting As Integer = -1
+    Public SKYSetting As Integer = -1
+    Public JazzSetting As Integer = -1
+    Public DISettingPremium As Integer = -1
+    Public SKYSettingPremium As Integer = -1
+    Public JazzSettingPremium As Integer = -1
 
     Delegate Sub MsgBoxSafe(ByVal text As String, ByVal style As MsgBoxStyle, ByVal title As String)
 
@@ -43,20 +46,20 @@
 
         ' Load values from the global variables of the main form and accomodate the interface
 
-        DISetting = Form1.DIFormat
-        JazzSetting = Form1.JazzFormat
-        SKYSetting = Form1.SKYFormat
+        DISetting = Player.DIFormat
+        JazzSetting = Player.JazzFormat
+        SKYSetting = Player.SKYFormat
 
-        NotificationTitle.Checked = Form1.NotificationTitle
-        Visualisation.Checked = Form1.Visualisation
-        NotificationIcon.Checked = Form1.NotificationIcon
-        NoTaskbarButton.Checked = Form1.NoTaskbarButton
-        MultimediaKeys.Checked = Form1.MultimediaKeys
-        GoogleSearch.Checked = Form1.GoogleSearch
-        ListenKey.Text = Form1.ListenKey
+        NotificationTitle.Checked = Player.NotificationTitle
+        Visualisation.Checked = Player.Visualisation
+        NotificationIcon.Checked = Player.NotificationIcon
+        NoTaskbarButton.Checked = Player.NoTaskbarButton
+        MultimediaKeys.Checked = Player.MultimediaKeys
+        GoogleSearch.Checked = Player.GoogleSearch
+        ListenKey.Text = Player.ListenKey
 
         If ListenKey.Text = Nothing = False Then
-            PremiumFormats.Checked = Form1.PremiumFormats
+            PremiumFormats.Checked = Player.PremiumFormats
             ValidateKey.Enabled = True
         Else
             PremiumFormats.Checked = False
@@ -64,39 +67,39 @@
             ValidateKey.Enabled = False
         End If
 
-        StationSelector.SelectedItem = Form1.StationChooser.Text
+        StationSelector.SelectedItem = Player.StationChooser.Text
 
         If StationSelector.Text = "Digitally Imported" Then
-            FileFormat.SelectedIndex = Form1.DIFormat
+            FileFormat.SelectedIndex = Player.DIFormat
         ElseIf StationSelector.Text = "JazzRadio" Then
-            FileFormat.SelectedIndex = Form1.JazzFormat
+            FileFormat.SelectedIndex = Player.JazzFormat
         ElseIf StationSelector.Text = "SKY.FM" Then
-            FileFormat.SelectedIndex = Form1.SKYFormat
+            FileFormat.SelectedIndex = Player.SKYFormat
         End If
 
-        UpdatesAtStart.Checked = Form1.UpdatesAtStart
-        BetaVersions.Checked = Form1.BetaVersions
-        VisualisationType.SelectedIndex = Form1.VisualisationType
-        HighQualityVis.Checked = Form1.HighQualityVis
-        LinealRepresentation.Checked = Form1.LinealRepresentation
-        FullSoundRange.Checked = Form1.FullSoundRange
-        PlayNewOnChannelChange.Checked = Form1.PlayNewOnChannelChange
+        UpdatesAtStart.Checked = Player.UpdatesAtStart
+        BetaVersions.Checked = Player.BetaVersions
+        VisualisationType.SelectedIndex = Player.VisualisationType
+        HighQualityVis.Checked = Player.HighQualityVis
+        LinealRepresentation.Checked = Player.LinealRepresentation
+        FullSoundRange.Checked = Player.FullSoundRange
+        PlayNewOnChannelChange.Checked = Player.PlayNewOnChannelChange
 
-        If Form1.Smoothness >= 15 And Form1.Smoothness <= 40 Then
-            Smoothness.Value = Form1.Smoothness
+        If Player.Smoothness >= 15 And Player.Smoothness <= 40 Then
+            Smoothness.Value = Player.Smoothness
         Else
             Smoothness.Value = 27
         End If
 
-        MainColour.BackColor = Color.FromArgb(Form1.MainColour)
-        SecondaryColour.BackColor = Color.FromArgb(Form1.SecondaryColour)
-        PeakColour.BackColor = Color.FromArgb(Form1.PeakColour)
-        BackgroundColour.BackColor = Color.FromArgb(Form1.BackgroundColour)
-        ChangeWholeBackground.Checked = Form1.ChangeWholeBackground
+        MainColour.BackColor = Color.FromArgb(Player.MainColour)
+        SecondaryColour.BackColor = Color.FromArgb(Player.SecondaryColour)
+        PeakColour.BackColor = Color.FromArgb(Player.PeakColour)
+        BackgroundColour.BackColor = Color.FromArgb(Player.BackgroundColour)
+        ChangeWholeBackground.Checked = Player.ChangeWholeBackground
 
-        ModifiersPlayStop = Form1.ModifiersPlayStop
-        HumanModifiersPlayStop = Form1.HumanModifiersPlayStop
-        KeyPlayStop = Form1.KeyPlayStop
+        ModifiersPlayStop = Player.ModifiersPlayStop
+        HumanModifiersPlayStop = Player.HumanModifiersPlayStop
+        KeyPlayStop = Player.KeyPlayStop
 
         If ModifiersPlayStop = Nothing = False And KeyPlayStop = Keys.MediaPlayPause = False OrElse ModifiersPlayStop = Nothing And KeyPlayStop = Keys.MediaPlayPause = False And KeyPlayStop = Nothing = False Then
             HotkeyPlayStop.Checked = True
@@ -105,9 +108,9 @@
             CustomPlayStop.ForeColor = SystemColors.WindowText
         End If
 
-        ModifiersVolumeUp = Form1.ModifiersVolumeUp
-        HumanModifiersVolumeUp = Form1.HumanModifiersVolumeUp
-        KeyVolumeUp = Form1.KeyVolumeUp
+        ModifiersVolumeUp = Player.ModifiersVolumeUp
+        HumanModifiersVolumeUp = Player.HumanModifiersVolumeUp
+        KeyVolumeUp = Player.KeyVolumeUp
 
         If ModifiersVolumeUp = Nothing = False And KeyVolumeUp = Keys.VolumeUp = False OrElse ModifiersVolumeUp = Nothing And KeyVolumeUp = Keys.VolumeUp = False And KeyVolumeUp = Nothing = False Then
             HotkeyVolumeUp.Checked = True
@@ -116,9 +119,9 @@
             CustomVolumeUp.ForeColor = SystemColors.WindowText
         End If
 
-        ModifiersVolumeDown = Form1.ModifiersVolumeDown
-        HumanModifiersVolumeDown = Form1.HumanModifiersVolumeDown
-        KeyVolumeDown = Form1.KeyVolumeDown
+        ModifiersVolumeDown = Player.ModifiersVolumeDown
+        HumanModifiersVolumeDown = Player.HumanModifiersVolumeDown
+        KeyVolumeDown = Player.KeyVolumeDown
 
         If ModifiersVolumeDown = Nothing = False And KeyVolumeDown = Keys.VolumeDown = False OrElse ModifiersVolumeDown = Nothing And KeyVolumeDown = Keys.VolumeDown = False And KeyVolumeDown = Nothing = False Then
             HotkeyVolumeDown.Checked = True
@@ -127,9 +130,9 @@
             CustomVolumeDown.ForeColor = SystemColors.WindowText
         End If
 
-        ModifiersMuteUnmute = Form1.ModifiersMuteUnmute
-        HumanModifiersMuteUnmute = Form1.HumanModifiersMuteUnmute
-        KeyMuteUnmute = Form1.KeyMuteUnmute
+        ModifiersMuteUnmute = Player.ModifiersMuteUnmute
+        HumanModifiersMuteUnmute = Player.HumanModifiersMuteUnmute
+        KeyMuteUnmute = Player.KeyMuteUnmute
 
         If ModifiersMuteUnmute = Nothing = False And KeyMuteUnmute = Keys.VolumeMute = False OrElse ModifiersMuteUnmute = Nothing And KeyMuteUnmute = Keys.VolumeMute = False And KeyMuteUnmute = Nothing = False Then
             HotkeyMuteUnmute.Checked = True
@@ -139,40 +142,40 @@
         End If
 
 
-        ModifiersShowHide = Form1.ModifiersShowHide
-        HumanModifiersShowHide = Form1.HumanModifiersShowHide
-        KeyShowHide = Form1.KeyShowHide
+        ModifiersShowHide = Player.ModifiersShowHide
+        HumanModifiersShowHide = Player.HumanModifiersShowHide
+        KeyShowHide = Player.KeyShowHide
 
         If ModifiersShowHide = "196608" = False And KeyShowHide = "36" = False Then
             HotkeyShowHide.Checked = True
             CustomShowHide.Text = KeyConverter.ConvertToString(HumanModifiersShowHide + KeyShowHide).Replace("None", Nothing)
         End If
 
-        Band0.Value = Form1.Band0
-        Band1.Value = Form1.Band1
-        Band2.Value = Form1.Band2
-        Band3.Value = Form1.Band3
-        Band4.Value = Form1.Band4
-        Band5.Value = Form1.Band5
+        Band0.Value = Player.Band0
+        Band1.Value = Player.Band1
+        Band2.Value = Player.Band2
+        Band3.Value = Player.Band3
+        Band4.Value = Player.Band4
+        Band5.Value = Player.Band5
 
-        If Form1.GetUpdates.IsBusy = True Then
+        If Player.GetUpdates.IsBusy = True Then
             LookNow.Enabled = False
             UndefinedProgress.Show()
             Status.Text = "Status: Looking for updates, please wait..."
         End If
 
-        If Form1.TotalVersionString > Form1.TotalVersionFixed Then
+        If Player.TotalVersionString > Player.TotalVersionFixed Then
             LookNow.Text = "Download update"
             LatestVersion.ForeColor = Color.Green
         End If
 
-        CurrentVersion.Text = "Current version:" & Form1.Text.Replace("DI Radio Player", Nothing)
+        CurrentVersion.Text = "Current version:" & Player.Text.Replace("DI Radio Player", Nothing)
         CurrentVersion.Text = CurrentVersion.Text.Replace("SKY.FM Radio Player", Nothing)
         CurrentVersion.Text = CurrentVersion.Text.Replace("JazzRadio Radio Player", Nothing)
         CurrentVersion.Text = CurrentVersion.Text.Replace("RockRadio Radio Player", Nothing)
 
-        If Form1.LatestVersionString = Nothing = False Then
-            Dim FullLine As String = Form1.LatestVersionString
+        If Player.LatestVersionString = Nothing = False Then
+            Dim FullLine As String = Player.LatestVersionString
             Dim Splitter As String() = Split(FullLine, ".")
 
             If Splitter(2) > 0 Then
@@ -203,7 +206,7 @@
     End Sub
 
     Private Sub Form2_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        Form3.Close()
+        Changelog.Close()
     End Sub
 
 #End Region
@@ -366,7 +369,7 @@
     ' -------------------------------------------------------------
 
     Private Sub PremiumFormats_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PremiumFormats.CheckedChanged
-        If PremiumFormats.Checked = True Then
+        If PremiumFormats.Checked = True And StationSelector.Text = "RockRadio" = False Then
             FileFormat.Items.Clear()
             FileFormat.Items.Add("AAC-HE 128k")
             FileFormat.Items.Add("AAC-HE 64k")
@@ -379,13 +382,92 @@
                 FileFormat.Items.Add("Windows Media 64k")
             End If
 
-            FileFormat.SelectedIndex = 0
-        Else
+            If StationSelector.Text = "Digitally Imported" Then
+                If DISettingPremium > -1 Then
+                    FileFormat.SelectedIndex = DISettingPremium
+                Else
+                    If DISetting = 0 Then
+                        FileFormat.SelectedIndex = 0
+                    ElseIf DISetting = 1 Then
+                        FileFormat.SelectedIndex = 3
+                    ElseIf DISetting = 2 Then
+                        FileFormat.SelectedIndex = 5
+                    End If
+                End If
+
+            ElseIf StationSelector.Text = "JazzRadio" Then
+                If JazzSettingPremium > -1 Then
+                    FileFormat.SelectedIndex = JazzSettingPremium
+                Else
+                    If JazzSetting = 0 Then
+                        FileFormat.SelectedIndex = 0
+                    ElseIf JazzSetting = 1 Then
+                        FileFormat.SelectedIndex = 3
+                    ElseIf JazzSetting = 2 Then
+                        FileFormat.SelectedIndex = 5
+                    End If
+                End If
+
+            ElseIf StationSelector.Text = "SKY.FM" Then
+                If SKYSettingPremium > -1 Then
+                    FileFormat.SelectedIndex = SKYSettingPremium
+                Else
+                    If SKYSetting = 0 Then
+                        FileFormat.SelectedIndex = 0
+                    ElseIf SKYSetting = 1 Then
+                        FileFormat.SelectedIndex = 3
+                    ElseIf SKYSetting = 2 Then
+                        FileFormat.SelectedIndex = 5
+                    End If
+                End If
+
+            End If
+        ElseIf PremiumFormats.Checked = False And StationSelector.Text = "RockRadio" = False Then
             FileFormat.Items.Clear()
             FileFormat.Items.Add("AAC-HE")
             FileFormat.Items.Add("MP3")
             FileFormat.Items.Add("Windows Media")
-            FileFormat.SelectedIndex = 0
+
+            If StationSelector.Text = "Digitally Imported" Then
+                If DISetting > -1 Then
+                    FileFormat.SelectedIndex = DISetting
+                Else
+                    If DISettingPremium <= 2 Then
+                        FileFormat.SelectedIndex = 0
+                    ElseIf DISettingPremium >= 3 And DISettingPremium <= 4 Then
+                        FileFormat.SelectedIndex = 1
+                    ElseIf DISettingPremium >= 5 Then
+                        FileFormat.SelectedIndex = 2
+                    End If
+                End If
+
+            ElseIf StationSelector.Text = "JazzRadio" Then
+                If JazzSetting > -1 Then
+                    FileFormat.SelectedIndex = JazzSetting
+                Else
+                    If JazzSettingPremium <= 2 Then
+                        FileFormat.SelectedIndex = 0
+                    ElseIf JazzSettingPremium >= 3 And JazzSettingPremium <= 4 Then
+                        FileFormat.SelectedIndex = 1
+                    ElseIf JazzSettingPremium >= 5 Then
+                        FileFormat.SelectedIndex = 2
+                    End If
+                End If
+
+            ElseIf StationSelector.Text = "SKY.FM" Then
+                If SKYSetting > -1 Then
+                    FileFormat.SelectedIndex = SKYSetting
+                Else
+                    If SKYSettingPremium <= 2 Then
+                        FileFormat.SelectedIndex = 0
+                    ElseIf SKYSettingPremium >= 3 And SKYSettingPremium <= 4 Then
+                        FileFormat.SelectedIndex = 1
+                    ElseIf SKYSettingPremium >= 5 Then
+                        FileFormat.SelectedIndex = 2
+                    End If
+                End If
+
+            End If
         End If
 
         OK.Enabled = True
@@ -395,6 +477,8 @@
 
     Private Sub StationSelector_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles StationSelector.SelectedIndexChanged
         If StationSelector.Text = "Digitally Imported" Then
+            FileFormat.Enabled = True
+
             If PremiumFormats.Checked = True Then
                 FileFormat.Items.Clear()
                 FileFormat.Items.Add("AAC-HE 128k")
@@ -404,21 +488,29 @@
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
                 FileFormat.Items.Add("Windows Media 64k")
-                FileFormat.SelectedIndex = DISetting
+
+                If DISettingPremium > -1 Then
+                    FileFormat.SelectedIndex = DISettingPremium
+                Else
+                    FileFormat.SelectedIndex = 3
+                End If
+
             Else
                 FileFormat.Items.Clear()
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
 
-                If DISetting > 2 Then
-                    FileFormat.SelectedIndex = 0
-                Else
+                If DISetting > -1 Then
                     FileFormat.SelectedIndex = DISetting
+                Else
+                    FileFormat.SelectedIndex = 1
                 End If
 
             End If
         ElseIf StationSelector.Text = "SKY.FM" Then
+            FileFormat.Enabled = True
+
             If PremiumFormats.Checked = True Then
                 FileFormat.Items.Clear()
                 FileFormat.Items.Add("AAC-HE 128k")
@@ -428,21 +520,29 @@
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
                 FileFormat.Items.Add("Windows Media 64k")
-                FileFormat.SelectedIndex = SKYSetting
+
+                If SKYSettingPremium > -1 Then
+                    FileFormat.SelectedIndex = SKYSettingPremium
+                Else
+                    FileFormat.SelectedIndex = 3
+                End If
+
             Else
                 FileFormat.Items.Clear()
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
 
-                If SKYSetting > 2 Then
-                    FileFormat.SelectedIndex = 0
-                Else
+                If SKYSetting > -1 Then
                     FileFormat.SelectedIndex = SKYSetting
+                Else
+                    FileFormat.SelectedIndex = 1
                 End If
 
             End If
         ElseIf StationSelector.Text = "JazzRadio" Then
+            FileFormat.Enabled = True
+
             If PremiumFormats.Checked = True Then
                 FileFormat.Items.Clear()
                 FileFormat.Items.Add("AAC-HE 128k")
@@ -451,18 +551,25 @@
                 FileFormat.Items.Add("MP3 256k")
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
-                FileFormat.SelectedIndex = JazzSetting
+
+                If JazzSettingPremium > -1 Then
+                    FileFormat.SelectedIndex = JazzSettingPremium
+                Else
+                    FileFormat.SelectedIndex = 3
+                End If
+
             Else
                 FileFormat.Items.Clear()
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
 
-                If JazzSetting > 2 Then
-                    FileFormat.SelectedIndex = 0
-                Else
+                If JazzSetting > -1 Then
                     FileFormat.SelectedIndex = JazzSetting
+                Else
+                    FileFormat.SelectedIndex = 1
                 End If
+
             End If
         ElseIf StationSelector.Text = "RockRadio" Then
             FileFormat.Items.Clear()
@@ -474,12 +581,22 @@
 
     Private Sub FileFormat_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles FileFormat.SelectedIndexChanged
 
-        If StationSelector.Text = "Digitally Imported" Then
-            DISetting = FileFormat.SelectedIndex
-        ElseIf StationSelector.Text = "JazzRadio" Then
-            JazzSetting = FileFormat.SelectedIndex
-        ElseIf StationSelector.Text = "SKY.FM" Then
-            SKYSetting = FileFormat.SelectedIndex
+        If PremiumFormats.Checked = True Then
+            If StationSelector.Text = "Digitally Imported" Then
+                DISettingPremium = FileFormat.SelectedIndex
+            ElseIf StationSelector.Text = "JazzRadio" Then
+                JazzSettingPremium = FileFormat.SelectedIndex
+            ElseIf StationSelector.Text = "SKY.FM" Then
+                SKYSettingPremium = FileFormat.SelectedIndex
+            End If
+        Else
+            If StationSelector.Text = "Digitally Imported" Then
+                DISetting = FileFormat.SelectedIndex
+            ElseIf StationSelector.Text = "JazzRadio" Then
+                JazzSetting = FileFormat.SelectedIndex
+            ElseIf StationSelector.Text = "SKY.FM" Then
+                SKYSetting = FileFormat.SelectedIndex
+            End If
         End If
 
     End Sub
@@ -518,29 +635,20 @@
         ValidateWorker.RunWorkerAsync()
     End Sub
 
-    Private Sub UpdatesAtStart_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles UpdatesAtStart.CheckedChanged
-        If UpdatesAtStart.Checked = True Then
-            BetaVersions.Enabled = True
-        Else
-            BetaVersions.Checked = False
-            BetaVersions.Enabled = False
-        End If
-    End Sub
-
     Public Sub LookNow_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LookNow.Click
         If LookNow.Text = "Look for updates now" Then
             LookNow.Enabled = False
             UndefinedProgress.Show()
             Status.Text = "Status: Looking for updates, please wait..."
 
-            Form1.GetUpdates.RunWorkerAsync()
+            Player.GetUpdates.RunWorkerAsync()
         Else
             Dim executable As String = Application.ExecutablePath
             Dim tabla() As String = Split(executable, "\")
             Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
 
             If My.Computer.FileSystem.FileExists(file) Then
-                If Form1.PlayStop.Tag = "Stop" Then
+                If Player.PlayStop.Tag = "Stop" Then
                     Process.Start(file, "*FromMainApplication* *WasPlaying*")
                 Else
                     Process.Start(file, "*FromMainApplication*")
@@ -554,9 +662,9 @@
     End Sub
 
     Private Sub ViewChangelog_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ViewChangelog.Click
-        Form3.Location = New Point(Me.Location.X + 5, Me.Location.Y + 28)
-        Form3.Show()
-        Form3.BringToFront()
+        Changelog.Location = New Point(Me.Location.X + 5, Me.Location.Y + 28)
+        Changelog.Show()
+        Changelog.BringToFront()
     End Sub
 
     Private Sub RestoreColours_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RestoreColours.Click
@@ -576,7 +684,7 @@
             Band1db.Text = Band0.Value & "dB"
         End If
 
-        Form1.UpdateEq(0, Band0.Value)
+        Player.UpdateEq(0, Band0.Value)
 
         OK.Enabled = True
         Cancel.Text = "Cancel"
@@ -590,7 +698,7 @@
             Band2db.Text = Band1.Value & "dB"
         End If
 
-        Form1.UpdateEq(1, Band1.Value)
+        Player.UpdateEq(1, Band1.Value)
 
         OK.Enabled = True
         Cancel.Text = "Cancel"
@@ -604,7 +712,7 @@
             Band3db.Text = Band2.Value & "dB"
         End If
 
-        Form1.UpdateEq(2, Band2.Value)
+        Player.UpdateEq(2, Band2.Value)
 
         OK.Enabled = True
         Cancel.Text = "Cancel"
@@ -618,7 +726,7 @@
             Band4db.Text = Band3.Value & "dB"
         End If
 
-        Form1.UpdateEq(3, Band3.Value)
+        Player.UpdateEq(3, Band3.Value)
 
         OK.Enabled = True
         Cancel.Text = "Cancel"
@@ -632,7 +740,7 @@
             Band5db.Text = Band4.Value & "dB"
         End If
 
-        Form1.UpdateEq(4, Band4.Value)
+        Player.UpdateEq(4, Band4.Value)
 
         OK.Enabled = True
         Cancel.Text = "Cancel"
@@ -646,7 +754,7 @@
             Band6db.Text = Band5.Value & "dB"
         End If
 
-        Form1.UpdateEq(5, Band5.Value)
+        Player.UpdateEq(5, Band5.Value)
 
         OK.Enabled = True
         Cancel.Text = "Cancel"
@@ -663,12 +771,12 @@
     End Sub
 
     Private Sub RestoreEq_Click(sender As System.Object, e As System.EventArgs) Handles RestoreEq.Click
-        Band0.Value = Form1.Band0
-        Band1.Value = Form1.Band1
-        Band2.Value = Form1.Band2
-        Band3.Value = Form1.Band3
-        Band4.Value = Form1.Band4
-        Band5.Value = Form1.Band5
+        Band0.Value = Player.Band0
+        Band1.Value = Player.Band1
+        Band2.Value = Player.Band2
+        Band3.Value = Player.Band3
+        Band4.Value = Player.Band4
+        Band5.Value = Player.Band5
     End Sub
 
     Private Sub AutoEq_Click(sender As System.Object, e As System.EventArgs) Handles AutoEq.Click
@@ -762,18 +870,18 @@
     Private Sub OK_Click(sender As System.Object, e As System.EventArgs) Handles OK.Click
         ApplyOptions()
         Me.Close()
-        Form1.BringToFront()
+        Player.BringToFront()
     End Sub
 
     Private Sub Cancel_Click(sender As System.Object, e As System.EventArgs) Handles Cancel.Click
         Me.Close()
 
-        Form1.UpdateEq(0, Form1.Band0)
-        Form1.UpdateEq(1, Form1.Band1)
-        Form1.UpdateEq(2, Form1.Band2)
-        Form1.UpdateEq(3, Form1.Band3)
-        Form1.UpdateEq(4, Form1.Band4)
-        Form1.UpdateEq(5, Form1.Band5)
+        Player.UpdateEq(0, Player.Band0)
+        Player.UpdateEq(1, Player.Band1)
+        Player.UpdateEq(2, Player.Band2)
+        Player.UpdateEq(3, Player.Band3)
+        Player.UpdateEq(4, Player.Band4)
+        Player.UpdateEq(5, Player.Band5)
     End Sub
 
     Private Sub Apply_Click(sender As System.Object, e As System.EventArgs) Handles Apply.Click
@@ -1135,11 +1243,11 @@
         Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
         If StationSelector.Text = "Digitally Imported" OrElse StationSelector.Text = "RockRadio" Then
-            URL = Form1.DIFM.Tag
+            URL = Player.DIFM.Tag
         ElseIf StationSelector.Text = "JazzRadio" Then
-            URL = Form1.JazzRadio.Tag
+            URL = Player.JazzRadio.Tag
         ElseIf StationSelector.Text = "SKY.FM" Then
-            URL = Form1.SKYFM.Tag
+            URL = Player.SKYFM.Tag
         End If
 
         Try
@@ -1172,7 +1280,7 @@
 
     Sub DisplayMessage(ByVal text As String, ByVal style As MsgBoxStyle, ByVal title As String)
         MsgBox(text, style, title)
-        Form1.BringToFront()
+        Player.BringToFront()
         Me.BringToFront()
     End Sub
 
@@ -1180,54 +1288,54 @@
 
         ' Update main form variables with the values from this form's controls
 
-        Form1.NotificationTitle = NotificationTitle.Checked
-        Form1.NotificationIcon = NotificationIcon.Checked
-        Form1.MultimediaKeys = MultimediaKeys.Checked
+        Player.NotificationTitle = NotificationTitle.Checked
+        Player.NotificationIcon = NotificationIcon.Checked
+        Player.MultimediaKeys = MultimediaKeys.Checked
 
-        Form1.NoTaskbarButton = NoTaskbarButton.Checked
+        Player.NoTaskbarButton = NoTaskbarButton.Checked
 
         If NoTaskbarButton.Checked = False Then
-            Form1.ShowInTaskbar = True
+            Player.ShowInTaskbar = True
 
-            If Form1.WindowState = FormWindowState.Normal Then
-                Form1.TrayIcon.Visible = False
+            If Player.WindowState = FormWindowState.Normal Then
+                Player.TrayIcon.Visible = False
             End If
 
         Else
-            Form1.ShowInTaskbar = False
-            Form1.TrayIcon.Visible = True
+            Player.ShowInTaskbar = False
+            Player.TrayIcon.Visible = True
         End If
 
-        Form1.GoogleSearch = GoogleSearch.Checked
+        Player.GoogleSearch = GoogleSearch.Checked
 
         If ListenKey.Text.Length < 14 Then
 
-            If Form1.SelectedChannel.Text = "My Favorites" Then
-                Form1.SelectedServer.Items.Clear()
+            If Player.SelectedChannel.Text = "My Favorites" Then
+                Player.SelectedServer.Items.Clear()
             End If
 
-            Form1.SelectedChannel.Items.Remove("My Favorites")
-            Form1.RefreshFavorites.Hide()
-            Form1.EditFavorites.Hide()
+            Player.SelectedChannel.Items.Remove("My Favorites")
+            Player.RefreshFavorites.Hide()
+            Player.EditFavorites.Hide()
 
         Else
 
-            If Form1.StationChooser.Text = Form1.DIFM.Text Then
+            If Player.StationChooser.Text = Player.DIFM.Text Then
 
-                If Form1.SelectedChannel.Items.Item(32).ToString() = "My Favorites" = False Then
-                    Form1.SelectedChannel.Items.Add("My Favorites")
+                If Player.SelectedChannel.Items.Item(37).ToString() = "My Favorites" = False Then
+                    Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
-            ElseIf Form1.StationChooser.Text = Form1.SKYFM.Text Then
+            ElseIf Player.StationChooser.Text = Player.SKYFM.Text Then
 
-                If Form1.SelectedChannel.Items.Item(29).ToString() = "My Favorites" = False Then
-                    Form1.SelectedChannel.Items.Add("My Favorites")
+                If Player.SelectedChannel.Items.Item(33).ToString() = "My Favorites" = False Then
+                    Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
-            ElseIf Form1.StationChooser.Text = Form1.JazzRadio.Text Then
+            ElseIf Player.StationChooser.Text = Player.JazzRadio.Text Then
 
-                If Form1.SelectedChannel.Items.Item(15).ToString() = "My Favorites" = False Then
-                    Form1.SelectedChannel.Items.Add("My Favorites")
+                If Player.SelectedChannel.Items.Item(15).ToString() = "My Favorites" = False Then
+                    Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
             End If
@@ -1238,387 +1346,454 @@
         Dim executable As String = Application.ExecutablePath
         Dim tabla() As String = Split(executable, "\")
 
-        If DISetting = Form1.DIFormat = False Then
+        If PremiumFormats.Checked = Player.PremiumFormats = False OrElse ListenKey.Text = Player.ListenKey = False Then
 
-            Form1.DIFormat = DISetting
-
-            Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\Digitally Imported\*.*")
-            Catch
-            End Try
-
-            If Form1.StationChooser.Text = Form1.DIFM.Text Then
-
-                If Form1.SelectedChannel.Text = "My Favorites" Then
-                    Form1.OldFav = Form1.SelectedServer.Text
-                End If
-
-
-                If Form1.PlayStop.Tag = "Stop" And Form1.PlayStop.Enabled = True Then
-                    Form1.PlayStop_Click(Me, Nothing)
-                    Form1.RestartPlayback = True
-                End If
-
-
-                If Form1.SelectedChannel.Text = Nothing = False Then
-                    Form1.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+            If PremiumFormats.Checked = False Then
+                If DISetting > -1 Then
+                    Player.DIFormat = DISetting
                 Else
-                    Form1.SelectedServer.Enabled = False
-                    Form1.SelectedServer.Items.Add("Pick a server")
-                    Form1.SelectedServer.SelectedIndex = 0
+                    Player.DIFormat = 1
                 End If
 
-            End If
-
-
-
-        End If
-
-        If SKYSetting = Form1.SKYFormat = False Then
-
-            Form1.SKYFormat = SKYSetting
-
-            Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\SKY.FM\*.*")
-            Catch
-            End Try
-
-            If Form1.StationChooser.Text = Form1.SKYFM.Text Then
-
-                If Form1.SelectedChannel.Text = "My Favorites" Then
-                    Form1.OldFav = Form1.SelectedServer.Text
-                End If
-
-                If Form1.PlayStop.Tag = "Stop" And Form1.PlayStop.Enabled = True Then
-                    Form1.PlayStop_Click(Me, Nothing)
-                    Form1.RestartPlayback = True
-                End If
-
-                If Form1.SelectedChannel.Text = Nothing = False Then
-                    Form1.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                If SKYSetting > -1 Then
+                    Player.SKYFormat = SKYSetting
                 Else
-                    Form1.SelectedServer.Enabled = False
-                    Form1.SelectedServer.Items.Add("Pick a server")
-                    Form1.SelectedServer.SelectedIndex = 0
+                    Player.SKYFormat = 1
                 End If
 
-            End If
-
-
-        End If
-
-        If JazzSetting = Form1.JazzFormat = False Then
-
-            Form1.JazzFormat = JazzSetting
-
-            Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\JazzRadio\*.*")
-            Catch
-            End Try
-
-            If Form1.StationChooser.Text = Form1.JazzRadio.Text Then
-
-                If Form1.SelectedChannel.Text = "My Favorites" Then
-                    Form1.OldFav = Form1.SelectedServer.Text
-                End If
-
-                If Form1.PlayStop.Tag = "Stop" And Form1.PlayStop.Enabled = True Then
-                    Form1.PlayStop_Click(Me, Nothing)
-                    Form1.RestartPlayback = True
-                End If
-
-                If Form1.SelectedChannel.Text = Nothing = False Then
-                    Form1.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                If JazzSetting > -1 Then
+                    Player.JazzFormat = JazzSetting
                 Else
-                    Form1.SelectedServer.Enabled = False
-                    Form1.SelectedServer.Items.Add("Pick a server")
-                    Form1.SelectedServer.SelectedIndex = 0
-                End If
-
-            End If
-
-
-        End If
-
-        If ListenKey.Text = Form1.ListenKey = False Then
-            Form1.ListenKey = ListenKey.Text
-
-            Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\Digitally Imported\*.*")
-            Catch
-            End Try
-            Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\JazzRadio\*.*")
-            Catch
-            End Try
-            Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\SKY.FM\*.*")
-            Catch
-            End Try
-
-
-            If Form1.SelectedChannel.Text = "My Favorites" Then
-                Form1.OldFav = Form1.SelectedServer.Text
-            End If
-
-            If Form1.PlayStop.Tag = "Stop" And Form1.PlayStop.Enabled = True Then
-                Form1.PlayStop_Click(Me, Nothing)
-                Form1.RestartPlayback = True
-            End If
-
-            If Form1.SelectedChannel.Text = Nothing = False Then
-
-                If Form1.PLSDownloader.IsBusy = False Then
-                    Form1.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                    Player.JazzFormat = 1
                 End If
 
             Else
-                Form1.SelectedServer.Enabled = False
-                Form1.SelectedServer.Items.Add("Pick a server")
-                Form1.SelectedServer.SelectedIndex = 0
+
+                If DISettingPremium > -1 Then
+                    Player.DIFormat = DISettingPremium
+                Else
+                    Player.DIFormat = 3
+                End If
+
+                If SKYSettingPremium > -1 Then
+                    Player.SKYFormat = SKYSettingPremium
+                Else
+                    Player.SKYFormat = 3
+                End If
+
+                If JazzSettingPremium > -1 Then
+                    Player.JazzFormat = JazzSetting
+                Else
+                    Player.JazzFormat = 3
+                End If
+            End If
+
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\Digitally Imported\*.*")
+            Catch
+            End Try
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\JazzRadio\*.*")
+            Catch
+            End Try
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\SKY.FM\*.*")
+            Catch
+            End Try
+
+
+            If Player.SelectedChannel.Text = "My Favorites" Then
+                Player.OldFav = Player.SelectedServer.Text
+            End If
+
+            If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                Player.PlayStop_Click(Me, Nothing)
+                Player.RestartPlayback = True
+            End If
+
+            If Player.SelectedChannel.Text = Nothing = False Then
+
+                If Player.PLSDownloader.IsBusy = False Then
+                    Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                End If
+
+            Else
+                Player.SelectedServer.Enabled = False
+                Player.SelectedServer.Items.Add("Pick a server")
+                Player.SelectedServer.SelectedIndex = 0
             End If
 
         End If
 
-        Form1.PremiumFormats = PremiumFormats.Checked
-        Form1.UpdatesAtStart = UpdatesAtStart.Checked
-        Form1.BetaVersions = BetaVersions.Checked
-        Form1.Visualisation = Visualisation.Checked
+        Player.ListenKey = ListenKey.Text
+
+        If Player.DIFormat = DISetting = False And Player.DIFormat = DISettingPremium = False Then
+
+            If PremiumFormats.Checked = False Then
+                Player.DIFormat = DISetting
+            Else
+                Player.DIFormat = DISettingPremium
+            End If
+
+
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\Digitally Imported\*.*")
+            Catch
+            End Try
+
+            If Player.StationChooser.Text = Player.DIFM.Text Then
+
+                If Player.SelectedChannel.Text = "My Favorites" Then
+                    Player.OldFav = Player.SelectedServer.Text
+                End If
+
+
+                If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                    Player.PlayStop_Click(Me, Nothing)
+                    Player.RestartPlayback = True
+                End If
+
+
+                If Player.SelectedChannel.Text = Nothing = False Then
+                    If Player.PLSDownloader.IsBusy = False Then
+                        Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                    End If
+                Else
+                    Player.SelectedServer.Enabled = False
+                    Player.SelectedServer.Items.Add("Pick a server")
+                    Player.SelectedServer.SelectedIndex = 0
+                End If
+
+            End If
+
+        End If
+
+        If Player.SKYFormat = SKYSetting = False And Player.SKYFormat = SKYSettingPremium = False Then
+
+            If PremiumFormats.Checked = False Then
+                Player.SKYFormat = SKYSetting
+            Else
+                Player.SKYFormat = SKYSettingPremium
+            End If
+
+
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\SKY.FM\*.*")
+            Catch
+            End Try
+
+            If Player.StationChooser.Text = Player.SKYFM.Text Then
+
+                If Player.SelectedChannel.Text = "My Favorites" Then
+                    Player.OldFav = Player.SelectedServer.Text
+                End If
+
+                If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                    Player.PlayStop_Click(Me, Nothing)
+                    Player.RestartPlayback = True
+                End If
+
+                If Player.SelectedChannel.Text = Nothing = False Then
+                    If Player.PLSDownloader.IsBusy = False Then
+                        Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                    End If
+                Else
+                    Player.SelectedServer.Enabled = False
+                    Player.SelectedServer.Items.Add("Pick a server")
+                    Player.SelectedServer.SelectedIndex = 0
+                End If
+
+            End If
+
+        End If
+
+        If Player.JazzFormat = JazzSetting = False And Player.JazzFormat = JazzSettingPremium = False Then
+
+            If PremiumFormats.Checked = False Then
+                Player.JazzFormat = JazzSetting
+            Else
+                Player.JazzFormat = JazzSettingPremium
+            End If
+
+
+            Try
+                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\JazzRadio\*.*")
+            Catch
+            End Try
+
+            If Player.StationChooser.Text = Player.JazzRadio.Text Then
+
+                If Player.SelectedChannel.Text = "My Favorites" Then
+                    Player.OldFav = Player.SelectedServer.Text
+                End If
+
+                If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                    Player.PlayStop_Click(Me, Nothing)
+                    Player.RestartPlayback = True
+                End If
+
+                If Player.SelectedChannel.Text = Nothing = False Then
+                    If Player.PLSDownloader.IsBusy = False Then
+                        Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                    End If
+                Else
+                    Player.SelectedServer.Enabled = False
+                    Player.SelectedServer.Items.Add("Pick a server")
+                    Player.SelectedServer.SelectedIndex = 0
+                End If
+
+            End If
+        End If
+
+        Player.PremiumFormats = PremiumFormats.Checked
+        Player.UpdatesAtStart = UpdatesAtStart.Checked
+        Player.BetaVersions = BetaVersions.Checked
+        Player.Visualisation = Visualisation.Checked
 
         If Visualisation.Checked = True Then
 
-            Form1.VisualisationBox.Show()
-            Form1.Size = New Size(Form1.MaximumSize)
+            Player.VisualisationBox.Show()
+            Player.Size = New Size(Player.MaximumSize)
 
-            If Form1.PlayStop.Tag = "Stop" Then
-                Form1.VisTimer.Start()
+            If Player.PlayStop.Tag = "Stop" Then
+                Player.VisTimer.Start()
             End If
 
         Else
 
-            Form1.VisTimer.Stop()
-            Form1.VisualisationBox.Hide()
-            Form1.Size = New Size(Form1.MinimumSize)
+            Player.VisTimer.Stop()
+            Player.VisualisationBox.Hide()
+            Player.Size = New Size(Player.MinimumSize)
 
         End If
 
-        Form1.VisualisationType = VisualisationType.SelectedIndex
-        Form1.HighQualityVis = HighQualityVis.Checked
-        Form1.LinealRepresentation = LinealRepresentation.Checked
-        Form1.FullSoundRange = FullSoundRange.Checked
+        Player.VisualisationType = VisualisationType.SelectedIndex
+        Player.HighQualityVis = HighQualityVis.Checked
+        Player.LinealRepresentation = LinealRepresentation.Checked
+        Player.FullSoundRange = FullSoundRange.Checked
 
         If FullSoundRange.Checked = True Then
 
             If VisualisationType.SelectedIndex = 0 Then
-                Form1.drawing.ScaleFactorLinear = 1
-                Form1.drawing.ScaleFactorLinearBoost = 0
-                Form1.drawing.ScaleFactorSqr = 1
-                Form1.drawing.ScaleFactorSqrBoost = 0
+                Player.drawing.ScaleFactorLinear = 1
+                Player.drawing.ScaleFactorLinearBoost = 0
+                Player.drawing.ScaleFactorSqr = 1
+                Player.drawing.ScaleFactorSqrBoost = 0
             ElseIf VisualisationType.SelectedIndex = 1 Then
-                Form1.drawing.ScaleFactorLinear = 3
-                Form1.drawing.ScaleFactorLinearBoost = 0.34
-                Form1.drawing.ScaleFactorSqr = 1
-                Form1.drawing.ScaleFactorSqrBoost = 0.04
+                Player.drawing.ScaleFactorLinear = 3
+                Player.drawing.ScaleFactorLinearBoost = 0.34
+                Player.drawing.ScaleFactorSqr = 1
+                Player.drawing.ScaleFactorSqrBoost = 0.04
             ElseIf VisualisationType.SelectedIndex = 2 Then
-                Form1.drawing.ScaleFactorLinear = 0.6
-                Form1.drawing.ScaleFactorLinearBoost = 0.1
-                Form1.drawing.ScaleFactorSqr = 1
-                Form1.drawing.ScaleFactorSqrBoost = 0
+                Player.drawing.ScaleFactorLinear = 0.6
+                Player.drawing.ScaleFactorLinearBoost = 0.1
+                Player.drawing.ScaleFactorSqr = 1
+                Player.drawing.ScaleFactorSqrBoost = 0
             ElseIf VisualisationType.SelectedIndex = 3 Then
-                Form1.drawing.ScaleFactorLinear = 1.5
-                Form1.drawing.ScaleFactorLinearBoost = 0.07
-                Form1.drawing.ScaleFactorSqr = 1
-                Form1.drawing.ScaleFactorSqrBoost = 0
+                Player.drawing.ScaleFactorLinear = 1.5
+                Player.drawing.ScaleFactorLinearBoost = 0.07
+                Player.drawing.ScaleFactorSqr = 1
+                Player.drawing.ScaleFactorSqrBoost = 0
             ElseIf VisualisationType.SelectedIndex = 4 Then
-                Form1.drawing.ScaleFactorLinear = 3
-                Form1.drawing.ScaleFactorLinearBoost = 0.7
-                Form1.drawing.ScaleFactorSqr = 1
-                Form1.drawing.ScaleFactorSqrBoost = 0.25
+                Player.drawing.ScaleFactorLinear = 3
+                Player.drawing.ScaleFactorLinearBoost = 0.7
+                Player.drawing.ScaleFactorSqr = 1
+                Player.drawing.ScaleFactorSqrBoost = 0.25
             ElseIf VisualisationType.SelectedIndex = 5 Then
-                Form1.drawing.ScaleFactorLinear = 3
-                Form1.drawing.ScaleFactorLinearBoost = 0.7
-                Form1.drawing.ScaleFactorSqr = 1
-                Form1.drawing.ScaleFactorSqrBoost = 0.25
+                Player.drawing.ScaleFactorLinear = 3
+                Player.drawing.ScaleFactorLinearBoost = 0.7
+                Player.drawing.ScaleFactorSqr = 1
+                Player.drawing.ScaleFactorSqrBoost = 0.25
             ElseIf VisualisationType.SelectedIndex = 6 Then
-                Form1.drawing.ScaleFactorLinear = 1
-                Form1.drawing.ScaleFactorLinearBoost = 0.14
-                Form1.drawing.ScaleFactorSqr = 0.6
-                Form1.drawing.ScaleFactorSqrBoost = 0.01
+                Player.drawing.ScaleFactorLinear = 1
+                Player.drawing.ScaleFactorLinearBoost = 0.14
+                Player.drawing.ScaleFactorSqr = 0.6
+                Player.drawing.ScaleFactorSqrBoost = 0.01
             ElseIf VisualisationType.SelectedIndex = 7 Then
-                Form1.drawing.ScaleFactorLinear = 0
-                Form1.drawing.ScaleFactorLinearBoost = 0
-                Form1.drawing.ScaleFactorSqr = 0
-                Form1.drawing.ScaleFactorSqrBoost = 0
+                Player.drawing.ScaleFactorLinear = 0
+                Player.drawing.ScaleFactorLinearBoost = 0
+                Player.drawing.ScaleFactorSqr = 0
+                Player.drawing.ScaleFactorSqrBoost = 0
             End If
 
         Else
 
             If VisualisationType.SelectedIndex = 0 Then
-                Form1.drawing.ScaleFactorLinear = 1
-                Form1.drawing.ScaleFactorLinearBoost = 0.1
-                Form1.drawing.ScaleFactorSqr = 0.6
-                Form1.drawing.ScaleFactorSqrBoost = 0
+                Player.drawing.ScaleFactorLinear = 1
+                Player.drawing.ScaleFactorLinearBoost = 0.1
+                Player.drawing.ScaleFactorSqr = 0.6
+                Player.drawing.ScaleFactorSqrBoost = 0
             ElseIf VisualisationType.SelectedIndex = 1 Then
-                Form1.drawing.ScaleFactorLinear = 9
-                Form1.drawing.ScaleFactorLinearBoost = 0.18
-                Form1.drawing.ScaleFactorSqr = 7
-                Form1.drawing.ScaleFactorSqrBoost = 0
+                Player.drawing.ScaleFactorLinear = 9
+                Player.drawing.ScaleFactorLinearBoost = 0.18
+                Player.drawing.ScaleFactorSqr = 7
+                Player.drawing.ScaleFactorSqrBoost = 0
             ElseIf VisualisationType.SelectedIndex = 2 Then
-                Form1.drawing.ScaleFactorLinear = 3
-                Form1.drawing.ScaleFactorLinearBoost = 0.06
-                Form1.drawing.ScaleFactorSqr = 2
-                Form1.drawing.ScaleFactorSqrBoost = 0.02
+                Player.drawing.ScaleFactorLinear = 3
+                Player.drawing.ScaleFactorLinearBoost = 0.06
+                Player.drawing.ScaleFactorSqr = 2
+                Player.drawing.ScaleFactorSqrBoost = 0.02
             ElseIf VisualisationType.SelectedIndex = 3 Then
-                Form1.drawing.ScaleFactorLinear = 4
-                Form1.drawing.ScaleFactorLinearBoost = 0.07
-                Form1.drawing.ScaleFactorSqr = 1.5
-                Form1.drawing.ScaleFactorSqrBoost = 0.2
+                Player.drawing.ScaleFactorLinear = 4
+                Player.drawing.ScaleFactorLinearBoost = 0.07
+                Player.drawing.ScaleFactorSqr = 1.5
+                Player.drawing.ScaleFactorSqrBoost = 0.2
             ElseIf VisualisationType.SelectedIndex = 4 Then
-                Form1.drawing.ScaleFactorLinear = 5.5
-                Form1.drawing.ScaleFactorLinearBoost = 0.23
-                Form1.drawing.ScaleFactorSqr = 2.5
-                Form1.drawing.ScaleFactorSqrBoost = 0.15
+                Player.drawing.ScaleFactorLinear = 5.5
+                Player.drawing.ScaleFactorLinearBoost = 0.23
+                Player.drawing.ScaleFactorSqr = 2.5
+                Player.drawing.ScaleFactorSqrBoost = 0.15
             ElseIf VisualisationType.SelectedIndex = 5 Then
-                Form1.drawing.ScaleFactorLinear = 5.5
-                Form1.drawing.ScaleFactorLinearBoost = 0.23
-                Form1.drawing.ScaleFactorSqr = 2.5
-                Form1.drawing.ScaleFactorSqrBoost = 0.15
+                Player.drawing.ScaleFactorLinear = 5.5
+                Player.drawing.ScaleFactorLinearBoost = 0.23
+                Player.drawing.ScaleFactorSqr = 2.5
+                Player.drawing.ScaleFactorSqrBoost = 0.15
             ElseIf VisualisationType.SelectedIndex = 6 Then
-                Form1.drawing.ScaleFactorLinear = 3
-                Form1.drawing.ScaleFactorLinearBoost = 0.025
-                Form1.drawing.ScaleFactorSqr = 2.3
-                Form1.drawing.ScaleFactorSqrBoost = 0.014
+                Player.drawing.ScaleFactorLinear = 3
+                Player.drawing.ScaleFactorLinearBoost = 0.025
+                Player.drawing.ScaleFactorSqr = 2.3
+                Player.drawing.ScaleFactorSqrBoost = 0.014
             ElseIf VisualisationType.SelectedIndex = 7 Then
-                Form1.drawing.ScaleFactorLinear = 0
-                Form1.drawing.ScaleFactorLinearBoost = 0
-                Form1.drawing.ScaleFactorSqr = 0
-                Form1.drawing.ScaleFactorSqrBoost = 0
+                Player.drawing.ScaleFactorLinear = 0
+                Player.drawing.ScaleFactorLinearBoost = 0
+                Player.drawing.ScaleFactorSqr = 0
+                Player.drawing.ScaleFactorSqrBoost = 0
             End If
 
         End If
 
-        Form1.Smoothness = Smoothness.Value
-        Form1.MainColour = MainColour.BackColor.ToArgb()
-        Form1.SecondaryColour = SecondaryColour.BackColor.ToArgb()
-        Form1.PeakColour = PeakColour.BackColor.ToArgb()
-        Form1.BackgroundColour = BackgroundColour.BackColor.ToArgb()
-        Form1.ChangeWholeBackground = ChangeWholeBackground.Checked
+        Player.Smoothness = Smoothness.Value
+        Player.MainColour = MainColour.BackColor.ToArgb()
+        Player.SecondaryColour = SecondaryColour.BackColor.ToArgb()
+        Player.PeakColour = PeakColour.BackColor.ToArgb()
+        Player.BackgroundColour = BackgroundColour.BackColor.ToArgb()
+        Player.ChangeWholeBackground = ChangeWholeBackground.Checked
+
 
         If ChangeWholeBackground.Checked = True Then
 
-            Form1.BackColor = BackgroundColour.BackColor
-            Form1.ToolStrip1.BackColor = BackgroundColour.BackColor
-            Form1.StationChooser.BackColor = BackgroundColour.BackColor
-            Form1.Label1.BackColor = BackgroundColour.BackColor
+            Player.BackColor = BackgroundColour.BackColor
+            Player.ToolStrip1.BackColor = BackgroundColour.BackColor
+            Player.StationChooser.BackColor = BackgroundColour.BackColor
+            Player.Label1.BackColor = BackgroundColour.BackColor
+            Player.Label2.BackColor = BackgroundColour.BackColor
 
-            If Form1.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Form1.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Form1.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                Form1.RadioString.BackColor = BackgroundColour.BackColor
+            If Player.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Player.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Player.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
+                Player.RadioString.BackColor = BackgroundColour.BackColor
 
                 If BackgroundColour.BackColor.ToArgb() < -8323328 Then
-                    Form1.RadioString.ForeColor = Color.White
-                    Form1.TimerString.ForeColor = Color.White
+                    Player.RadioString.ForeColor = Color.White
+                    Player.TimerString.ForeColor = Color.White
                 Else
-                    Form1.RadioString.ForeColor = Color.Black
-                    Form1.TimerString.ForeColor = Color.Black
+                    Player.RadioString.ForeColor = Color.Black
+                    Player.TimerString.ForeColor = Color.Black
+                End If
+
+                If BackgroundColour.BackColor.ToArgb() < -7105537 Then
+                    Player.EditFavorites.LinkColor = Color.White
+                    Player.RefreshFavorites.LinkColor = Color.White
+                Else
+                    Player.EditFavorites.LinkColor = Color.Blue
+                    Player.RefreshFavorites.LinkColor = Color.Blue
                 End If
             End If
 
         Else
 
-            Form1.BackColor = SystemColors.Control
-            Form1.ToolStrip1.BackColor = SystemColors.Control
-            Form1.StationChooser.BackColor = SystemColors.Control
-            Form1.Label1.BackColor = SystemColors.Control
+            Player.BackColor = SystemColors.Control
+            Player.ToolStrip1.BackColor = SystemColors.Control
+            Player.StationChooser.BackColor = SystemColors.Control
+            Player.Label1.BackColor = SystemColors.Control
 
-            If Form1.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Form1.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Form1.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                Form1.RadioString.BackColor = SystemColors.Control
-                Form1.RadioString.ForeColor = SystemColors.WindowText
-                Form1.TimerString.ForeColor = SystemColors.WindowText
+            If Player.RadioString.Text.ToLower.StartsWith("internet connection") = False And Player.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Player.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Player.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
+                Player.RadioString.BackColor = SystemColors.Control
+                Player.RadioString.ForeColor = SystemColors.WindowText
+                Player.TimerString.ForeColor = SystemColors.WindowText
             End If
 
         End If
 
-        Form1.PlayNewOnChannelChange = PlayNewOnChannelChange.Checked
+        Player.PlayNewOnChannelChange = PlayNewOnChannelChange.Checked
 
         If CustomPlayStop.Text = Nothing OrElse HotkeyPlayStop.Checked = False Then
-            Form1.HumanModifiersPlayStop = Nothing
-            Form1.ModifiersPlayStop = Nothing
-            Form1.KeyPlayStop = Keys.MediaPlayPause
+            Player.HumanModifiersPlayStop = Nothing
+            Player.ModifiersPlayStop = Nothing
+            Player.KeyPlayStop = Keys.MediaPlayPause
         Else
-            Form1.HumanModifiersPlayStop = HumanModifiersPlayStop
-            Form1.ModifiersPlayStop = ModifiersPlayStop
-            Form1.KeyPlayStop = KeyPlayStop
+            Player.HumanModifiersPlayStop = HumanModifiersPlayStop
+            Player.ModifiersPlayStop = ModifiersPlayStop
+            Player.KeyPlayStop = KeyPlayStop
         End If
 
         If CustomVolumeUp.Text = Nothing OrElse HotkeyVolumeUp.Checked = False Then
-            Form1.HumanModifiersVolumeUp = Nothing
-            Form1.ModifiersVolumeUp = Nothing
-            Form1.KeyVolumeUp = Keys.VolumeUp
+            Player.HumanModifiersVolumeUp = Nothing
+            Player.ModifiersVolumeUp = Nothing
+            Player.KeyVolumeUp = Keys.VolumeUp
         Else
-            Form1.HumanModifiersVolumeUp = HumanModifiersVolumeUp
-            Form1.ModifiersVolumeUp = ModifiersVolumeUp
-            Form1.KeyVolumeUp = KeyVolumeUp
+            Player.HumanModifiersVolumeUp = HumanModifiersVolumeUp
+            Player.ModifiersVolumeUp = ModifiersVolumeUp
+            Player.KeyVolumeUp = KeyVolumeUp
         End If
 
         If CustomVolumeDown.Text = Nothing OrElse HotkeyVolumeDown.Checked = False Then
-            Form1.HumanModifiersVolumeDown = Nothing
-            Form1.ModifiersVolumeDown = Nothing
-            Form1.KeyVolumeDown = Keys.VolumeDown
+            Player.HumanModifiersVolumeDown = Nothing
+            Player.ModifiersVolumeDown = Nothing
+            Player.KeyVolumeDown = Keys.VolumeDown
         Else
-            Form1.HumanModifiersVolumeDown = HumanModifiersVolumeDown
-            Form1.ModifiersVolumeDown = ModifiersVolumeDown
-            Form1.KeyVolumeDown = KeyVolumeDown
+            Player.HumanModifiersVolumeDown = HumanModifiersVolumeDown
+            Player.ModifiersVolumeDown = ModifiersVolumeDown
+            Player.KeyVolumeDown = KeyVolumeDown
         End If
 
         If CustomMuteUnmute.Text = Nothing OrElse HotkeyMuteUnmute.Checked = False Then
-            Form1.HumanModifiersMuteUnmute = Nothing
-            Form1.ModifiersMuteUnmute = Nothing
-            Form1.KeyMuteUnmute = Keys.VolumeMute
+            Player.HumanModifiersMuteUnmute = Nothing
+            Player.ModifiersMuteUnmute = Nothing
+            Player.KeyMuteUnmute = Keys.VolumeMute
         Else
-            Form1.HumanModifiersMuteUnmute = HumanModifiersMuteUnmute
-            Form1.ModifiersMuteUnmute = ModifiersMuteUnmute
-            Form1.KeyMuteUnmute = KeyMuteUnmute
+            Player.HumanModifiersMuteUnmute = HumanModifiersMuteUnmute
+            Player.ModifiersMuteUnmute = ModifiersMuteUnmute
+            Player.KeyMuteUnmute = KeyMuteUnmute
         End If
 
         If CustomShowHide.Text = Nothing OrElse HotkeyShowHide.Checked = False Then
-            Form1.HumanModifiersShowHide = Keys.Control + Keys.Shift
-            Form1.ModifiersShowHide = 6
-            Form1.KeyShowHide = Keys.Home
+            Player.HumanModifiersShowHide = Keys.Control + Keys.Shift
+            Player.ModifiersShowHide = 6
+            Player.KeyShowHide = Keys.Home
         Else
-            Form1.HumanModifiersShowHide = HumanModifiersShowHide
-            Form1.ModifiersShowHide = ModifiersShowHide
-            Form1.KeyShowHide = KeyShowHide
+            Player.HumanModifiersShowHide = HumanModifiersShowHide
+            Player.ModifiersShowHide = ModifiersShowHide
+            Player.KeyShowHide = KeyShowHide
         End If
 
-        If Form1.WindowState = FormWindowState.Minimized And Form1.MultimediaKeys = True Then
-            Form1.UnregisterHotKey(Me.Handle, 1)
-            Form1.UnregisterHotKey(Me.Handle, 2)
-            Form1.UnregisterHotKey(Me.Handle, 3)
-            Form1.UnregisterHotKey(Me.Handle, 4)
-            Form1.UnregisterHotKey(Me.Handle, 5)
-            Form1.UnregisterHotKey(Me.Handle, 6)
+        If Player.WindowState = FormWindowState.Minimized And Player.MultimediaKeys = True Then
+            Player.UnregisterHotKey(Player.Handle, 1)
+            Player.UnregisterHotKey(Player.Handle, 2)
+            Player.UnregisterHotKey(Player.Handle, 3)
+            Player.UnregisterHotKey(Player.Handle, 4)
+            Player.UnregisterHotKey(Player.Handle, 5)
+            Player.UnregisterHotKey(Player.Handle, 6)
 
-            Form1.RegisterHotKey(Form1.Handle, 1, Form1.ModifiersPlayStop, Form1.KeyPlayStop)
-            Form1.RegisterHotKey(Form1.Handle, 2, Form1.ModifiersVolumeUp, Form1.KeyVolumeUp)
-            Form1.RegisterHotKey(Form1.Handle, 3, Form1.ModifiersVolumeDown, Form1.KeyVolumeDown)
-            Form1.RegisterHotKey(Form1.Handle, 4, Form1.ModifiersMuteUnmute, Form1.KeyMuteUnmute)
-            Form1.RegisterHotKey(Form1.Handle, 5, Form1.ModifiersPlayStop, Form1.KeyPlayStop)
-            Form1.RegisterHotKey(Form1.Handle, 6, Form1.ModifiersShowHide, Form1.KeyShowHide)
+            Player.RegisterHotKey(Player.Handle, 1, Player.ModifiersPlayStop, Player.KeyPlayStop)
+            Player.RegisterHotKey(Player.Handle, 2, Player.ModifiersVolumeUp, Player.KeyVolumeUp)
+            Player.RegisterHotKey(Player.Handle, 3, Player.ModifiersVolumeDown, Player.KeyVolumeDown)
+            Player.RegisterHotKey(Player.Handle, 4, Player.ModifiersMuteUnmute, Player.KeyMuteUnmute)
+            Player.RegisterHotKey(Player.Handle, 5, Player.ModifiersPlayStop, Player.KeyPlayStop)
+            Player.RegisterHotKey(Player.Handle, 6, Player.ModifiersShowHide, Player.KeyShowHide)
         End If
 
-        Form1.Band0 = Band0.Value
-        Form1.Band1 = Band1.Value
-        Form1.Band2 = Band2.Value
-        Form1.Band3 = Band3.Value
-        Form1.Band4 = Band4.Value
-        Form1.Band5 = Band5.Value
+        Player.Band0 = Band0.Value
+        Player.Band1 = Band1.Value
+        Player.Band2 = Band2.Value
+        Player.Band3 = Band3.Value
+        Player.Band4 = Band4.Value
+        Player.Band5 = Band5.Value
     End Sub
 
     Private Sub ColourPicker_HelpRequest(sender As System.Object, e As System.EventArgs) Handles ColourPicker.HelpRequest
-        If ColourPicker.Tag.ToString.Contains("main") Then
-            MessageBox.Show("You're selecting the Main colour of the visualisation." & vbNewLine & "This colour is used at the top of the visualisation as the frequency levels reach higher values." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        ElseIf ColourPicker.Tag.ToString.Contains("secondary") Then
-            MessageBox.Show("You're selecting the Secondary colour of the visualisation." & vbNewLine & "This colour is used at the bottom of the visualisation and is almost always displayed." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        If ColourPicker.Tag.ToString.Contains("secondary") Then
+            MessageBox.Show("You're selecting the Secondary colour of the visualisation." & vbNewLine & "This colour is used at the top of the visualisation as the frequency levels reach higher values." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        ElseIf ColourPicker.Tag.ToString.Contains("main") Then
+            MessageBox.Show("You're selecting the Main colour of the visualisation." & vbNewLine & "This colour is used at the bottom of the visualisation and is almost always displayed." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
         ElseIf ColourPicker.Tag.ToString.Contains("peaks") Then
             MessageBox.Show("You're selecting the colour that will be used for the peaks when the Lines with peaks visualisation is selected." & vbNewLine & "The peaks are the squares displayed at the top of the lines." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
         ElseIf ColourPicker.Tag.ToString.Contains("background") Then
@@ -1630,15 +1805,73 @@
         Process.Start("http://www.di.fm")
     End Sub
 
-    Private Sub PictureBox2_Click(sender As System.Object, e As System.EventArgs) Handles PictureBox2.Click
+    Private Sub JazzLogo_Click(sender As System.Object, e As System.EventArgs) Handles JazzLogo.Click
         Process.Start("http://www.jazzradio.com")
     End Sub
 
-    Private Sub PictureBox3_Click(sender As System.Object, e As System.EventArgs) Handles PictureBox3.Click
+    Private Sub RockLogo_Click(sender As System.Object, e As System.EventArgs) Handles RockLogo.Click
         Process.Start("http://www.rockradio.com")
     End Sub
 
-    Private Sub PictureBox1_Click(sender As System.Object, e As System.EventArgs) Handles PictureBox1.Click
+    Private Sub SkyLogo_Click(sender As System.Object, e As System.EventArgs) Handles SkyLogo.Click
         Process.Start("http://www.sky.fm")
+    End Sub
+
+    Private Sub DownloadUpdater_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadUpdater.DoWork
+        Status.Text = "Status: Connecting to server, please wait..."
+        LookNow.Enabled = False
+        UndefinedProgress.Hide()
+
+
+        Dim executable As String = Application.ExecutablePath
+        Dim tabla() As String = Split(executable, "\")
+        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
+        Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+        Dim theResponse As Net.HttpWebResponse
+        Dim theRequest As Net.HttpWebRequest
+
+        Try
+            theRequest = Net.WebRequest.Create("http://www.tobiass.eu/files/Updater.exe")
+            theResponse = theRequest.GetResponse
+        Catch ex As Exception
+            Me.Invoke(Message, "Couldn't download the updating utility. Please try again.", MsgBoxStyle.Exclamation, "Error while updating")
+            Status.Text = "Status: Idle"
+            LookNow.Enabled = True
+            UndefinedProgress.Hide()
+        End Try
+
+        Dim length As Long = theResponse.ContentLength
+
+        Dim FS As IO.FileStream
+
+        FS = New IO.FileStream(file, IO.FileMode.Create)
+
+        Dim nRead As Integer
+
+        Do
+            Dim leesByte(1024) As Byte
+            Dim ingeheugen As IO.Stream = theResponse.GetResponseStream
+            Dim totaalBytes As Integer
+            totaalBytes = ingeheugen.Read(leesByte, 0, 1024)
+            If totaalBytes = 0 Then Exit Do
+            FS.Write(leesByte, 0, totaalBytes)
+            nRead += totaalBytes
+            Dim percent As Short = (nRead * 100) / length
+            Status.Text = "Status: Downloading, please wait. " & percent & "% complete."
+            ProgressBar.Value = percent
+        Loop
+
+        FS.Close()
+        theResponse.GetResponseStream.Close()
+    End Sub
+
+    Private Sub DownloadUpdater_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadUpdater.RunWorkerCompleted
+        Status.Text = "Status: Updater downloaded. Launching and exiting..."
+
+        Dim executable As String = Application.ExecutablePath
+        Dim tabla() As String = Split(executable, "\")
+        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
+        Process.Start(file)
+        Player.Close()
     End Sub
 End Class

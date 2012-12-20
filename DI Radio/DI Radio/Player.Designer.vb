@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form1
+Partial Class Player
     Inherits System.Windows.Forms.Form
 
     'Form reemplaza a Dispose para limpiar la lista de componentes.
@@ -23,7 +23,7 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Player))
         Me.CopyTitleMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
@@ -49,7 +49,7 @@ Partial Class Form1
         Me.ExitTray = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.PlayStop = New System.Windows.Forms.Button()
-        Me.Options = New System.Windows.Forms.Button()
+        Me.OptionsButton = New System.Windows.Forms.Button()
         Me.Mute = New System.Windows.Forms.Button()
         Me.Calendar = New System.Windows.Forms.Button()
         Me.History = New System.Windows.Forms.Button()
@@ -68,12 +68,13 @@ Partial Class Form1
         Me.StationChooser = New System.Windows.Forms.ToolStripSplitButton()
         Me.DIFM = New System.Windows.Forms.ToolStripMenuItem()
         Me.JazzRadio = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RockRadio = New System.Windows.Forms.ToolStripMenuItem()
         Me.SKYFM = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditFavorites = New System.Windows.Forms.LinkLabel()
         Me.RefreshFavorites = New System.Windows.Forms.LinkLabel()
         Me.GetUpdates = New System.ComponentModel.BackgroundWorker()
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
-        Me.RockRadio = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Label2 = New System.Windows.Forms.Label()
         Me.CopyTitleMenu.SuspendLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TrayMenu.SuspendLayout()
@@ -243,17 +244,17 @@ Partial Class Form1
         Me.ToolTip.SetToolTip(Me.PlayStop, "Play/Stop")
         Me.PlayStop.UseVisualStyleBackColor = True
         '
-        'Options
+        'OptionsButton
         '
-        Me.Options.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.Options.Image = CType(resources.GetObject("Options.Image"), System.Drawing.Image)
-        Me.Options.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.Options.Location = New System.Drawing.Point(36, 20)
-        Me.Options.Name = "Options"
-        Me.Options.Size = New System.Drawing.Size(25, 25)
-        Me.Options.TabIndex = 2
-        Me.ToolTip.SetToolTip(Me.Options, "Options")
-        Me.Options.UseVisualStyleBackColor = True
+        Me.OptionsButton.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.OptionsButton.Image = CType(resources.GetObject("OptionsButton.Image"), System.Drawing.Image)
+        Me.OptionsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.OptionsButton.Location = New System.Drawing.Point(36, 20)
+        Me.OptionsButton.Name = "OptionsButton"
+        Me.OptionsButton.Size = New System.Drawing.Size(25, 25)
+        Me.OptionsButton.TabIndex = 2
+        Me.ToolTip.SetToolTip(Me.OptionsButton, "Options")
+        Me.OptionsButton.UseVisualStyleBackColor = True
         '
         'Mute
         '
@@ -406,7 +407,7 @@ Partial Class Form1
         Me.ControlsPanel.Controls.Add(Me.TimerString)
         Me.ControlsPanel.Controls.Add(Me.Volume)
         Me.ControlsPanel.Controls.Add(Me.Mute)
-        Me.ControlsPanel.Controls.Add(Me.Options)
+        Me.ControlsPanel.Controls.Add(Me.OptionsButton)
         Me.ControlsPanel.Controls.Add(Me.PlayStop)
         Me.ControlsPanel.Location = New System.Drawing.Point(13, 352)
         Me.ControlsPanel.Name = "ControlsPanel"
@@ -443,7 +444,7 @@ Partial Class Form1
         Me.StationChooser.Image = CType(resources.GetObject("StationChooser.Image"), System.Drawing.Image)
         Me.StationChooser.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.StationChooser.Name = "StationChooser"
-        Me.StationChooser.Size = New System.Drawing.Size(32, 20)
+        Me.StationChooser.Size = New System.Drawing.Size(32, 19)
         Me.StationChooser.Tag = "di.fm"
         Me.StationChooser.ToolTipText = "Digitally Imported"
         '
@@ -464,6 +465,15 @@ Partial Class Form1
         Me.JazzRadio.Size = New System.Drawing.Size(169, 22)
         Me.JazzRadio.Tag = "jazzradio.com"
         Me.JazzRadio.Text = "JazzRadio"
+        '
+        'RockRadio
+        '
+        Me.RockRadio.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.RockRadio.Image = CType(resources.GetObject("RockRadio.Image"), System.Drawing.Image)
+        Me.RockRadio.Name = "RockRadio"
+        Me.RockRadio.Size = New System.Drawing.Size(169, 22)
+        Me.RockRadio.Tag = "rockradio.com"
+        Me.RockRadio.Text = "RockRadio"
         '
         'SKYFM
         '
@@ -501,20 +511,21 @@ Partial Class Form1
         '
         Me.FadeOut.Interval = 1
         '
-        'RockRadio
+        'Label2
         '
-        Me.RockRadio.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.RockRadio.Image = CType(resources.GetObject("RockRadio.Image"), System.Drawing.Image)
-        Me.RockRadio.Name = "RockRadio"
-        Me.RockRadio.Size = New System.Drawing.Size(169, 22)
-        Me.RockRadio.Tag = "rockradio.com"
-        Me.RockRadio.Text = "RockRadio"
+        Me.Label2.BackColor = System.Drawing.SystemColors.Control
+        Me.Label2.Location = New System.Drawing.Point(15, 431)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(30, 2)
+        Me.Label2.TabIndex = 13
+        Me.Label2.Text = " "
         '
-        'Form1
+        'Player
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(356, 441)
+        Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.VisualisationBox)
         Me.Controls.Add(Me.ControlsPanel)
         Me.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -523,7 +534,7 @@ Partial Class Form1
         Me.MaximizeBox = False
         Me.MaximumSize = New System.Drawing.Size(362, 470)
         Me.MinimumSize = New System.Drawing.Size(362, 125)
-        Me.Name = "Form1"
+        Me.Name = "Player"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "DI Radio Player "
         Me.CopyTitleMenu.ResumeLayout(False)
@@ -547,7 +558,7 @@ Partial Class Form1
     Friend WithEvents CopyToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolTip As System.Windows.Forms.ToolTip
     Friend WithEvents PlayStop As System.Windows.Forms.Button
-    Friend WithEvents Options As System.Windows.Forms.Button
+    Friend WithEvents OptionsButton As System.Windows.Forms.Button
     Friend WithEvents Mute As System.Windows.Forms.Button
     Friend WithEvents Volume As System.Windows.Forms.TrackBar
     Friend WithEvents TimerString As System.Windows.Forms.Label
@@ -587,5 +598,6 @@ Partial Class Form1
     Friend WithEvents ServerMenu As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents CopyServerURLToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RockRadio As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents Label2 As System.Windows.Forms.Label
 
 End Class

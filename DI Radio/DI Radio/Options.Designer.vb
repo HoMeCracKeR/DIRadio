@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form2
+Partial Class Options
     Inherits System.Windows.Forms.Form
 
     'Form reemplaza a Dispose para limpiar la lista de componentes.
@@ -23,7 +23,7 @@ Partial Class Form2
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form2))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Options))
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
@@ -115,6 +115,11 @@ Partial Class Form2
         Me.Band1 = New System.Windows.Forms.TrackBar()
         Me.Band0 = New System.Windows.Forms.TrackBar()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.RockLogo = New System.Windows.Forms.PictureBox()
+        Me.JazzLogo = New System.Windows.Forms.PictureBox()
+        Me.SkyLogo = New System.Windows.Forms.PictureBox()
+        Me.DILogo = New System.Windows.Forms.PictureBox()
         Me.DevForums = New System.Windows.Forms.Button()
         Me.DevMail = New System.Windows.Forms.Button()
         Me.Label12 = New System.Windows.Forms.Label()
@@ -130,11 +135,7 @@ Partial Class Form2
         Me.ValidateWorker = New System.ComponentModel.BackgroundWorker()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
-        Me.Label19 = New System.Windows.Forms.Label()
-        Me.PictureBox3 = New System.Windows.Forms.PictureBox()
-        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-        Me.DILogo = New System.Windows.Forms.PictureBox()
+        Me.DownloadUpdater = New System.ComponentModel.BackgroundWorker()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -158,11 +159,11 @@ Partial Class Form2
         CType(Me.Band1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage4.SuspendLayout()
-        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.RockLogo, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.JazzLogo, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.SkyLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DILogo, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -1294,9 +1295,9 @@ Partial Class Form2
         'TabPage4
         '
         Me.TabPage4.Controls.Add(Me.Label19)
-        Me.TabPage4.Controls.Add(Me.PictureBox3)
-        Me.TabPage4.Controls.Add(Me.PictureBox2)
-        Me.TabPage4.Controls.Add(Me.PictureBox1)
+        Me.TabPage4.Controls.Add(Me.RockLogo)
+        Me.TabPage4.Controls.Add(Me.JazzLogo)
+        Me.TabPage4.Controls.Add(Me.SkyLogo)
         Me.TabPage4.Controls.Add(Me.DILogo)
         Me.TabPage4.Controls.Add(Me.DevForums)
         Me.TabPage4.Controls.Add(Me.DevMail)
@@ -1312,6 +1313,71 @@ Partial Class Form2
         Me.TabPage4.TabIndex = 3
         Me.TabPage4.Text = "About"
         Me.TabPage4.UseVisualStyleBackColor = True
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.Location = New System.Drawing.Point(3, 156)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(128, 14)
+        Me.Label19.TabIndex = 23
+        Me.Label19.Text = "Supported radio stations:"
+        '
+        'RockLogo
+        '
+        Me.Helper.SetHelpString(Me.RockLogo, "RockRadio")
+        Me.RockLogo.Image = CType(resources.GetObject("RockLogo.Image"), System.Drawing.Image)
+        Me.RockLogo.Location = New System.Drawing.Point(0, 246)
+        Me.RockLogo.Margin = New System.Windows.Forms.Padding(2)
+        Me.RockLogo.Name = "RockLogo"
+        Me.Helper.SetShowHelp(Me.RockLogo, True)
+        Me.RockLogo.Size = New System.Drawing.Size(70, 70)
+        Me.RockLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.RockLogo.TabIndex = 22
+        Me.RockLogo.TabStop = False
+        Me.ToolTip.SetToolTip(Me.RockLogo, "RockRadio")
+        '
+        'JazzLogo
+        '
+        Me.Helper.SetHelpString(Me.JazzLogo, "JazzRadio")
+        Me.JazzLogo.Image = CType(resources.GetObject("JazzLogo.Image"), System.Drawing.Image)
+        Me.JazzLogo.Location = New System.Drawing.Point(79, 172)
+        Me.JazzLogo.Margin = New System.Windows.Forms.Padding(2)
+        Me.JazzLogo.Name = "JazzLogo"
+        Me.Helper.SetShowHelp(Me.JazzLogo, True)
+        Me.JazzLogo.Size = New System.Drawing.Size(70, 70)
+        Me.JazzLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.JazzLogo.TabIndex = 21
+        Me.JazzLogo.TabStop = False
+        Me.ToolTip.SetToolTip(Me.JazzLogo, "JazzRadio")
+        '
+        'SkyLogo
+        '
+        Me.Helper.SetHelpString(Me.SkyLogo, "SKY.FM")
+        Me.SkyLogo.Image = CType(resources.GetObject("SkyLogo.Image"), System.Drawing.Image)
+        Me.SkyLogo.Location = New System.Drawing.Point(79, 246)
+        Me.SkyLogo.Margin = New System.Windows.Forms.Padding(2)
+        Me.SkyLogo.Name = "SkyLogo"
+        Me.Helper.SetShowHelp(Me.SkyLogo, True)
+        Me.SkyLogo.Size = New System.Drawing.Size(70, 70)
+        Me.SkyLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.SkyLogo.TabIndex = 20
+        Me.SkyLogo.TabStop = False
+        Me.ToolTip.SetToolTip(Me.SkyLogo, "SKY.FM")
+        '
+        'DILogo
+        '
+        Me.Helper.SetHelpString(Me.DILogo, "Digitally Imported")
+        Me.DILogo.Image = CType(resources.GetObject("DILogo.Image"), System.Drawing.Image)
+        Me.DILogo.Location = New System.Drawing.Point(0, 172)
+        Me.DILogo.Margin = New System.Windows.Forms.Padding(2)
+        Me.DILogo.Name = "DILogo"
+        Me.Helper.SetShowHelp(Me.DILogo, True)
+        Me.DILogo.Size = New System.Drawing.Size(70, 70)
+        Me.DILogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.DILogo.TabIndex = 19
+        Me.DILogo.TabStop = False
+        Me.ToolTip.SetToolTip(Me.DILogo, "Digitally Imported")
         '
         'DevForums
         '
@@ -1450,72 +1516,10 @@ Partial Class Form2
         Me.OnlyModifiers.IsBalloon = True
         Me.OnlyModifiers.ToolTipTitle = "You can't use only modifier keys"
         '
-        'Label19
+        'DownloadUpdater
         '
-        Me.Label19.AutoSize = True
-        Me.Label19.Location = New System.Drawing.Point(3, 156)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(128, 14)
-        Me.Label19.TabIndex = 23
-        Me.Label19.Text = "Supported radio stations:"
         '
-        'PictureBox3
-        '
-        Me.Helper.SetHelpString(Me.PictureBox3, "RockRadio")
-        Me.PictureBox3.Image = CType(resources.GetObject("PictureBox3.Image"), System.Drawing.Image)
-        Me.PictureBox3.Location = New System.Drawing.Point(0, 246)
-        Me.PictureBox3.Margin = New System.Windows.Forms.Padding(2)
-        Me.PictureBox3.Name = "PictureBox3"
-        Me.Helper.SetShowHelp(Me.PictureBox3, True)
-        Me.PictureBox3.Size = New System.Drawing.Size(70, 70)
-        Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox3.TabIndex = 22
-        Me.PictureBox3.TabStop = False
-        Me.ToolTip.SetToolTip(Me.PictureBox3, "RockRadio")
-        '
-        'PictureBox2
-        '
-        Me.Helper.SetHelpString(Me.PictureBox2, "JazzRadio")
-        Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
-        Me.PictureBox2.Location = New System.Drawing.Point(79, 172)
-        Me.PictureBox2.Margin = New System.Windows.Forms.Padding(2)
-        Me.PictureBox2.Name = "PictureBox2"
-        Me.Helper.SetShowHelp(Me.PictureBox2, True)
-        Me.PictureBox2.Size = New System.Drawing.Size(70, 70)
-        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox2.TabIndex = 21
-        Me.PictureBox2.TabStop = False
-        Me.ToolTip.SetToolTip(Me.PictureBox2, "JazzRadio")
-        '
-        'PictureBox1
-        '
-        Me.Helper.SetHelpString(Me.PictureBox1, "SKY.FM")
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(79, 246)
-        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(2)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.Helper.SetShowHelp(Me.PictureBox1, True)
-        Me.PictureBox1.Size = New System.Drawing.Size(70, 70)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox1.TabIndex = 20
-        Me.PictureBox1.TabStop = False
-        Me.ToolTip.SetToolTip(Me.PictureBox1, "SKY.FM")
-        '
-        'DILogo
-        '
-        Me.Helper.SetHelpString(Me.DILogo, "Digitally Imported")
-        Me.DILogo.Image = CType(resources.GetObject("DILogo.Image"), System.Drawing.Image)
-        Me.DILogo.Location = New System.Drawing.Point(0, 172)
-        Me.DILogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.DILogo.Name = "DILogo"
-        Me.Helper.SetShowHelp(Me.DILogo, True)
-        Me.DILogo.Size = New System.Drawing.Size(70, 70)
-        Me.DILogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.DILogo.TabIndex = 19
-        Me.DILogo.TabStop = False
-        Me.ToolTip.SetToolTip(Me.DILogo, "Digitally Imported")
-        '
-        'Form2
+        'Options
         '
         Me.AcceptButton = Me.OK
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -1536,7 +1540,7 @@ Partial Class Form2
         Me.MaximumSize = New System.Drawing.Size(320, 489)
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(320, 489)
-        Me.Name = "Form2"
+        Me.Name = "Options"
         Me.Helper.SetShowHelp(Me, False)
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Me.Text = "Options"
@@ -1567,11 +1571,11 @@ Partial Class Form2
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage4.ResumeLayout(False)
         Me.TabPage4.PerformLayout()
-        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.RockLogo, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.JazzLogo, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.SkyLogo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DILogo, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1682,8 +1686,9 @@ Partial Class Form2
     Friend WithEvents Band1 As System.Windows.Forms.TrackBar
     Friend WithEvents Band0 As System.Windows.Forms.TrackBar
     Friend WithEvents Label19 As System.Windows.Forms.Label
-    Friend WithEvents PictureBox3 As System.Windows.Forms.PictureBox
-    Friend WithEvents PictureBox2 As System.Windows.Forms.PictureBox
-    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
+    Friend WithEvents RockLogo As System.Windows.Forms.PictureBox
+    Friend WithEvents JazzLogo As System.Windows.Forms.PictureBox
+    Friend WithEvents SkyLogo As System.Windows.Forms.PictureBox
     Friend WithEvents DILogo As System.Windows.Forms.PictureBox
+    Friend WithEvents DownloadUpdater As System.ComponentModel.BackgroundWorker
 End Class

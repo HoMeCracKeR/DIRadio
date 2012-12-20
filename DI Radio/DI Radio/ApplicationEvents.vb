@@ -10,10 +10,18 @@
     Partial Friend Class MyApplication
 
         Private Sub MyApplication_NetworkAvailabilityChanged(ByVal sender As Object, ByVal e As Microsoft.VisualBasic.Devices.NetworkAvailableEventArgs) Handles Me.NetworkAvailabilityChanged
-            If Computer.Network.IsAvailable = False Then
-                MsgBox("This application requires an internet connection to run.", MsgBoxStyle.Critical, "Network connection unavailable")
-                Form1.TrayIcon.Visible = False
-                Form1.Close()
+            If e.IsNetworkAvailable = False And Player.PlayStop.Tag = "Stop" Then
+                Player.WasPlaying = Player.SelectedChannel.Text
+
+                If Player.PlayStop.Enabled = True Then
+                    Player.PlayStop_Click(Me, Nothing)
+                    Player.RadioString.Text = "Internet connection lost."
+                    Player.RadioString.ForeColor = Color.White
+                    Player.RadioString.BackColor = Color.Red
+                End If
+
+            ElseIf e.IsNetworkAvailable = True And Player.PlayStop.Tag = "Play" And Player.WasPlaying = Player.SelectedChannel.Text And Player.PlayStop.Enabled = True Then
+                Player.PlayStop_Click(Me, Nothing)
             End If
         End Sub
 
@@ -25,16 +33,16 @@
 
             If Computer.Network.IsAvailable = False Then
                 MsgBox("This application requires an internet connection to run.", MsgBoxStyle.Critical, "Network connection unavailable")
-                Form1.Close()
+                Player.Close()
             End If
         End Sub
 
         Private Sub MyApplication_StartupNextInstance(ByVal sender As Object, ByVal e As Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs) Handles Me.StartupNextInstance
-            If Form1.WindowState = FormWindowState.Minimized And Form1.NotificationIcon = True Then
-                Form1.TrayIcon_MouseDoubleClick(Me, Nothing)
+            If Player.WindowState = FormWindowState.Minimized And Player.NotificationIcon = True Then
+                Player.TrayIcon_MouseDoubleClick(Me, Nothing)
             Else
-                Form1.WindowState = FormWindowState.Normal
-                Form1.BringToFront()
+                Player.WindowState = FormWindowState.Normal
+                Player.BringToFront()
             End If
 
         End Sub

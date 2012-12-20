@@ -1,5 +1,5 @@
 ﻿' DI Radio Player by ViRUS
-' Source code for version 1.9
+' Source code for version 1.11
 '
 '
 ' I've done my best to document the most relevant parts of this source code, but if you still find yourself having problems
@@ -24,7 +24,7 @@
 Imports Un4seen.Bass
 Imports Un4seen.Bass.Misc
 
-Public Class Form1
+Public Class Player
 
 #Region "Global Declarations"
 
@@ -122,7 +122,7 @@ Public Class Form1
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 25    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 28    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -145,6 +145,8 @@ Public Class Form1
 
     Private EqBands As Integer() = {0, 0, 0, 0, 0, 0}
     Dim Eq As New BASS_DX8_PARAMEQ()
+
+    Public WasPlaying As String
 
 #End Region
 
@@ -172,7 +174,7 @@ Public Class Form1
         End If
 
         ' Get the actual EXE path, create the servers folder and a folder for each station. Then - in case the user has just upgraded from a version
-        ' prior to 1.4 Beta 1 - move all existing files in the servers folder to the Digitally Imported folder
+        ' prior to 1.10, erase everything in all servers folders.
 
         Dim executable As String = Application.ExecutablePath
         Dim tabla() As String = Split(executable, "\")
@@ -183,24 +185,25 @@ Public Class Form1
         My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & SKYFM.Text)
         My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & RockRadio.Text)
 
-        If IO.Directory.GetFiles(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers").Length > 0 Then
-            Dim str As String
+        Try
+            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & DIFM.Text & "\*.*")
+        Catch
+        End Try
 
-            For Each str In IO.Directory.GetFiles(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers")
-                Try
-                    Dim fullfile As String = str
-                    Dim choppedfile() As String = Split(fullfile, "\")
+        Try
+            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & JazzRadio.Text & "\*.*")
+        Catch
+        End Try
 
-                    My.Computer.FileSystem.MoveFile(str, Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & DIFM.Text & "\" & choppedfile(choppedfile.Length - 1))
-                Catch ex As Exception
+        Try
+            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & SKYFM.Text & "\*.*")
+        Catch
+        End Try
 
-                    MsgBox("Error reorganizing radio files.")
-
-                End Try
-
-
-            Next
-        End If
+        Try
+            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & RockRadio.Text & "\*.*")
+        Catch
+        End Try
 
         ' Load plugins for WMA and AAC support
         Bass.BASS_PluginLoad("basswma.dll")
@@ -305,41 +308,41 @@ Public Class Form1
             Try
 
                 Dim writer As New IO.StreamWriter(file, False)
-                writer.WriteLine(Form2.NotificationTitle.Name & "=" & NotificationTitle)
-                writer.WriteLine(Form2.PlayNewOnChannelChange.Name & "=" & PlayNewOnChannelChange)
-                writer.WriteLine(Form2.NotificationIcon.Name & "=" & NotificationIcon)
-                writer.WriteLine(Form2.NoTaskbarButton.Name & "=" & NoTaskbarButton)
-                writer.WriteLine(Form2.GoogleSearch.Name & "=" & GoogleSearch)
-                writer.WriteLine(Form2.PremiumFormats.Name & "=" & PremiumFormats)
+                writer.WriteLine(Options.NotificationTitle.Name & "=" & NotificationTitle)
+                writer.WriteLine(Options.PlayNewOnChannelChange.Name & "=" & PlayNewOnChannelChange)
+                writer.WriteLine(Options.NotificationIcon.Name & "=" & NotificationIcon)
+                writer.WriteLine(Options.NoTaskbarButton.Name & "=" & NoTaskbarButton)
+                writer.WriteLine(Options.GoogleSearch.Name & "=" & GoogleSearch)
+                writer.WriteLine(Options.PremiumFormats.Name & "=" & PremiumFormats)
                 writer.WriteLine("DIFormat=" & DIFormat)
                 writer.WriteLine("SKYFormat=" & SKYFormat)
                 writer.WriteLine("JazzFormat=" & JazzFormat)
-                writer.WriteLine(Form2.ListenKey.Name & "=" & ListenKey)
-                writer.WriteLine(Form2.BetaVersions.Name & "=" & BetaVersions)
-                writer.WriteLine(Form2.UpdatesAtStart.Name & "=" & UpdatesAtStart)
-                writer.WriteLine(Form2.Visualisation.Name & "=" & Visualisation)
-                writer.WriteLine(Form2.VisualisationType.Name & "=" & VisualisationType)
-                writer.WriteLine(Form2.HighQualityVis.Name & "=" & HighQualityVis)
-                writer.WriteLine(Form2.LinealRepresentation.Name & "=" & LinealRepresentation)
-                writer.WriteLine(Form2.FullSoundRange.Name & "=" & FullSoundRange)
-                writer.WriteLine(Form2.Smoothness.Name & "=" & Smoothness)
-                writer.WriteLine(Form2.MainColour.Name & "=" & MainColour)
-                writer.WriteLine(Form2.SecondaryColour.Name & "=" & SecondaryColour)
-                writer.WriteLine(Form2.PeakColour.Name & "=" & PeakColour)
-                writer.WriteLine(Form2.BackgroundColour.Name & "=" & BackgroundColour)
-                writer.WriteLine(Form2.ChangeWholeBackground.Name & "=" & ChangeWholeBackground)
-                writer.WriteLine(Form2.MultimediaKeys.Name & "=" & MultimediaKeys)
-                writer.WriteLine(Form2.HotkeyPlayStop.Name & "=" & HumanModifiersPlayStop & "=" & ModifiersPlayStop & "=" & KeyPlayStop)
-                writer.WriteLine(Form2.HotkeyVolumeUp.Name & "=" & HumanModifiersVolumeUp & "=" & ModifiersVolumeUp & "=" & KeyVolumeUp)
-                writer.WriteLine(Form2.HotkeyVolumeDown.Name & "=" & HumanModifiersVolumeDown & "=" & ModifiersVolumeDown & "=" & KeyVolumeDown)
-                writer.WriteLine(Form2.HotkeyMuteUnmute.Name & "=" & HumanModifiersMuteUnmute & "=" & ModifiersMuteUnmute & "=" & KeyMuteUnmute)
-                writer.WriteLine(Form2.HotkeyShowHide.Name & "=" & HumanModifiersShowHide & "=" & ModifiersShowHide & "=" & KeyShowHide)
-                writer.WriteLine(Form2.Band0.Name & "=" & Band0)
-                writer.WriteLine(Form2.Band1.Name & "=" & Band1)
-                writer.WriteLine(Form2.Band2.Name & "=" & Band2)
-                writer.WriteLine(Form2.Band3.Name & "=" & Band3)
-                writer.WriteLine(Form2.Band4.Name & "=" & Band4)
-                writer.WriteLine(Form2.Band5.Name & "=" & Band5)
+                writer.WriteLine(Options.ListenKey.Name & "=" & ListenKey)
+                writer.WriteLine(Options.BetaVersions.Name & "=" & BetaVersions)
+                writer.WriteLine(Options.UpdatesAtStart.Name & "=" & UpdatesAtStart)
+                writer.WriteLine(Options.Visualisation.Name & "=" & Visualisation)
+                writer.WriteLine(Options.VisualisationType.Name & "=" & VisualisationType)
+                writer.WriteLine(Options.HighQualityVis.Name & "=" & HighQualityVis)
+                writer.WriteLine(Options.LinealRepresentation.Name & "=" & LinealRepresentation)
+                writer.WriteLine(Options.FullSoundRange.Name & "=" & FullSoundRange)
+                writer.WriteLine(Options.Smoothness.Name & "=" & Smoothness)
+                writer.WriteLine(Options.MainColour.Name & "=" & MainColour)
+                writer.WriteLine(Options.SecondaryColour.Name & "=" & SecondaryColour)
+                writer.WriteLine(Options.PeakColour.Name & "=" & PeakColour)
+                writer.WriteLine(Options.BackgroundColour.Name & "=" & BackgroundColour)
+                writer.WriteLine(Options.ChangeWholeBackground.Name & "=" & ChangeWholeBackground)
+                writer.WriteLine(Options.MultimediaKeys.Name & "=" & MultimediaKeys)
+                writer.WriteLine(Options.HotkeyPlayStop.Name & "=" & HumanModifiersPlayStop & "=" & ModifiersPlayStop & "=" & KeyPlayStop)
+                writer.WriteLine(Options.HotkeyVolumeUp.Name & "=" & HumanModifiersVolumeUp & "=" & ModifiersVolumeUp & "=" & KeyVolumeUp)
+                writer.WriteLine(Options.HotkeyVolumeDown.Name & "=" & HumanModifiersVolumeDown & "=" & ModifiersVolumeDown & "=" & KeyVolumeDown)
+                writer.WriteLine(Options.HotkeyMuteUnmute.Name & "=" & HumanModifiersMuteUnmute & "=" & ModifiersMuteUnmute & "=" & KeyMuteUnmute)
+                writer.WriteLine(Options.HotkeyShowHide.Name & "=" & HumanModifiersShowHide & "=" & ModifiersShowHide & "=" & KeyShowHide)
+                writer.WriteLine(Options.Band0.Name & "=" & Band0)
+                writer.WriteLine(Options.Band1.Name & "=" & Band1)
+                writer.WriteLine(Options.Band2.Name & "=" & Band2)
+                writer.WriteLine(Options.Band3.Name & "=" & Band3)
+                writer.WriteLine(Options.Band4.Name & "=" & Band4)
+                writer.WriteLine(Options.Band5.Name & "=" & Band5)
                 writer.WriteLine(StationChooser.Name & "=" & StationChooser.Text)
                 writer.WriteLine("DIChannel=" & DIChannel)
                 writer.WriteLine("SkyChannel=" & SKYChannel)
@@ -545,7 +548,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub OptionsButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Options.Click
+    Private Sub OptionsButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OptionsButton.Click
         Dim X As Integer
         Dim Y As Integer
 
@@ -556,7 +559,7 @@ Public Class Form1
         If Me.Visible = True Then
 
             If Me.Location.X + 21 > Screen.PrimaryScreen.WorkingArea.Size.Width Then
-                X = Screen.PrimaryScreen.WorkingArea.Size.Width - Form2.Size.Width
+                X = Screen.PrimaryScreen.WorkingArea.Size.Width - OptionsButton.Size.Width
             ElseIf Me.Location.X + 21 < 0 Then
                 X = 0
             Else
@@ -566,7 +569,7 @@ Public Class Form1
 
             If Visualisation = True Then
                 If Me.Location.Y - 12 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
-                    Y = Screen.PrimaryScreen.WorkingArea.Size.Height - Form2.Size.Height
+                    Y = Screen.PrimaryScreen.WorkingArea.Size.Height - OptionsButton.Size.Height
                 ElseIf Me.Location.Y - 12 < 0 Then
                     Y = 0
                 Else
@@ -574,7 +577,7 @@ Public Class Form1
                 End If
             Else
                 If Me.Location.Y - 180 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
-                    Y = Screen.PrimaryScreen.WorkingArea.Size.Height - Form2.Size.Height
+                    Y = Screen.PrimaryScreen.WorkingArea.Size.Height - OptionsButton.Size.Height
                 ElseIf Me.Location.Y - 180 < 0 Then
                     Y = 0
                 Else
@@ -582,16 +585,16 @@ Public Class Form1
                 End If
             End If
 
-            Form2.Location = New Point(X, Y)
+            Options.Location = New Point(X, Y)
 
         Else
 
-            Form2.StartPosition = FormStartPosition.CenterScreen
+            Options.StartPosition = FormStartPosition.CenterScreen
 
         End If
 
-        Form2.Show()
-        Form2.BringToFront()
+        Options.Show()
+        Options.BringToFront()
 
     End Sub
 
@@ -886,7 +889,7 @@ Public Class Form1
 
     Private Sub StationChooser_TextChanged(sender As Object, e As System.EventArgs) Handles StationChooser.TextChanged
 
-        ' Long lists ahead. Enjoy!
+        ' Long lists were removed by _Tobias. Now the player doesn't have to be updated in order to add new channels!
 
         SelectedChannel.Items.Clear()
 
@@ -894,201 +897,47 @@ Public Class Form1
             SelectedChannel.Items.Add("My Favorites")
         End If
 
+        Dim executable As String = Application.ExecutablePath
+        Dim tabla() As String = Split(executable, "\")
+
+        Dim chdb = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\" & StationChooser.Text & "\channels.db"
+
+        Dim readerChdb As IO.StreamReader = channelDb(chdb)
+
+        Do While (readerChdb.Peek > -1)
+            Dim line = readerChdb.ReadLine()
+            Dim splitter = Split(line, "|")
+            SelectedChannel.Items.Add(splitter(0))
+        Loop
+
+        readerChdb.Close()
+
         If StationChooser.Text = DIFM.Text Then
 
-            SelectedChannel.Items.Add("Ambient")
-            SelectedChannel.Items.Add("Breaks")
-            SelectedChannel.Items.Add("Chillout")
-            SelectedChannel.Items.Add("Chillout Dreams")
-            SelectedChannel.Items.Add("Chiptunes")
-            SelectedChannel.Items.Add("Classic Electronica")
-            SelectedChannel.Items.Add("Classic EuroDance")
-            SelectedChannel.Items.Add("Classic Trance")
-            SelectedChannel.Items.Add("Classic Vocal Trance")
-            SelectedChannel.Items.Add("Club Dubstep")
-            SelectedChannel.Items.Add("Club Sounds")
-            SelectedChannel.Items.Add("Cosmic Downtempo")
-            SelectedChannel.Items.Add("Deep House")
-            SelectedChannel.Items.Add("Disco House")
-            SelectedChannel.Items.Add("DJ Mixes")
-            SelectedChannel.Items.Add("Drum 'n Bass")
-            SelectedChannel.Items.Add("Dubstep")
-            SelectedChannel.Items.Add("Electro House")
-            SelectedChannel.Items.Add("Epic Trance")
-            SelectedChannel.Items.Add("EuroDance")
-            SelectedChannel.Items.Add("Funky House")
-            SelectedChannel.Items.Add("Future Synthpop")
-            SelectedChannel.Items.Add("Goa-Psy Trance")
-            SelectedChannel.Items.Add("Hands Up")
-            SelectedChannel.Items.Add("Hard Dance")
-            SelectedChannel.Items.Add("Hardcore")
-            SelectedChannel.Items.Add("Hardstyle")
-            SelectedChannel.Items.Add("House")
-            SelectedChannel.Items.Add("Latin House")
-            SelectedChannel.Items.Add("Liquid DnB")
-            SelectedChannel.Items.Add("Lounge")
-            SelectedChannel.Items.Add("Minimal")
-            SelectedChannel.Items.Add("Oldschool Acid")
-            SelectedChannel.Items.Add("Progressive")
-            SelectedChannel.Items.Add("Progressive Psy")
-            SelectedChannel.Items.Add("PsyChill")
-            SelectedChannel.Items.Add("Soulful House")
-            SelectedChannel.Items.Add("Space Dreams")
-            SelectedChannel.Items.Add("Tech House")
-            SelectedChannel.Items.Add("Techno")
-            SelectedChannel.Items.Add("Trance")
-            SelectedChannel.Items.Add("Tribal House")
-            SelectedChannel.Items.Add("UK Garage")
-            SelectedChannel.Items.Add("Vocal Chillout")
-            SelectedChannel.Items.Add("Vocal Trance")
-
             SelectedChannel.SelectedIndex = DIChannel
-
             Calendar.Enabled = True
             History.Enabled = True
 
         ElseIf StationChooser.Text = SKYFM.Text Then
 
-            SelectedChannel.Items.Add("80's Rock Hits")
-            SelectedChannel.Items.Add("A Beatles Tribute")
-            SelectedChannel.Items.Add("Alternative Rock")
-            SelectedChannel.Items.Add("American Songbook")
-            SelectedChannel.Items.Add("Bebop Jazz")
-            SelectedChannel.Items.Add("Bossa Nova")
-            SelectedChannel.Items.Add("Best of the 80's")
-            SelectedChannel.Items.Add("Classic Rap")
-            SelectedChannel.Items.Add("Classic Rock")
-            SelectedChannel.Items.Add("Classical Guitar")
-            SelectedChannel.Items.Add("Classical Piano Trios")
-            SelectedChannel.Items.Add("Club Bollywood")
-            SelectedChannel.Items.Add("Compact Discoveries")
-            SelectedChannel.Items.Add("Contemporary Christian")
-            SelectedChannel.Items.Add("Country")
-            SelectedChannel.Items.Add("Dance Hits")
-            SelectedChannel.Items.Add("DaTempo Lounge")
-            SelectedChannel.Items.Add("Dreamscapes")
-            SelectedChannel.Items.Add("Hard Rock")
-            SelectedChannel.Items.Add("Hit 70's")
-            SelectedChannel.Items.Add("Indie Rock")
-            SelectedChannel.Items.Add("Jazz Classics")
-            SelectedChannel.Items.Add("Jpop")
-            SelectedChannel.Items.Add("Love Music")
-            SelectedChannel.Items.Add("Metal")
-            SelectedChannel.Items.Add("Modern Blues")
-            SelectedChannel.Items.Add("Modern Rock")
-            SelectedChannel.Items.Add("Mostly Classical")
-            SelectedChannel.Items.Add("Movie Soundtracks")
-            SelectedChannel.Items.Add("Nature")
-            SelectedChannel.Items.Add("New Age")
-            SelectedChannel.Items.Add("Oldies")
-            SelectedChannel.Items.Add("Piano Jazz")
-            SelectedChannel.Items.Add("Pop Punk")
-            SelectedChannel.Items.Add("Pop Rock")
-            SelectedChannel.Items.Add("Relaxation")
-            SelectedChannel.Items.Add("Relaxing Excursions")
-            SelectedChannel.Items.Add("Romantica")
-            SelectedChannel.Items.Add("Roots Reggae")
-            SelectedChannel.Items.Add("Salsa")
-            SelectedChannel.Items.Add("Ska")
-            SelectedChannel.Items.Add("Smooth Jazz")
-            SelectedChannel.Items.Add("Smooth Jazz 24'7")
-            SelectedChannel.Items.Add("Smooth Lounge")
-            SelectedChannel.Items.Add("Soft Rock")
-            SelectedChannel.Items.Add("Solo Piano")
-            SelectedChannel.Items.Add("Top Hits")
-            SelectedChannel.Items.Add("Uptempo Smooth Jazz")
-            SelectedChannel.Items.Add("Vocal New Age")
-            SelectedChannel.Items.Add("Vocal Smooth Jazz")
-            SelectedChannel.Items.Add("Urban Jamz")
-            SelectedChannel.Items.Add("World")
-
             SelectedChannel.SelectedIndex = SKYChannel
-
             Calendar.Enabled = False
             History.Enabled = True
 
         ElseIf StationChooser.Text = JazzRadio.Text Then
 
-            SelectedChannel.Items.Add("Avant-Garde")
-            SelectedChannel.Items.Add("Bass Jazz")
-            SelectedChannel.Items.Add("Bebop")
-            SelectedChannel.Items.Add("Blues")
-            SelectedChannel.Items.Add("Bossa Nova")
-            SelectedChannel.Items.Add("Classic Jazz")
-            SelectedChannel.Items.Add("Contemporary Vocals")
-            SelectedChannel.Items.Add("Cool Jazz")
-            SelectedChannel.Items.Add("Current Jazz")
-            SelectedChannel.Items.Add("Fusion Lounge")
-            SelectedChannel.Items.Add("Guitar Jazz")
-            SelectedChannel.Items.Add("Gypsy Jazz")
-            SelectedChannel.Items.Add("Hard Bop")
-            SelectedChannel.Items.Add("Latin Jazz")
-            SelectedChannel.Items.Add("Mellow Jazz")
-            SelectedChannel.Items.Add("Paris Café")
-            SelectedChannel.Items.Add("Piano Jazz")
-            SelectedChannel.Items.Add("Piano Trios")
-            SelectedChannel.Items.Add("Saxophone Jazz")
-            SelectedChannel.Items.Add("Sinatra Style")
-            SelectedChannel.Items.Add("Smooth Jazz 24'7")
-            SelectedChannel.Items.Add("Smooth Jazz")
-            SelectedChannel.Items.Add("Smooth Lounge")
-            SelectedChannel.Items.Add("Smooth Uptempo")
-            SelectedChannel.Items.Add("Smooth Vocals")
-            SelectedChannel.Items.Add("Straight-Ahead")
-            SelectedChannel.Items.Add("Swing & Big Band")
-            SelectedChannel.Items.Add("Timeless Classics")
-            SelectedChannel.Items.Add("Trumpet Jazz")
-            SelectedChannel.Items.Add("Vibraphone Jazz")
-            SelectedChannel.Items.Add("Vocal Legends")
-
             SelectedChannel.SelectedIndex = JazzChannel
-
             Calendar.Enabled = False
             History.Enabled = False
             Forums.Enabled = False
 
         ElseIf StationChooser.Text = RockRadio.Text Then
 
-            SelectedChannel.Items.Add("80s Alternative")
-            SelectedChannel.Items.Add("90s Alternative")
-            SelectedChannel.Items.Add("80s Rock")
-            SelectedChannel.Items.Add("90s Rock")
-            SelectedChannel.Items.Add("Beatles Tribute")
-            SelectedChannel.Items.Add("Black Metal")
-            SelectedChannel.Items.Add("Classic Rock")
-            SelectedChannel.Items.Add("Classic Hard Rock")
-            SelectedChannel.Items.Add("Classic Metal")
-            SelectedChannel.Items.Add("Deathcore")
-            SelectedChannel.Items.Add("Death Metal")
-            SelectedChannel.Items.Add("Hair Bands")
-            SelectedChannel.Items.Add("Hardcore")
-            SelectedChannel.Items.Add("Hard Rock")
-            SelectedChannel.Items.Add("Harder Rock")
-            SelectedChannel.Items.Add("Heavy Metal")
-            SelectedChannel.Items.Add("Jam Bands")
-            SelectedChannel.Items.Add("Indie Rock")
-            SelectedChannel.Items.Add("Metal")
-            SelectedChannel.Items.Add("Metalcore")
-            SelectedChannel.Items.Add("Modern Rock")
-            SelectedChannel.Items.Add("Nu Metal")
-            SelectedChannel.Items.Add("Pop Punk")
-            SelectedChannel.Items.Add("Pop Rock")
-            SelectedChannel.Items.Add("Power Metal")
-            SelectedChannel.Items.Add("Progressive Metal")
-            SelectedChannel.Items.Add("Progressive Rock")
-            SelectedChannel.Items.Add("Punk Rock")
-            SelectedChannel.Items.Add("Rock Ballads")
-            SelectedChannel.Items.Add("Screamo-Emo")
-            SelectedChannel.Items.Add("Ska")
-            SelectedChannel.Items.Add("Soft Rock")
-            SelectedChannel.Items.Add("Symphonic Metal")
-            SelectedChannel.Items.Add("Thrash Metal")
-
             SelectedChannel.SelectedIndex = RockChannel
-
             Calendar.Enabled = False
             History.Enabled = False
             Forums.Enabled = False
+
         End If
 
     End Sub
@@ -1194,112 +1043,56 @@ Public Class Form1
 
 #Region "Background Workers"
 
-
     Private Sub PLSDownloader_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles PLSDownloader.DoWork
+        ' The code below has contributions by _Tobias from the Digitally Imported forums.
+
         RefreshFavorites.Enabled = False
         PlayStop.Enabled = False
         StationChooser.Enabled = False
         ServersArray.Items.Clear()
         SelectedServer.Items.Clear()
 
-        Dim channel As String
-        channel = SelectedChannel.Text.ToLower.Replace(" ", Nothing)
+        Dim channel As String = SelectedChannel.Text
+        Dim domain As String = StationChooser.Tag
+        Dim executable As String = Application.ExecutablePath
+        Dim tabla() As String = Split(executable, "\")
+        Dim serversFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\" & StationChooser.Text
 
         ' Get the current channel, remove spaces and convert names to their URL counterparts if necessary
 
-        If StationChooser.Text = DIFM.Text Then
+        ' create servers directory if doesn't exist
+        My.Computer.FileSystem.CreateDirectory(serversFolder)
 
-            If channel = "classicelectronica" Then
-                channel = "classictechno"
-            ElseIf channel = "clubsounds" Then
-                channel = "club"
-            ElseIf channel = "deepnu-disco" Then
-                channel = "deepnudisco"
-            ElseIf channel = "drum'nbass" Then
-                channel = "drumandbass"
-            ElseIf channel = "electrohouse" Then
-                channel = "electro"
-            ElseIf channel = "goa-psytrance" Then
-                channel = "goapsy"
-            ElseIf channel = "spacedreams" Then
-                channel = "spacemusic"
-            End If
+        ' determine channel database
+        Dim chdb = serversFolder & "\channels.db"
 
-        ElseIf StationChooser.Text = SKYFM.Text Then
-
-            If channel = "bestofthe80's" Then
-                channel = "the80s"
-            ElseIf channel = "christmaschannel" Then
-                channel = "christmas"
-            ElseIf channel = "90'shits" Then
-                channel = "hit90s"
-            ElseIf channel = "80'srockhits" Then
-                channel = "80srock"
-            ElseIf channel = "smoothjazz24'7" Then
-                channel = "smoothjazz247"
-            ElseIf channel = "moviesoundtracks" Then
-                channel = "soundtracks"
-            ElseIf channel = "hit70's" Then
-                channel = "hit70s"
-            ElseIf channel = "mostlyclassical" Then
-                channel = "classical"
-            ElseIf channel = "classicalguitar" Then
-                channel = "guitar"
-            ElseIf channel = "alternativerock" Then
-                channel = "altrock"
-            ElseIf channel = "bebopjazz" Then
-                channel = "bebop"
-            ElseIf channel = "abeatlestribute" Then
-                channel = "beatles"
-            ElseIf channel = "contemporarychristian" Then
-                channel = "christian"
-            End If
-
-        ElseIf StationChooser.Text = JazzRadio.Text Then
-
-            If channel = "smoothjazz24'7" Then
-                channel = "smoothjazz247"
-            ElseIf channel = "pariscafé" Then
-                channel = "pariscafe"
-            ElseIf channel = "contemporaryvocals" Then
-                channel = "vocaljazz"
-            ElseIf channel = "avant-garde" Then
-                channel = "avantgarde"
-            ElseIf channel = "straight-ahead" Then
-                channel = "straightahead"
-            ElseIf channel = "swing&bigband" Then
-                channel = "swingnbigband"
-            End If
-
-        ElseIf StationChooser.Text = RockRadio.Text Then
-
-            If channel = "90salternative" Then
-                channel = "alternative90s"
-            ElseIf channel = "80salternative" Then
-                channel = "alternative80s"
-            ElseIf channel = "80salternative" Then
-                channel = "alternative80s"
-            ElseIf channel = "screamo-emo" Then
-                channel = "screamoemo"
-            End If
-
+        If channel = "My Favorites" Then
+            channel = "favorites"
         End If
 
+        ' open file
+        Dim readerChdb As IO.StreamReader = channelDb(chdb)
 
+        ' read file
+        Do While (readerChdb.Peek > -1)
+            Dim line = readerChdb.ReadLine()
+            Dim splitter = Split(line, "|")
+            If splitter(0) = channel Then
+                channel = splitter(1)
+            End If
+        Loop
 
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
+        readerChdb.Close()
 
-        My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers")
-
-        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & StationChooser.Text & "\" & channel & "."
+        Dim file = serversFolder & "\" & channel & ".db"
 
         Dim EndString As String
-        Dim IsWMA As Boolean
-        Dim fileExtension As String
 
+        Dim PremiumEnd As String = ""
 
         If ListenKey = Nothing = False And PremiumFormats = True Then
+
+            PremiumEnd = "?" & ListenKey
 
             If StationChooser.Text = DIFM.Text Then
                 If DIFormat = 0 Then
@@ -1314,10 +1107,8 @@ Public Class Form1
                     EndString = "premium"
                 ElseIf DIFormat = 5 Then
                     EndString = "premium_wma"
-                    IsWMA = True
                 ElseIf DIFormat = 6 Then
                     EndString = "premium_wma_low"
-                    IsWMA = True
                 End If
 
             ElseIf StationChooser.Text = SKYFM.Text Then
@@ -1334,10 +1125,8 @@ Public Class Form1
                     EndString = "premium"
                 ElseIf SKYFormat = 5 Then
                     EndString = "premium_wma"
-                    IsWMA = True
                 ElseIf SKYFormat = 6 Then
                     EndString = "premium_wma_low"
-                    IsWMA = True
                 End If
 
             ElseIf StationChooser.Text = JazzRadio.Text Then
@@ -1354,12 +1143,12 @@ Public Class Form1
                     EndString = "premium"
                 ElseIf JazzFormat = 5 Then
                     EndString = "premium_wma"
-                    IsWMA = True
                 End If
 
             ElseIf StationChooser.Text = RockRadio.Text Then
 
                 EndString = "public3"
+                PremiumEnd = ""
 
             End If
 
@@ -1374,7 +1163,6 @@ Public Class Form1
                     EndString = "public3"
                 ElseIf DIFormat = 2 Then
                     EndString = "public5"
-                    IsWMA = True
                 End If
 
             ElseIf StationChooser.Text = SKYFM.Text Then
@@ -1385,7 +1173,6 @@ Public Class Form1
                     EndString = "public3"
                 ElseIf SKYFormat = 2 Then
                     EndString = "public5"
-                    IsWMA = True
                 End If
 
             ElseIf StationChooser.Text = JazzRadio.Text Then
@@ -1396,7 +1183,6 @@ Public Class Form1
                     EndString = "public3"
                 ElseIf JazzFormat = 2 Then
                     EndString = "public5"
-                    IsWMA = True
                 End If
 
             ElseIf StationChooser.Text = RockRadio.Text Then
@@ -1408,31 +1194,22 @@ Public Class Form1
 
         End If
 
-        If IsWMA = True And StationChooser.Text = RockRadio.Text = False Then
-            fileExtension = "asx"
-        Else
-            fileExtension = "pls"
+        If SelectedChannel.Text = "My Favorites" Then
+            PremiumEnd = "?" & ListenKey
         End If
 
+        If My.Computer.FileSystem.FileExists(file) = False Then
+            Dim streams
+            If SelectedChannel.Text = "My Favorites" Then
+                streams = downloadFavos(EndString, serversFolder, PremiumEnd)
+            Else
+                streams = downloadStreams(channel, EndString, serversFolder, PremiumEnd)
+            End If
 
-        If My.Computer.FileSystem.FileExists(file & fileExtension) = False Then
-
-            Dim WebClient As Net.WebClient = New Net.WebClient()
-            Dim PLS As String
-
-            Try
-
-                PLS = WebClient.DownloadString("http://listen." & StationChooser.Tag & "/" & EndString & "/" & channel.Replace("my", Nothing) & "." & fileExtension & "?" & ListenKey)
-
-            Catch ex As Exception
-
+            If streams.GetType.ToString.ToLower.Contains("boolean") Then
                 Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
-                If ex.Message.Contains("403") Then
-                    Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Wrong or expired premium key?", MsgBoxStyle.Exclamation, "Error getting servers list")
-                Else
-                    Me.Invoke(Message, "Couldn't download servers list." & vbNewLine & ex.Message, MsgBoxStyle.Exclamation, "Error getting servers list")
-                End If
+                Me.Invoke(Message, "Couldn't download servers list.", MsgBoxStyle.Exclamation, "Error getting servers list")
 
                 Marquee.Hide()
                 SelectedServer.Enabled = False
@@ -1444,65 +1221,75 @@ Public Class Form1
                 StationChooser.Enabled = True
                 RestartPlayback = False
                 Exit Sub
-
-            End Try
-
-            Dim writer As New IO.StreamWriter(file & fileExtension, False)
-            writer.Write(PLS)
-            writer.Close()
-
+            Else
+                Dim writer As New IO.StreamWriter(file, False)
+                Dim v
+                For Each v In streams
+                    writer.WriteLine(v)
+                Next
+                writer.Close()
+            End If
         End If
 
         Dim serverno As Integer = 1
 
-        Dim reader As New IO.StreamReader(file & fileExtension)
-        Dim Favourite As String
+        Dim reader As New IO.StreamReader(file)
 
-        Do While (reader.Peek > -1)
-            Dim check As String = reader.ReadLine
+        If SelectedChannel.Text = "My Favorites" Then
+            Do While (reader.Peek > -1)
+                Dim name As String = reader.ReadLine
+                Dim key As String
 
-            If check.StartsWith("<ref href") Then
+                Dim r2 As New IO.StreamReader(chdb)
 
-                Dim first As String
-                Dim second As String
+                Do While (r2.Peek > -1)
+                    Dim splitter = Split(r2.ReadLine, "|")
+                    If splitter(0) = name Then
+                        key = splitter(1)
+                    End If
+                Loop
 
-                first = check.Replace("<ref href=""", Nothing)
-                second = first.Replace("""/>", Nothing)
-                Dim item As New ListViewItem("Server #" & serverno)
-                item.Tag = second
-                ServersArray.Items.Add(item.Tag)
+                r2.Close()
 
-                If Favourite = Nothing = False Then
-                    SelectedServer.Items.Add(Favourite)
-                    Favourite = Nothing
-                Else
-                    SelectedServer.Items.Add(item.Text)
+                Dim file2 As String = serversFolder & "\" & key & ".db"
+
+                ' get random url by name
+                If My.Computer.FileSystem.FileExists(file2) = False Then
+
+                    Dim streams2 = downloadStreams(key, EndString, serversFolder, PremiumEnd)
+
+                    ' open file
+                    Dim writer As New IO.StreamWriter(file2, False)
+                    Dim entry As String
+
+                    For Each entry In streams2
+                        writer.WriteLine(entry)
+                    Next
+
+                    writer.Close()
+
                 End If
 
+                Dim r3 As New IO.StreamReader(file2)
+                Dim streams As ArrayList = New ArrayList
+
+                Do While (r3.Peek > -1)
+                    streams.Add(r3.ReadLine())
+                Loop
+
+                r3.Close()
+
+                SelectedServer.Items.Add(name)
+                ServersArray.Items.Add(streams(RandomNumber(streams.Count - 1, 1)))
+            Loop
+        Else
+            Do While (reader.Peek > -1)
+                Dim line As String = reader.ReadLine
+                ServersArray.Items.Add(line)
+                SelectedServer.Items.Add("Server #" & serverno)
                 serverno += 1
-
-            ElseIf check.ToLower.StartsWith("file") Then
-
-                Dim item As New ListViewItem("Server #" & serverno)
-                item.Tag = check.Replace("File" & serverno & "=", Nothing)
-                ServersArray.Items.Add(item.Tag)
-                SelectedServer.Items.Add(item.Text)
-                serverno += 1
-
-            ElseIf check.ToLower.StartsWith("title") And SelectedChannel.Text = "My Favorites" OrElse check.ToLower.StartsWith("<title>") And SelectedChannel.Text = "My Favorites" Then
-
-                Dim FullLine As String = check
-                Dim Splitter As String() = Split(FullLine, " - ")
-
-                If check.ToLower.StartsWith("<title>") = False Then
-                    SelectedServer.Items.Item(SelectedServer.Items.Count - 1) = Splitter(1)
-                Else
-                    Favourite = Splitter(1).Replace("</title>", Nothing)
-                End If
-
-            End If
-
-        Loop
+            Loop
+        End If
 
         reader.Close()
 
@@ -1710,18 +1497,18 @@ again:
 
             If TotalVersionString > TotalVersionFixed Then
 
-                Form2.LookNow.Text = "Download update"
-                Form2.LatestVersion.ForeColor = Color.Green
+                Options.LookNow.Text = "Download update"
+                Options.LatestVersion.ForeColor = Color.Green
 
                 If AtStartup = True Then
 
                     If Splitter(2) > 0 And BetaVersions = True Then
                         If MsgBox("There's a new beta version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
-                            Form2.LookNow_Click(Me, Nothing)
+                            Options.LookNow_Click(Me, Nothing)
                         End If
                     ElseIf Splitter(2) = 0 Then
                         If MsgBox("There's a new version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
-                            Form2.LookNow_Click(Me, Nothing)
+                            Options.LookNow_Click(Me, Nothing)
                         End If
                     End If
 
@@ -1732,20 +1519,20 @@ again:
             If Splitter(2) > 0 Then
 
                 If Splitter(1) = 9 Then
-                    Form2.LatestVersion.Text = "Latest version: " & Splitter(0) + 1 & ".0" & " Beta " & Splitter(2)
+                    Options.LatestVersion.Text = "Latest version: " & Splitter(0) + 1 & ".0" & " Beta " & Splitter(2)
                 Else
-                    Form2.LatestVersion.Text = "Latest version: " & Splitter(0) & "." & Splitter(1) + 1 & " Beta " & Splitter(2)
+                    Options.LatestVersion.Text = "Latest version: " & Splitter(0) & "." & Splitter(1) + 1 & " Beta " & Splitter(2)
                 End If
 
             Else
 
-                Form2.LatestVersion.Text = "Latest version: " & Splitter(0) & "." & Splitter(1)
+                Options.LatestVersion.Text = "Latest version: " & Splitter(0) & "." & Splitter(1)
 
             End If
 
-            Form2.UndefinedProgress.Hide()
-            Form2.Status.Text = "Status: Idle"
-            Form2.LookNow.Enabled = True
+            Options.UndefinedProgress.Hide()
+            Options.Status.Text = "Status: Idle"
+            Options.LookNow.Enabled = True
 
             AtStartup = False
         End If
@@ -2069,41 +1856,41 @@ again:
 
         If My.Computer.FileSystem.FileExists(file) = False Then
             Dim writer As New IO.StreamWriter(file)
-            writer.WriteLine(Form2.NotificationTitle.Name & "=True")
-            writer.WriteLine(Form2.PlayNewOnChannelChange.Name & "=False")
-            writer.WriteLine(Form2.NotificationIcon.Name & "=True")
-            writer.WriteLine(Form2.NoTaskbarButton.Name & "=False")
-            writer.WriteLine(Form2.GoogleSearch.Name & "=True")
-            writer.WriteLine(Form2.ListenKey.Name & "=")
-            writer.WriteLine(Form2.PremiumFormats.Name & "=False")
+            writer.WriteLine(Options.NotificationTitle.Name & "=True")
+            writer.WriteLine(Options.PlayNewOnChannelChange.Name & "=False")
+            writer.WriteLine(Options.NotificationIcon.Name & "=True")
+            writer.WriteLine(Options.NoTaskbarButton.Name & "=False")
+            writer.WriteLine(Options.GoogleSearch.Name & "=True")
+            writer.WriteLine(Options.ListenKey.Name & "=")
+            writer.WriteLine(Options.PremiumFormats.Name & "=False")
             writer.WriteLine("DIFormat=1")
             writer.WriteLine("SKYFormat=1")
             writer.WriteLine("JazzFormat=1")
-            writer.WriteLine(Form2.BetaVersions.Name & "=False")
-            writer.WriteLine(Form2.UpdatesAtStart.Name & "=True")
-            writer.WriteLine(Form2.Visualisation.Name & "=True")
-            writer.WriteLine(Form2.VisualisationType.Name & "=5")
-            writer.WriteLine(Form2.HighQualityVis.Name & "=False")
-            writer.WriteLine(Form2.LinealRepresentation.Name & "=False")
-            writer.WriteLine(Form2.FullSoundRange.Name & "=False")
-            writer.WriteLine(Form2.Smoothness.Name & "=27")
-            writer.WriteLine(Form2.MainColour.Name & "=" & SystemColors.Control.ToArgb())
-            writer.WriteLine(Form2.SecondaryColour.Name & "=" & Color.Black.ToArgb())
-            writer.WriteLine(Form2.PeakColour.Name & "=" & Color.Silver.ToArgb())
-            writer.WriteLine(Form2.BackgroundColour.Name & "=" & SystemColors.Control.ToArgb())
-            writer.WriteLine(Form2.ChangeWholeBackground.Name & "=False")
-            writer.WriteLine(Form2.MultimediaKeys.Name & "=True")
-            writer.WriteLine(Form2.HotkeyPlayStop.Name & "=0=0=" & Keys.MediaPlayPause)
-            writer.WriteLine(Form2.HotkeyVolumeUp.Name & "=0=0=" & Keys.VolumeUp)
-            writer.WriteLine(Form2.HotkeyVolumeDown.Name & "=0=0=" & Keys.VolumeDown)
-            writer.WriteLine(Form2.HotkeyMuteUnmute.Name & "=0=0=" & Keys.VolumeMute)
-            writer.WriteLine(Form2.HotkeyShowHide.Name & "=" & Keys.Control + Keys.Shift & "=6=" & Keys.Home)
-            writer.WriteLine(Form2.Band0.Name & "=0")
-            writer.WriteLine(Form2.Band1.Name & "=0")
-            writer.WriteLine(Form2.Band2.Name & "=0")
-            writer.WriteLine(Form2.Band3.Name & "=0")
-            writer.WriteLine(Form2.Band4.Name & "=0")
-            writer.WriteLine(Form2.Band5.Name & "=0")
+            writer.WriteLine(Options.BetaVersions.Name & "=False")
+            writer.WriteLine(Options.UpdatesAtStart.Name & "=True")
+            writer.WriteLine(Options.Visualisation.Name & "=True")
+            writer.WriteLine(Options.VisualisationType.Name & "=5")
+            writer.WriteLine(Options.HighQualityVis.Name & "=False")
+            writer.WriteLine(Options.LinealRepresentation.Name & "=False")
+            writer.WriteLine(Options.FullSoundRange.Name & "=False")
+            writer.WriteLine(Options.Smoothness.Name & "=27")
+            writer.WriteLine(Options.MainColour.Name & "=" & SystemColors.Control.ToArgb())
+            writer.WriteLine(Options.SecondaryColour.Name & "=" & Color.Black.ToArgb())
+            writer.WriteLine(Options.PeakColour.Name & "=" & Color.Silver.ToArgb())
+            writer.WriteLine(Options.BackgroundColour.Name & "=" & SystemColors.Control.ToArgb())
+            writer.WriteLine(Options.ChangeWholeBackground.Name & "=False")
+            writer.WriteLine(Options.MultimediaKeys.Name & "=True")
+            writer.WriteLine(Options.HotkeyPlayStop.Name & "=0=0=" & Keys.MediaPlayPause)
+            writer.WriteLine(Options.HotkeyVolumeUp.Name & "=0=0=" & Keys.VolumeUp)
+            writer.WriteLine(Options.HotkeyVolumeDown.Name & "=0=0=" & Keys.VolumeDown)
+            writer.WriteLine(Options.HotkeyMuteUnmute.Name & "=0=0=" & Keys.VolumeMute)
+            writer.WriteLine(Options.HotkeyShowHide.Name & "=" & Keys.Control + Keys.Shift & "=6=" & Keys.Home)
+            writer.WriteLine(Options.Band0.Name & "=0")
+            writer.WriteLine(Options.Band1.Name & "=0")
+            writer.WriteLine(Options.Band2.Name & "=0")
+            writer.WriteLine(Options.Band3.Name & "=0")
+            writer.WriteLine(Options.Band4.Name & "=0")
+            writer.WriteLine(Options.Band5.Name & "=0")
             writer.WriteLine("DIChannel=0")
             writer.WriteLine("SkyChannel=0")
             writer.WriteLine("JazzChannel=0")
@@ -2120,13 +1907,13 @@ again:
                 Dim whole As String = reader.ReadLine
                 Dim splitter() As String = Split(whole, "=")
 
-                If splitter(0) = Form2.NotificationTitle.Name Then
+                If splitter(0) = Options.NotificationTitle.Name Then
                     NotificationTitle = splitter(1)
-                ElseIf splitter(0) = Form2.PlayNewOnChannelChange.Name Then
+                ElseIf splitter(0) = Options.PlayNewOnChannelChange.Name Then
                     PlayNewOnChannelChange = splitter(1)
-                ElseIf splitter(0) = Form2.NotificationIcon.Name Then
+                ElseIf splitter(0) = Options.NotificationIcon.Name Then
                     NotificationIcon = splitter(1)
-                ElseIf splitter(0) = Form2.NoTaskbarButton.Name Then
+                ElseIf splitter(0) = Options.NoTaskbarButton.Name Then
                     NoTaskbarButton = splitter(1)
 
                     If NoTaskbarButton = False Then
@@ -2139,9 +1926,9 @@ again:
                         Me.ShowInTaskbar = False
                         TrayIcon.Visible = True
                     End If
-                ElseIf splitter(0) = Form2.GoogleSearch.Name Then
+                ElseIf splitter(0) = Options.GoogleSearch.Name Then
                     GoogleSearch = splitter(1)
-                ElseIf splitter(0) = Form2.PremiumFormats.Name Then
+                ElseIf splitter(0) = Options.PremiumFormats.Name Then
                     PremiumFormats = splitter(1)
                 ElseIf splitter(0) = "DIFormat" Then
 
@@ -2176,16 +1963,16 @@ again:
                     End If
 
 
-                ElseIf splitter(0) = Form2.ListenKey.Name OrElse splitter(0) = "PremiumKey" Then
+                ElseIf splitter(0) = Options.ListenKey.Name OrElse splitter(0) = "PremiumKey" Then
 
                     ListenKey = splitter(1)
 
                     If ListenKey = Nothing = False Then
                         SelectedChannel.Items.Add("My Favorites")
                     End If
-                ElseIf splitter(0) = Form2.BetaVersions.Name Then
+                ElseIf splitter(0) = Options.BetaVersions.Name Then
                     BetaVersions = splitter(1)
-                ElseIf splitter(0) = Form2.UpdatesAtStart.Name Then
+                ElseIf splitter(0) = Options.UpdatesAtStart.Name Then
 
                     UpdatesAtStart = splitter(1)
 
@@ -2194,7 +1981,7 @@ again:
                         GetUpdates.RunWorkerAsync()
                     End If
 
-                ElseIf splitter(0) = Form2.Visualisation.Name Then
+                ElseIf splitter(0) = Options.Visualisation.Name Then
                     Visualisation = splitter(1)
 
                     If Visualisation = True Then
@@ -2209,25 +1996,25 @@ again:
 
                     End If
 
-                ElseIf splitter(0) = Form2.VisualisationType.Name Then
+                ElseIf splitter(0) = Options.VisualisationType.Name Then
                     VisualisationType = splitter(1)
-                ElseIf splitter(0) = Form2.HighQualityVis.Name Then
+                ElseIf splitter(0) = Options.HighQualityVis.Name Then
                     HighQualityVis = splitter(1)
-                ElseIf splitter(0) = Form2.LinealRepresentation.Name Then
+                ElseIf splitter(0) = Options.LinealRepresentation.Name Then
                     LinealRepresentation = splitter(1)
-                ElseIf splitter(0) = Form2.FullSoundRange.Name Then
+                ElseIf splitter(0) = Options.FullSoundRange.Name Then
                     FullSoundRange = splitter(1)
-                ElseIf splitter(0) = Form2.Smoothness.Name Then
+                ElseIf splitter(0) = Options.Smoothness.Name Then
                     Smoothness = splitter(1)
-                ElseIf splitter(0) = Form2.MainColour.Name Then
+                ElseIf splitter(0) = Options.MainColour.Name Then
                     MainColour = splitter(1)
-                ElseIf splitter(0) = Form2.SecondaryColour.Name Then
+                ElseIf splitter(0) = Options.SecondaryColour.Name Then
                     SecondaryColour = splitter(1)
-                ElseIf splitter(0) = Form2.PeakColour.Name Then
+                ElseIf splitter(0) = Options.PeakColour.Name Then
                     PeakColour = splitter(1)
-                ElseIf splitter(0) = Form2.BackgroundColour.Name Then
+                ElseIf splitter(0) = Options.BackgroundColour.Name Then
                     BackgroundColour = splitter(1)
-                ElseIf splitter(0) = Form2.ChangeWholeBackground.Name Then
+                ElseIf splitter(0) = Options.ChangeWholeBackground.Name Then
                     ChangeWholeBackground = splitter(1)
 
                     If ChangeWholeBackground = True Then
@@ -2236,6 +2023,7 @@ again:
                         ToolStrip1.BackColor = Color.FromArgb(BackgroundColour)
                         StationChooser.BackColor = Color.FromArgb(BackgroundColour)
                         Label1.BackColor = Color.FromArgb(BackgroundColour)
+                        Label2.BackColor = Color.FromArgb(BackgroundColour)
 
                         If BackgroundColour < -8323328 Then
                             RadioString.ForeColor = Color.White
@@ -2246,39 +2034,39 @@ again:
                         End If
 
                     End If
-                ElseIf splitter(0) = Form2.MultimediaKeys.Name Then
+                ElseIf splitter(0) = Options.MultimediaKeys.Name Then
                     MultimediaKeys = splitter(1)
-                ElseIf splitter(0) = Form2.HotkeyPlayStop.Name Then
+                ElseIf splitter(0) = Options.HotkeyPlayStop.Name Then
                     HumanModifiersPlayStop = splitter(1)
                     ModifiersPlayStop = splitter(2)
                     KeyPlayStop = splitter(3)
-                ElseIf splitter(0) = Form2.HotkeyVolumeUp.Name Then
+                ElseIf splitter(0) = Options.HotkeyVolumeUp.Name Then
                     HumanModifiersVolumeUp = splitter(1)
                     ModifiersVolumeUp = splitter(2)
                     KeyVolumeUp = splitter(3)
-                ElseIf splitter(0) = Form2.HotkeyVolumeDown.Name Then
+                ElseIf splitter(0) = Options.HotkeyVolumeDown.Name Then
                     HumanModifiersVolumeDown = splitter(1)
                     ModifiersVolumeDown = splitter(2)
                     KeyVolumeDown = splitter(3)
-                ElseIf splitter(0) = Form2.HotkeyMuteUnmute.Name Then
+                ElseIf splitter(0) = Options.HotkeyMuteUnmute.Name Then
                     HumanModifiersMuteUnmute = splitter(1)
                     ModifiersMuteUnmute = splitter(2)
                     KeyMuteUnmute = splitter(3)
-                ElseIf splitter(0) = Form2.HotkeyShowHide.Name Then
+                ElseIf splitter(0) = Options.HotkeyShowHide.Name Then
                     HumanModifiersShowHide = splitter(1)
                     ModifiersShowHide = splitter(2)
                     KeyShowHide = splitter(3)
-                ElseIf splitter(0) = Form2.Band0.Name Then
+                ElseIf splitter(0) = Options.Band0.Name Then
                     Band0 = splitter(1)
-                ElseIf splitter(0) = Form2.Band1.Name Then
+                ElseIf splitter(0) = Options.Band1.Name Then
                     Band1 = splitter(1)
-                ElseIf splitter(0) = Form2.Band2.Name Then
+                ElseIf splitter(0) = Options.Band2.Name Then
                     Band2 = splitter(1)
-                ElseIf splitter(0) = Form2.Band3.Name Then
+                ElseIf splitter(0) = Options.Band3.Name Then
                     Band3 = splitter(1)
-                ElseIf splitter(0) = Form2.Band4.Name Then
+                ElseIf splitter(0) = Options.Band4.Name Then
                     Band4 = splitter(1)
-                ElseIf splitter(0) = Form2.Band5.Name Then
+                ElseIf splitter(0) = Options.Band5.Name Then
                     Band5 = splitter(1)
                 ElseIf splitter(0) = StationChooser.Name Then
 
@@ -2492,6 +2280,86 @@ again:
             Bass.BASS_FXSetParameters(EqBands(band), Eq)
         End If
     End Sub
+
+    ' The following code thanks to _Tobias from the Digitally Imported forums.
+
+    Public Function RandomNumber(ByVal MaxNumber As Integer, Optional ByVal MinNumber As Integer = 0) As Integer
+
+        'initialize random number generator
+        Dim r As New Random(System.DateTime.Now.Millisecond)
+
+        'if passed incorrect arguments, swap them
+        'can also throw exception or return 0
+
+        If MinNumber > MaxNumber Then
+            Dim t As Integer = MinNumber
+            MinNumber = MaxNumber
+            MaxNumber = t
+        End If
+
+        Return r.Next(MinNumber, MaxNumber)
+
+    End Function
+
+    Public Function downloadStreams(ByVal key As String, ByVal quality As String, ByVal serversFolder As String, Optional ByVal premiumadd As String = "")
+        Dim pls
+        If My.Computer.FileSystem.FileExists(serversFolder & "\" & key & ".db") = False Then
+            Dim wc As Net.WebClient = New Net.WebClient
+
+            Try
+                pls = wc.DownloadString("http://listen." & StationChooser.Tag & "/" & quality & "/" & key & ".pls" & premiumadd)
+            Catch ex As Exception
+                Return False
+            End Try
+        Else
+            Dim reader As IO.StreamReader = New IO.StreamReader(serversFolder & "\" & key & ".db")
+            pls = reader.ReadToEnd()
+
+        End If
+        Return Audioaddict.ParsePlaylistAudioaddict(pls)
+
+    End Function
+
+    Public Function downloadFavos(ByVal quality As String, ByVal serversFolder As String, ByVal premiumadd As String)
+        Dim pls
+        If My.Computer.FileSystem.FileExists(serversFolder & "\favorites.db") = False Then
+            Dim wc As Net.WebClient = New Net.WebClient
+            Try
+                pls = wc.DownloadString("http://listen." & StationChooser.Tag & "/" & quality & "/favorites.pls" & premiumadd)
+            Catch ex As Exception
+                Return False
+            End Try
+        Else
+            Dim reader As IO.StreamReader = New IO.StreamReader(serversFolder & "\favorites.db")
+            pls = reader.ReadToEnd()
+            reader.Close()
+
+        End If
+        Return Audioaddict.ParsePlaylistFavorites(pls)
+
+    End Function
+
+    Public Function channelDb(ByVal loc As String)
+
+        Dim fileinfo As New IO.FileInfo(loc)
+
+        If My.Computer.FileSystem.FileExists(loc) = False Or Split(fileinfo.LastWriteTime.ToUniversalTime)(0) = Split(DateTime.UtcNow.ToUniversalTime)(0) = False Then
+            Dim wc As Net.WebClient = New Net.WebClient
+            Dim data
+            Try
+                data = wc.DownloadString("http://tobiass.eu/channels.php?domain=" & StationChooser.Tag)
+            Catch ex As Exception
+                Return False
+            End Try
+
+            Dim writer As New IO.StreamWriter(loc, False)
+
+            writer.Write(data)
+            writer.Close()
+        End If
+
+        Return New IO.StreamReader(loc)
+    End Function
 
 #End Region
 

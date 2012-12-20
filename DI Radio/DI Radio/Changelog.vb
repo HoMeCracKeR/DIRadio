@@ -1,4 +1,4 @@
-﻿Public Class Form3
+﻿Public Class Changelog
 
     Private Sub GetChangelog_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetChangelog.DoWork
         Dim WebClient As Net.WebClient = New Net.WebClient()
