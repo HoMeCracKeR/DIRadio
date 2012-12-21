@@ -1,5 +1,5 @@
 ﻿' DI Radio Player by ViRUS
-' Source code for version 1.11
+' Source code for version 1.12
 '
 '
 ' I've done my best to document the most relevant parts of this source code, but if you still find yourself having problems
@@ -122,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 28    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 29    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -147,6 +147,10 @@ Public Class Player
     Dim Eq As New BASS_DX8_PARAMEQ()
 
     Public WasPlaying As String
+
+    Dim executable As String = Application.ExecutablePath
+    Dim tabla() As String = Split(executable, "\")
+    Public exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
 
 #End Region
 
@@ -176,69 +180,78 @@ Public Class Player
         ' Get the actual EXE path, create the servers folder and a folder for each station. Then - in case the user has just upgraded from a version
         ' prior to 1.10, erase everything in all servers folders.
 
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
+        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers")
+        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & DIFM.Text)
+        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & JazzRadio.Text)
+        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & SKYFM.Text)
+        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & RockRadio.Text)
 
-        My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers")
-        My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & DIFM.Text)
-        My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & JazzRadio.Text)
-        My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & SKYFM.Text)
-        My.Computer.FileSystem.CreateDirectory(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & RockRadio.Text)
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & DIFM.Text & "\*.pls") Then
+            Kill(exeFolder & "\servers\" & DIFM.Text & "\*.pls")
+        End If
 
-        Try
-            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & DIFM.Text & "\*.*")
-        Catch
-        End Try
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & DIFM.Text & "\*.asx") Then
+            Kill(exeFolder & "\servers\" & DIFM.Text & "\*.asx")
+        End If
 
-        Try
-            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & JazzRadio.Text & "\*.*")
-        Catch
-        End Try
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & JazzRadio.Text & "\*.pls") Then
+            Kill(exeFolder & "\servers\" & JazzRadio.Text & "\*.*")
+        End If
 
-        Try
-            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & SKYFM.Text & "\*.*")
-        Catch
-        End Try
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & JazzRadio.Text & "\*.asx") Then
+            Kill(exeFolder & "\servers\" & JazzRadio.Text & "\*.*")
+        End If
 
-        Try
-            Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & RockRadio.Text & "\*.*")
-        Catch
-        End Try
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & SKYFM.Text & "\*.pls") Then
+            Kill(exeFolder & "\servers\" & SKYFM.Text & "\*.*")
+        End If
 
-        ' Load plugins for WMA and AAC support
-        Bass.BASS_PluginLoad("basswma.dll")
-        Bass.BASS_PluginLoad("bassaac.dll")
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & SKYFM.Text & "\*.asx") Then
+            Kill(exeFolder & "\servers\" & SKYFM.Text & "\*.*")
+        End If
 
-        ' Accomodate internal version number to my own weird numbering scheme. It goes as follows:
-        ' Version 1.0.0.0 is 1.0
-        ' Version 1.0.1.0 is 1.1 Beta 1, 1.0.2.0 is 1.1 Beta 2 and so on
-        ' Version 1.1 is 1.1
-        ' Version 1.1.1.0 is 1.2 Beta 1, 1.1.2.0 is 1.2 Beta 2 and so on
-        Me.Text += My.Application.Info.Version.Major.ToString & "." & My.Application.Info.Version.Minor.ToString
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & RockRadio.Text & "\*.pls") Then
+            Kill(exeFolder & "\servers\" & RockRadio.Text & "\*.*")
+        End If
 
-        If My.Application.Info.Version.Build.ToString > 0 Then
-            Me.Text += " Beta " & My.Application.Info.Version.Build.ToString
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & RockRadio.Text & "\*.asx") Then
+            Kill(exeFolder & "\servers\" & RockRadio.Text & "\*.*")
+        End If
 
-            If My.Application.Info.Version.Minor.ToString = 9 Then
-                Me.Text = Me.Text.Replace(My.Application.Info.Version.Major.ToString & "." & My.Application.Info.Version.Minor.ToString, My.Application.Info.Version.Major.ToString + 1 & ".0")
-            Else
-                Me.Text = Me.Text.Replace(My.Application.Info.Version.Major.ToString & "." & My.Application.Info.Version.Minor.ToString, My.Application.Info.Version.Major.ToString & "." & My.Application.Info.Version.Minor.ToString + 1)
+            ' Load plugins for WMA and AAC support
+            Bass.BASS_PluginLoad("basswma.dll")
+            Bass.BASS_PluginLoad("bassaac.dll")
+
+            ' Accomodate internal version number to my own weird numbering scheme. It goes as follows:
+            ' Version 1.0.0.0 is 1.0
+            ' Version 1.0.1.0 is 1.1 Beta 1, 1.0.2.0 is 1.1 Beta 2 and so on
+            ' Version 1.1 is 1.1
+            ' Version 1.1.1.0 is 1.2 Beta 1, 1.1.2.0 is 1.2 Beta 2 and so on
+            Me.Text += My.Application.Info.Version.Major.ToString & "." & My.Application.Info.Version.Minor.ToString
+
+            If My.Application.Info.Version.Build.ToString > 0 Then
+                Me.Text += " Beta " & My.Application.Info.Version.Build.ToString
+
+                If My.Application.Info.Version.Minor.ToString = 9 Then
+                    Me.Text = Me.Text.Replace(My.Application.Info.Version.Major.ToString & "." & My.Application.Info.Version.Minor.ToString, My.Application.Info.Version.Major.ToString + 1 & ".0")
+                Else
+                    Me.Text = Me.Text.Replace(My.Application.Info.Version.Major.ToString & "." & My.Application.Info.Version.Minor.ToString, My.Application.Info.Version.Major.ToString & "." & My.Application.Info.Version.Minor.ToString + 1)
+                End If
             End If
-        End If
 
-        ' Load the options.ini file
-        LoadOptions()
+            ' Load the options.ini file
+            LoadOptions()
 
-        ' Check on the command line arguments if playback should start right at startup (i.e. we just got an update!)
-        Dim commandline As String = CommandLineArgs.ToString
+            ' Check on the command line arguments if playback should start right at startup (i.e. we just got an update!)
+            Dim commandline As String = CommandLineArgs.ToString
 
-        For Each commandline In CommandLineArgs
-            TotalCommandLine += commandline
-        Next
+            For Each commandline In CommandLineArgs
+                TotalCommandLine += commandline
+            Next
 
-        If TotalCommandLine.Contains("*StartPlaying*") Then
-            RestartPlayback = True
-        End If
+            If TotalCommandLine.Contains("*StartPlaying*") Then
+                RestartPlayback = True
+            End If
 
     End Sub
 
@@ -300,9 +313,7 @@ Public Class Player
 
     Private Sub Form1_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
 
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\options.ini"
+        Dim file As String = exeFolder & "\options.ini"
 
         If FadeOut.Enabled = False Then
             Try
@@ -890,6 +901,10 @@ Public Class Player
     Private Sub StationChooser_TextChanged(sender As Object, e As System.EventArgs) Handles StationChooser.TextChanged
 
         ' Long lists were removed by _Tobias. Now the player doesn't have to be updated in order to add new channels!
+        PlayStop.Enabled = False
+        StationChooser.Enabled = False
+        SelectedChannel.Enabled = False
+        SelectedServer.Enabled = False
 
         SelectedChannel.Items.Clear()
 
@@ -897,48 +912,7 @@ Public Class Player
             SelectedChannel.Items.Add("My Favorites")
         End If
 
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-
-        Dim chdb = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\" & StationChooser.Text & "\channels.db"
-
-        Dim readerChdb As IO.StreamReader = channelDb(chdb)
-
-        Do While (readerChdb.Peek > -1)
-            Dim line = readerChdb.ReadLine()
-            Dim splitter = Split(line, "|")
-            SelectedChannel.Items.Add(splitter(0))
-        Loop
-
-        readerChdb.Close()
-
-        If StationChooser.Text = DIFM.Text Then
-
-            SelectedChannel.SelectedIndex = DIChannel
-            Calendar.Enabled = True
-            History.Enabled = True
-
-        ElseIf StationChooser.Text = SKYFM.Text Then
-
-            SelectedChannel.SelectedIndex = SKYChannel
-            Calendar.Enabled = False
-            History.Enabled = True
-
-        ElseIf StationChooser.Text = JazzRadio.Text Then
-
-            SelectedChannel.SelectedIndex = JazzChannel
-            Calendar.Enabled = False
-            History.Enabled = False
-            Forums.Enabled = False
-
-        ElseIf StationChooser.Text = RockRadio.Text Then
-
-            SelectedChannel.SelectedIndex = RockChannel
-            Calendar.Enabled = False
-            History.Enabled = False
-            Forums.Enabled = False
-
-        End If
+        DownloadDb.RunWorkerAsync()
 
     End Sub
 
@@ -974,13 +948,15 @@ Public Class Player
             SKYChannel = SelectedChannel.SelectedIndex
         ElseIf StationChooser.Text = JazzRadio.Text Then
             JazzChannel = SelectedChannel.SelectedIndex
+        ElseIf StationChooser.Text = RockRadio.Text Then
+            RockChannel = SelectedChannel.SelectedIndex
         End If
 
     End Sub
 
     Private Sub SelectedChannel_TextChanged(sender As Object, e As System.EventArgs) Handles SelectedChannel.TextChanged
         ' Check if the Forums button should be enabled or not and exit as soon as there is a match
-        ' Or always disable the button if JazzRadio is selected
+        ' Or always disable the button if JazzRadio or RockRadio is selected
 
         Dim Channels As String = NoForumsChannel
         Dim Channel() As String = Split(Channels, ";")
@@ -990,7 +966,7 @@ Public Class Player
             ChannelNumber += 1
             If ChannelNumber <= Channel.Length - 1 Then
 
-                If SelectedChannel.Text = Channel(ChannelNumber) OrElse StationChooser.Text = JazzRadio.Text Then
+                If SelectedChannel.Text = Channel(ChannelNumber) OrElse StationChooser.Text = JazzRadio.Text OrElse StationChooser.Text = RockRadio.Text Then
                     Forums.Enabled = False
                     Exit Do
                 Else
@@ -1054,11 +1030,7 @@ Public Class Player
 
         Dim channel As String = SelectedChannel.Text
         Dim domain As String = StationChooser.Tag
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim serversFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\" & StationChooser.Text
-
-        ' Get the current channel, remove spaces and convert names to their URL counterparts if necessary
+        Dim serversFolder = exeFolder & "\servers\" & StationChooser.Text
 
         ' create servers directory if doesn't exist
         My.Computer.FileSystem.CreateDirectory(serversFolder)
@@ -1327,7 +1299,7 @@ Public Class Player
             Forums.Enabled = False
             History.Enabled = False
             Calendar.Enabled = False
-        ElseIf StationChooser.Text = JazzRadio.Text = False Then
+        ElseIf StationChooser.Text = JazzRadio.Text = False And StationChooser.Text = RockRadio.Text = False Then
             History.Enabled = True
 
             If StationChooser.Text = SKYFM.Text = False Then
@@ -1453,14 +1425,13 @@ again:
     Private Sub GetUpdates_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetUpdates.DoWork
 
         Dim WebClient As Net.WebClient = New Net.WebClient()
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Info.txt"
+        Dim file As String = exeFolder & "\Info.txt"
         Dim DownloadedString As String
 
         Try
             DownloadedString = WebClient.DownloadString("http://www.tobiass.eu/files/Info.txt")
         Catch
+            Exit Sub
         End Try
 
         Dim writer As New IO.StreamWriter(file, False)
@@ -1487,7 +1458,6 @@ again:
 
         reader.Close()
 
-        Kill(file)
     End Sub
 
     Private Sub GetUpdates_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles GetUpdates.RunWorkerCompleted
@@ -1530,12 +1500,65 @@ again:
 
             End If
 
-            Options.UndefinedProgress.Hide()
-            Options.Status.Text = "Status: Idle"
-            Options.LookNow.Enabled = True
+
 
             AtStartup = False
         End If
+
+        Kill("Info.txt")
+
+        Options.UndefinedProgress.Hide()
+        Options.Status.Text = "Status: Idle"
+        Options.LookNow.Enabled = True
+    End Sub
+
+    Private Sub DownloadDb_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadDb.DoWork
+
+        Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
+
+        Dim readerChdb As IO.StreamReader = channelDb(chdb)
+
+        Do While (readerChdb.Peek > -1)
+            Dim line = readerChdb.ReadLine()
+            Dim splitter = Split(line, "|")
+            SelectedChannel.Items.Add(splitter(0))
+        Loop
+
+        readerChdb.Close()
+        readerChdb.Dispose()
+
+    End Sub
+
+    Private Sub DownloadDb_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadDb.RunWorkerCompleted
+
+        If StationChooser.Text = DIFM.Text Then
+
+            SelectedChannel.SelectedIndex = DIChannel
+            Calendar.Enabled = True
+            History.Enabled = True
+
+        ElseIf StationChooser.Text = SKYFM.Text Then
+
+            SelectedChannel.SelectedIndex = SKYChannel
+            Calendar.Enabled = False
+            History.Enabled = True
+
+        ElseIf StationChooser.Text = JazzRadio.Text Then
+
+            SelectedChannel.SelectedIndex = JazzChannel
+            Calendar.Enabled = False
+            History.Enabled = False
+            Forums.Enabled = False
+
+        ElseIf StationChooser.Text = RockRadio.Text Then
+
+            SelectedChannel.SelectedIndex = RockChannel
+            Calendar.Enabled = False
+            History.Enabled = False
+            Forums.Enabled = False
+
+        End If
+
     End Sub
 
 #End Region
@@ -1848,9 +1871,7 @@ again:
 
     Public Sub LoadOptions()
 
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\options.ini"
+        Dim file As String = exeFolder & "\options.ini"
 
         ' If the options file doesn't exist, create it with some default values
 
@@ -2346,6 +2367,7 @@ again:
         If My.Computer.FileSystem.FileExists(loc) = False Or Split(fileinfo.LastWriteTime.ToUniversalTime)(0) = Split(DateTime.UtcNow.ToUniversalTime)(0) = False Then
             Dim wc As Net.WebClient = New Net.WebClient
             Dim data
+
             Try
                 data = wc.DownloadString("http://tobiass.eu/channels.php?domain=" & StationChooser.Tag)
             Catch ex As Exception
@@ -2362,6 +2384,5 @@ again:
     End Function
 
 #End Region
-
 
 End Class

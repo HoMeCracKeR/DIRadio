@@ -75,6 +75,7 @@ Partial Class Player
         Me.GetUpdates = New System.ComponentModel.BackgroundWorker()
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.DownloadDb = New System.ComponentModel.BackgroundWorker()
         Me.CopyTitleMenu.SuspendLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TrayMenu.SuspendLayout()
@@ -347,7 +348,6 @@ Partial Class Player
         Me.SelectedChannel.FormattingEnabled = True
         Me.SelectedChannel.IntegralHeight = False
         Me.SelectedChannel.ItemHeight = 14
-        Me.SelectedChannel.Items.AddRange(New Object() {"Ambient", "Breaks", "Chillout", "Chillout Dreams", "Chiptunes", "Classic Electronica", "Classic EuroDance", "Classic Trance", "Classic Vocal Trance", "Club Dubstep", "Club Sounds", "Cosmic Downtempo", "Deep House", "Deep Nu-Disco", "Disco House", "DJ Mixes", "Drum 'n Bass", "Dubstep", "Electro House", "Epic Trance", "EuroDance", "Funky House", "Future Synthpop", "Goa-Psy Trance", "Hands Up", "Hard Dance", "Hardcore", "Hardstyle", "House", "Latin House", "Liquid DnB", "Lounge", "Minimal", "Oldschool Acid", "Progressive", "Progressive Psy", "PsyChill", "Soulful House", "Space Dreams", "Tech House", "Techno", "Trance", "Tribal House", "UK Garage", "Vocal Chillout", "Vocal Trance"})
         Me.SelectedChannel.Location = New System.Drawing.Point(36, 59)
         Me.SelectedChannel.MaxDropDownItems = 7
         Me.SelectedChannel.Name = "SelectedChannel"
@@ -520,6 +520,9 @@ Partial Class Player
         Me.Label2.TabIndex = 13
         Me.Label2.Text = " "
         '
+        'DownloadDb
+        '
+        '
         'Player
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -599,5 +602,6 @@ Partial Class Player
     Friend WithEvents CopyServerURLToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RockRadio As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents DownloadDb As System.ComponentModel.BackgroundWorker
 
 End Class

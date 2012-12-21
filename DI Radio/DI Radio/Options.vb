@@ -46,10 +46,16 @@
 
         ' Load values from the global variables of the main form and accomodate the interface
 
-        DISetting = Player.DIFormat
-        JazzSetting = Player.JazzFormat
-        SKYSetting = Player.SKYFormat
-
+        If Player.PremiumFormats = False Then
+            DISetting = Player.DIFormat
+            JazzSetting = Player.JazzFormat
+            SKYSetting = Player.SKYFormat
+        Else
+            DISettingPremium = Player.DIFormat
+            JazzSettingPremium = Player.JazzFormat
+            SKYSettingPremium = Player.SKYFormat
+        End If
+        
         NotificationTitle.Checked = Player.NotificationTitle
         Visualisation.Checked = Player.Visualisation
         NotificationIcon.Checked = Player.NotificationIcon
@@ -643,21 +649,7 @@
 
             Player.GetUpdates.RunWorkerAsync()
         Else
-            Dim executable As String = Application.ExecutablePath
-            Dim tabla() As String = Split(executable, "\")
-            Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
-
-            If My.Computer.FileSystem.FileExists(file) Then
-                If Player.PlayStop.Tag = "Stop" Then
-                    Process.Start(file, "*FromMainApplication* *WasPlaying*")
-                Else
-                    Process.Start(file, "*FromMainApplication*")
-                End If
-
-                End
-            Else
-                Process.Start("http://tobiass.eu/")
-            End If
+            DownloadUpdater.RunWorkerAsync()
         End If
     End Sub
 
@@ -1322,7 +1314,7 @@
 
             If Player.StationChooser.Text = Player.DIFM.Text Then
 
-                If Player.SelectedChannel.Items.Item(37).ToString() = "My Favorites" = False Then
+                If Player.SelectedChannel.Items.Item(38).ToString() = "My Favorites" = False Then
                     Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
@@ -1334,7 +1326,7 @@
 
             ElseIf Player.StationChooser.Text = Player.JazzRadio.Text Then
 
-                If Player.SelectedChannel.Items.Item(15).ToString() = "My Favorites" = False Then
+                If Player.SelectedChannel.Items.Item(16).ToString() = "My Favorites" = False Then
                     Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
@@ -1342,9 +1334,6 @@
 
 
         End If
-
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
 
         If PremiumFormats.Checked = Player.PremiumFormats = False OrElse ListenKey.Text = Player.ListenKey = False Then
 
@@ -1389,15 +1378,15 @@
             End If
 
             Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\Digitally Imported\*.*")
+                Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
             Catch
             End Try
             Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\JazzRadio\*.*")
+                Kill(Player.exeFolder & "servers\JazzRadio\*.*")
             Catch
             End Try
             Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\SKY.FM\*.*")
+                Kill(Player.exeFolder & "servers\SKY.FM\*.*")
             Catch
             End Try
 
@@ -1437,7 +1426,7 @@
 
 
             Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\Digitally Imported\*.*")
+                Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
             Catch
             End Try
 
@@ -1478,7 +1467,7 @@
 
 
             Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\SKY.FM\*.*")
+                Kill(Player.exeFolder & "servers\SKY.FM\*.*")
             Catch
             End Try
 
@@ -1517,7 +1506,7 @@
 
 
             Try
-                Kill(Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "servers\JazzRadio\*.*")
+                Kill(Player.exeFolder & "servers\JazzRadio\*.*")
             Catch
             End Try
 
@@ -1822,11 +1811,9 @@
         LookNow.Enabled = False
         UndefinedProgress.Hide()
 
-
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
+        Dim file As String = Player.exeFolder & "\Updater.exe"
         Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+
         Dim theResponse As Net.HttpWebResponse
         Dim theRequest As Net.HttpWebRequest
 
@@ -1849,13 +1836,13 @@
         Dim nRead As Integer
 
         Do
-            Dim leesByte(1024) As Byte
-            Dim ingeheugen As IO.Stream = theResponse.GetResponseStream
-            Dim totaalBytes As Integer
-            totaalBytes = ingeheugen.Read(leesByte, 0, 1024)
-            If totaalBytes = 0 Then Exit Do
-            FS.Write(leesByte, 0, totaalBytes)
-            nRead += totaalBytes
+            Dim readByte(1024) As Byte
+            Dim inMemory As IO.Stream = theResponse.GetResponseStream
+            Dim totalBytes As Integer
+            totalBytes = inMemory.Read(readByte, 0, 1024)
+            If totalBytes = 0 Then Exit Do
+            FS.Write(readByte, 0, totalBytes)
+            nRead += totalBytes
             Dim percent As Short = (nRead * 100) / length
             Status.Text = "Status: Downloading, please wait. " & percent & "% complete."
             ProgressBar.Value = percent
