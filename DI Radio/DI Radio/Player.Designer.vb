@@ -28,11 +28,10 @@ Partial Class Player
         Me.CopyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.GoogleSearchToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PLSDownloader = New System.ComponentModel.BackgroundWorker()
+        Me.ServersDownloader = New System.ComponentModel.BackgroundWorker()
         Me.Bufer = New System.ComponentModel.BackgroundWorker()
         Me.VisTimer = New System.Windows.Forms.Timer(Me.components)
         Me.TimePassed = New System.Windows.Forms.Timer(Me.components)
-        Me.VisualisationBox = New System.Windows.Forms.PictureBox()
         Me.TrayIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.TrayMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.OptionsTray = New System.Windows.Forms.ToolStripMenuItem()
@@ -48,12 +47,12 @@ Partial Class Player
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ExitTray = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.PlayStop = New System.Windows.Forms.Button()
-        Me.OptionsButton = New System.Windows.Forms.Button()
-        Me.Mute = New System.Windows.Forms.Button()
-        Me.Calendar = New System.Windows.Forms.Button()
-        Me.History = New System.Windows.Forms.Button()
         Me.Forums = New System.Windows.Forms.Button()
+        Me.History = New System.Windows.Forms.Button()
+        Me.Calendar = New System.Windows.Forms.Button()
+        Me.Mute = New System.Windows.Forms.Button()
+        Me.OptionsButton = New System.Windows.Forms.Button()
+        Me.PlayStop = New System.Windows.Forms.Button()
         Me.Volume = New System.Windows.Forms.TrackBar()
         Me.TimerString = New System.Windows.Forms.Label()
         Me.RadioString = New System.Windows.Forms.Label()
@@ -63,6 +62,7 @@ Partial Class Player
         Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Marquee = New System.Windows.Forms.ProgressBar()
         Me.ControlsPanel = New System.Windows.Forms.Panel()
+        Me.DownloadingMessage = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.StationChooser = New System.Windows.Forms.ToolStripSplitButton()
@@ -76,13 +76,14 @@ Partial Class Player
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
         Me.Label2 = New System.Windows.Forms.Label()
         Me.DownloadDb = New System.ComponentModel.BackgroundWorker()
+        Me.VisualisationBox = New System.Windows.Forms.PictureBox()
         Me.CopyTitleMenu.SuspendLayout()
-        CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ServerMenu.SuspendLayout()
         Me.ControlsPanel.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
+        CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'CopyTitleMenu
@@ -111,9 +112,9 @@ Partial Class Player
         Me.GoogleSearchToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
         Me.GoogleSearchToolStripMenuItem.Text = "Google search"
         '
-        'PLSDownloader
+        'ServersDownloader
         '
-        Me.PLSDownloader.WorkerSupportsCancellation = True
+        Me.ServersDownloader.WorkerSupportsCancellation = True
         '
         'Bufer
         '
@@ -126,18 +127,6 @@ Partial Class Player
         'TimePassed
         '
         Me.TimePassed.Interval = 1000
-        '
-        'VisualisationBox
-        '
-        Me.VisualisationBox.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.VisualisationBox.Location = New System.Drawing.Point(12, 12)
-        Me.VisualisationBox.Name = "VisualisationBox"
-        Me.VisualisationBox.Size = New System.Drawing.Size(331, 334)
-        Me.VisualisationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
-        Me.VisualisationBox.TabIndex = 3
-        Me.VisualisationBox.TabStop = False
         '
         'TrayIcon
         '
@@ -233,52 +222,17 @@ Partial Class Player
         Me.ExitTray.Size = New System.Drawing.Size(172, 22)
         Me.ExitTray.Text = "Exit"
         '
-        'PlayStop
+        'Forums
         '
-        Me.PlayStop.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.PlayStop.Image = CType(resources.GetObject("PlayStop.Image"), System.Drawing.Image)
-        Me.PlayStop.Location = New System.Drawing.Point(0, 17)
-        Me.PlayStop.Name = "PlayStop"
-        Me.PlayStop.Size = New System.Drawing.Size(30, 30)
-        Me.PlayStop.TabIndex = 1
-        Me.PlayStop.Tag = "Play"
-        Me.ToolTip.SetToolTip(Me.PlayStop, "Play/Stop")
-        Me.PlayStop.UseVisualStyleBackColor = True
-        '
-        'OptionsButton
-        '
-        Me.OptionsButton.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.OptionsButton.Image = CType(resources.GetObject("OptionsButton.Image"), System.Drawing.Image)
-        Me.OptionsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.OptionsButton.Location = New System.Drawing.Point(36, 20)
-        Me.OptionsButton.Name = "OptionsButton"
-        Me.OptionsButton.Size = New System.Drawing.Size(25, 25)
-        Me.OptionsButton.TabIndex = 2
-        Me.ToolTip.SetToolTip(Me.OptionsButton, "Options")
-        Me.OptionsButton.UseVisualStyleBackColor = True
-        '
-        'Mute
-        '
-        Me.Mute.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.Mute.Image = CType(resources.GetObject("Mute.Image"), System.Drawing.Image)
-        Me.Mute.Location = New System.Drawing.Point(160, 20)
-        Me.Mute.Name = "Mute"
-        Me.Mute.Size = New System.Drawing.Size(25, 25)
-        Me.Mute.TabIndex = 6
-        Me.Mute.Tag = "Mute"
-        Me.ToolTip.SetToolTip(Me.Mute, "Mute/Unmute")
-        Me.Mute.UseVisualStyleBackColor = True
-        '
-        'Calendar
-        '
-        Me.Calendar.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.Calendar.Image = CType(resources.GetObject("Calendar.Image"), System.Drawing.Image)
-        Me.Calendar.Location = New System.Drawing.Point(67, 20)
-        Me.Calendar.Name = "Calendar"
-        Me.Calendar.Size = New System.Drawing.Size(25, 25)
-        Me.Calendar.TabIndex = 3
-        Me.ToolTip.SetToolTip(Me.Calendar, "Open channel's calendar")
-        Me.Calendar.UseVisualStyleBackColor = True
+        Me.Forums.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.Forums.Image = CType(resources.GetObject("Forums.Image"), System.Drawing.Image)
+        Me.Forums.ImageAlign = System.Drawing.ContentAlignment.BottomRight
+        Me.Forums.Location = New System.Drawing.Point(129, 20)
+        Me.Forums.Name = "Forums"
+        Me.Forums.Size = New System.Drawing.Size(25, 25)
+        Me.Forums.TabIndex = 5
+        Me.ToolTip.SetToolTip(Me.Forums, "Open channel's forums")
+        Me.Forums.UseVisualStyleBackColor = True
         '
         'History
         '
@@ -292,17 +246,52 @@ Partial Class Player
         Me.ToolTip.SetToolTip(Me.History, "Open channel's track history")
         Me.History.UseVisualStyleBackColor = True
         '
-        'Forums
+        'Calendar
         '
-        Me.Forums.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.Forums.Image = CType(resources.GetObject("Forums.Image"), System.Drawing.Image)
-        Me.Forums.ImageAlign = System.Drawing.ContentAlignment.BottomRight
-        Me.Forums.Location = New System.Drawing.Point(129, 20)
-        Me.Forums.Name = "Forums"
-        Me.Forums.Size = New System.Drawing.Size(25, 25)
-        Me.Forums.TabIndex = 5
-        Me.ToolTip.SetToolTip(Me.Forums, "Open channel's forums")
-        Me.Forums.UseVisualStyleBackColor = True
+        Me.Calendar.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.Calendar.Image = CType(resources.GetObject("Calendar.Image"), System.Drawing.Image)
+        Me.Calendar.Location = New System.Drawing.Point(67, 20)
+        Me.Calendar.Name = "Calendar"
+        Me.Calendar.Size = New System.Drawing.Size(25, 25)
+        Me.Calendar.TabIndex = 3
+        Me.ToolTip.SetToolTip(Me.Calendar, "Open channel's calendar")
+        Me.Calendar.UseVisualStyleBackColor = True
+        '
+        'Mute
+        '
+        Me.Mute.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.Mute.Image = CType(resources.GetObject("Mute.Image"), System.Drawing.Image)
+        Me.Mute.Location = New System.Drawing.Point(160, 20)
+        Me.Mute.Name = "Mute"
+        Me.Mute.Size = New System.Drawing.Size(25, 25)
+        Me.Mute.TabIndex = 6
+        Me.Mute.Tag = "Mute"
+        Me.ToolTip.SetToolTip(Me.Mute, "Mute")
+        Me.Mute.UseVisualStyleBackColor = True
+        '
+        'OptionsButton
+        '
+        Me.OptionsButton.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.OptionsButton.Image = CType(resources.GetObject("OptionsButton.Image"), System.Drawing.Image)
+        Me.OptionsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.OptionsButton.Location = New System.Drawing.Point(36, 20)
+        Me.OptionsButton.Name = "OptionsButton"
+        Me.OptionsButton.Size = New System.Drawing.Size(25, 25)
+        Me.OptionsButton.TabIndex = 2
+        Me.ToolTip.SetToolTip(Me.OptionsButton, "Options")
+        Me.OptionsButton.UseVisualStyleBackColor = True
+        '
+        'PlayStop
+        '
+        Me.PlayStop.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.PlayStop.Image = CType(resources.GetObject("PlayStop.Image"), System.Drawing.Image)
+        Me.PlayStop.Location = New System.Drawing.Point(0, 17)
+        Me.PlayStop.Name = "PlayStop"
+        Me.PlayStop.Size = New System.Drawing.Size(30, 30)
+        Me.PlayStop.TabIndex = 1
+        Me.PlayStop.Tag = "Play"
+        Me.ToolTip.SetToolTip(Me.PlayStop, "Play")
+        Me.PlayStop.UseVisualStyleBackColor = True
         '
         'Volume
         '
@@ -348,6 +337,7 @@ Partial Class Player
         Me.SelectedChannel.FormattingEnabled = True
         Me.SelectedChannel.IntegralHeight = False
         Me.SelectedChannel.ItemHeight = 14
+        Me.SelectedChannel.Items.AddRange(New Object() {"Downloading channels..."})
         Me.SelectedChannel.Location = New System.Drawing.Point(36, 59)
         Me.SelectedChannel.MaxDropDownItems = 7
         Me.SelectedChannel.Name = "SelectedChannel"
@@ -393,6 +383,7 @@ Partial Class Player
         'ControlsPanel
         '
         Me.ControlsPanel.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.ControlsPanel.Controls.Add(Me.DownloadingMessage)
         Me.ControlsPanel.Controls.Add(Me.Label1)
         Me.ControlsPanel.Controls.Add(Me.ToolStrip1)
         Me.ControlsPanel.Controls.Add(Me.EditFavorites)
@@ -413,6 +404,24 @@ Partial Class Player
         Me.ControlsPanel.Name = "ControlsPanel"
         Me.ControlsPanel.Size = New System.Drawing.Size(330, 81)
         Me.ControlsPanel.TabIndex = 2
+        '
+        'DownloadingMessage
+        '
+        Me.DownloadingMessage.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.DownloadingMessage.DropDownHeight = 394
+        Me.DownloadingMessage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.DownloadingMessage.DropDownWidth = 149
+        Me.DownloadingMessage.Enabled = False
+        Me.DownloadingMessage.FormattingEnabled = True
+        Me.DownloadingMessage.IntegralHeight = False
+        Me.DownloadingMessage.ItemHeight = 14
+        Me.DownloadingMessage.Items.AddRange(New Object() {"Downloading channels..."})
+        Me.DownloadingMessage.Location = New System.Drawing.Point(36, 59)
+        Me.DownloadingMessage.MaxDropDownItems = 7
+        Me.DownloadingMessage.Name = "DownloadingMessage"
+        Me.DownloadingMessage.Size = New System.Drawing.Size(149, 22)
+        Me.DownloadingMessage.Sorted = True
+        Me.DownloadingMessage.TabIndex = 13
         '
         'Label1
         '
@@ -523,6 +532,18 @@ Partial Class Player
         'DownloadDb
         '
         '
+        'VisualisationBox
+        '
+        Me.VisualisationBox.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.VisualisationBox.Location = New System.Drawing.Point(12, 12)
+        Me.VisualisationBox.Name = "VisualisationBox"
+        Me.VisualisationBox.Size = New System.Drawing.Size(331, 334)
+        Me.VisualisationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
+        Me.VisualisationBox.TabIndex = 3
+        Me.VisualisationBox.TabStop = False
+        '
         'Player
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -541,18 +562,18 @@ Partial Class Player
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "DI Radio Player "
         Me.CopyTitleMenu.ResumeLayout(False)
-        CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TrayMenu.ResumeLayout(False)
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ServerMenu.ResumeLayout(False)
         Me.ControlsPanel.ResumeLayout(False)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
+        CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents VisualisationBox As System.Windows.Forms.PictureBox
-    Friend WithEvents PLSDownloader As System.ComponentModel.BackgroundWorker
+    Friend WithEvents ServersDownloader As System.ComponentModel.BackgroundWorker
     Friend WithEvents Bufer As System.ComponentModel.BackgroundWorker
     Friend WithEvents VisTimer As System.Windows.Forms.Timer
     Friend WithEvents TimePassed As System.Windows.Forms.Timer
@@ -603,5 +624,6 @@ Partial Class Player
     Friend WithEvents RockRadio As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents DownloadDb As System.ComponentModel.BackgroundWorker
+    Friend WithEvents DownloadingMessage As System.Windows.Forms.ComboBox
 
 End Class

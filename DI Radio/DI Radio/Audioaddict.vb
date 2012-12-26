@@ -45,7 +45,12 @@ Public Class Audioaddict
             If v.Contains(".pls") And firstPlsAdded = False Then
                 ' when the url has .pls in it and there aren't any .pls urls parsed yet, parse it
 
-                servers.AddRange(GetFromPls("file", Download(v)))
+                Dim w As String
+                For Each w In GetFromPls("file", Download(v))
+                    If Not servers.Contains(w) Then
+                        servers.Add(w)
+                    End If
+                Next
                 firstPlsAdded = True
             ElseIf Not v.Contains(".pls") Then
                 ' when it's a normal url (pubX.di.fm/y)

@@ -122,13 +122,12 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 29    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 30    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
 #Region "Other"
 
-    Public WithEvents Seconds As New Label          ' -> Used to know when the connection dropped
     Public drawing As New Un4seen.Bass.Misc.Visuals ' -> Used to draw the vis
     Public RestartPlayback As Boolean               ' -> Used to know if playback should be restarted after an operation has completed (changing channels, for example)
     Public stream As Integer                        ' -> The stream that is passed to BASS so it plays it
@@ -158,11 +157,13 @@ Public Class Player
 
 #Region "Main Form events"
 
-
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
         ' I know how to check my threads. Don't need VS babysitting me
         Control.CheckForIllegalCrossThreadCalls = False
+
+        DownloadingMessage.SelectedIndex = 0
+        DownloadingMessage.Show()
 
         ' Try to open a device for BASS
         If Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, Me.Handle, Nothing) = False Then
@@ -373,6 +374,7 @@ Public Class Player
                 End If
 
                 writer.Close()
+                writer.Dispose()
 
             Catch ex As Exception
 
@@ -546,7 +548,7 @@ Public Class Player
                 End If
             End If
 
-            If PLSDownloader.IsBusy = False Then
+            If ServersDownloader.IsBusy = False Then
                 SelectedChannel.Enabled = True
             End If
 
@@ -818,6 +820,7 @@ Public Class Player
     End Sub
 
     Private Sub Mute_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Mute.Click
+
         If Volume.Value = 0 Then
 
             If oldvol <= 0 Then
@@ -825,17 +828,14 @@ Public Class Player
             Else
                 Volume.Value = oldvol
             End If
-            Mute.Tag = "Mute"
 
         Else
 
             oldvol = Volume.Value
             Volume.Value = 0
-            Mute.Tag = "Unmute"
 
         End If
 
-        ToolTip.SetToolTip(Mute, Mute.Tag)
     End Sub
 
     Private Sub Volume_ValueChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Volume.ValueChanged
@@ -864,26 +864,22 @@ Public Class Player
     End Sub
 
     Private Sub RefreshFavorites_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles RefreshFavorites.LinkClicked
-        Try
-            OldFav = SelectedServer.Text
-            Dim executable As String = Application.ExecutablePath
-            Dim tabla() As String = Split(executable, "\")
 
-            Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\servers\" & StationChooser.Text & "\myfavorites."
+        OldFav = SelectedServer.Text
+        Dim file As String = exeFolder & "\servers\" & StationChooser.Text & "\favorites.db"
 
-            If My.Computer.FileSystem.FileExists(file & "pls") Then
-                Kill(file & "pls")
-            ElseIf My.Computer.FileSystem.FileExists(file & "asx") Then
-                Kill(file & "asx")
-            End If
+        If My.Computer.FileSystem.FileExists(file) Then
+            Kill(file)
+        End If
 
-            If PlayStop.Tag = "Stop" Then
-                RefreshFavorites.Enabled = False
-            End If
+        If PlayStop.Tag = "Stop" Then
+            RefreshFavorites.Enabled = False
+        End If
 
+        If SelectedChannel.Enabled = True Then
             SelectedChannel_SelectedIndexChanged(Me, Nothing)
-        Catch
-        End Try
+        End If
+
     End Sub
 
     Private Sub StationChooser_ButtonClick(sender As Object, e As System.EventArgs) Handles StationChooser.ButtonClick
@@ -912,6 +908,9 @@ Public Class Player
             SelectedChannel.Items.Add("My Favorites")
         End If
 
+        DownloadingMessage.Show()
+        Marquee.Show()
+
         DownloadDb.RunWorkerAsync()
 
     End Sub
@@ -923,7 +922,11 @@ Public Class Player
         End If
 
         StationChooser.Enabled = False
-        PLSDownloader.RunWorkerAsync()
+
+        If ServersDownloader.IsBusy = False Then
+            ServersDownloader.RunWorkerAsync()
+        End If
+
         Marquee.Show()
         SelectedChannel.Enabled = False
         SelectedServer.Enabled = False
@@ -1015,11 +1018,39 @@ Public Class Player
 
     End Sub
 
+    Private Sub TimerString_TextChanged(sender As System.Object, e As System.EventArgs) Handles TimerString.TextChanged
+
+        ' BASS reporting that -01 seconds have passed since playback has started means that connection has been droppped
+        ' In that case, if the user isn't using the My Favourites playlist, automatically stop playback, select a new
+        ' server and reconnect
+
+        If TimerString.Text.EndsWith("-01") Then
+            PlayStop_Click(Me, Nothing)
+            Bufer.CancelAsync()
+
+            If SelectedChannel.Text = "My Favorites" = False Then
+
+                If SelectedServer.SelectedIndex = SelectedServer.Items.Count - 1 = False Then
+                    SelectedServer.SelectedIndex = SelectedServer.SelectedIndex + 1
+                Else
+                    SelectedServer.SelectedIndex = 0
+                End If
+
+                PlayStop_Click(Me, Nothing)
+            Else
+                RadioString.BackColor = Color.Red
+                RadioString.ForeColor = Color.White
+                RadioString.Text = "Lost connection to channel."
+            End If
+        End If
+
+    End Sub
+
 #End Region
 
 #Region "Background Workers"
 
-    Private Sub PLSDownloader_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles PLSDownloader.DoWork
+    Private Sub ServersDownloader_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles ServersDownloader.DoWork
         ' The code below has contributions by _Tobias from the Digitally Imported forums.
 
         RefreshFavorites.Enabled = False
@@ -1055,6 +1086,7 @@ Public Class Player
         Loop
 
         readerChdb.Close()
+        readerChdb.Dispose()
 
         Dim file = serversFolder & "\" & channel & ".db"
 
@@ -1173,7 +1205,7 @@ Public Class Player
         If My.Computer.FileSystem.FileExists(file) = False Then
             Dim streams
             If SelectedChannel.Text = "My Favorites" Then
-                streams = downloadFavos(EndString, serversFolder, PremiumEnd)
+                streams = downloadFavos(serversFolder, ListenKey)
             Else
                 streams = downloadStreams(channel, EndString, serversFolder, PremiumEnd)
             End If
@@ -1200,6 +1232,7 @@ Public Class Player
                     writer.WriteLine(v)
                 Next
                 writer.Close()
+                writer.Dispose()
             End If
         End If
 
@@ -1222,6 +1255,7 @@ Public Class Player
                 Loop
 
                 r2.Close()
+                r2.Dispose()
 
                 Dim file2 As String = serversFolder & "\" & key & ".db"
 
@@ -1239,6 +1273,7 @@ Public Class Player
                     Next
 
                     writer.Close()
+                    writer.Dispose()
 
                 End If
 
@@ -1250,6 +1285,7 @@ Public Class Player
                 Loop
 
                 r3.Close()
+                r3.Dispose()
 
                 SelectedServer.Items.Add(name)
                 ServersArray.Items.Add(streams(RandomNumber(streams.Count - 1, 1)))
@@ -1264,10 +1300,11 @@ Public Class Player
         End If
 
         reader.Close()
+        reader.Dispose()
 
     End Sub
 
-    Private Sub PLSDownloader_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles PLSDownloader.RunWorkerCompleted
+    Private Sub ServersDownloader_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles ServersDownloader.RunWorkerCompleted
         Marquee.Hide()
         SelectedChannel.Enabled = True
 
@@ -1310,6 +1347,8 @@ Public Class Player
         If Bufer.IsBusy = False Then
             RefreshFavorites.Enabled = True
         End If
+
+        DownloadingMessage.Hide()
 
     End Sub
 
@@ -1429,7 +1468,7 @@ again:
         Dim DownloadedString As String
 
         Try
-            DownloadedString = WebClient.DownloadString("http://www.tobiass.eu/files/Info.txt")
+            DownloadedString = WebClient.DownloadString("http://www.tobiass.eu/api/update")
         Catch
             Exit Sub
         End Try
@@ -1437,6 +1476,8 @@ again:
         Dim writer As New IO.StreamWriter(file, False)
         writer.Write(DownloadedString)
         writer.Close()
+        writer.Dispose()
+        WebClient.Dispose()
 
         Dim reader As New IO.StreamReader(file)
 
@@ -1457,11 +1498,12 @@ again:
         Loop
 
         reader.Close()
+        reader.Dispose()
 
     End Sub
 
     Private Sub GetUpdates_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles GetUpdates.RunWorkerCompleted
-        If My.Computer.FileSystem.FileExists("Info.txt") Then
+        If My.Computer.FileSystem.FileExists(exeFolder & "\Info.txt") Then
             Dim FullLine As String = LatestVersionString
             Dim Splitter As String() = Split(FullLine, ".")
 
@@ -1505,7 +1547,7 @@ again:
             AtStartup = False
         End If
 
-        Kill("Info.txt")
+        Kill(exeFolder & "\Info.txt")
 
         Options.UndefinedProgress.Hide()
         Options.Status.Text = "Status: Idle"
@@ -1642,8 +1684,6 @@ again:
                 TimerString.Location = New Point(282, 0)
                 TimerString.Text = String.Format("{0:00}:{1:00}:{2:00}", span.Hours, span.Minutes, span.Seconds)
             End If
-
-            Seconds.Text = String.Format("{0:00}", span.Seconds)
         End If
     End Sub
 
@@ -1919,6 +1959,7 @@ again:
             writer.WriteLine(Volume.Name & "=50")
             writer.WriteLine(SelectedServer.Name & "=0")
             writer.Close()
+            writer.Dispose()
         End If
 
         Try
@@ -2054,6 +2095,14 @@ again:
                             TimerString.ForeColor = Color.Black
                         End If
 
+                        If BackgroundColour < -7105537 Then
+                            EditFavorites.LinkColor = Color.White
+                            RefreshFavorites.LinkColor = Color.White
+                        Else
+                            EditFavorites.LinkColor = Color.Blue
+                            RefreshFavorites.LinkColor = Color.Blue
+                        End If
+
                     End If
                 ElseIf splitter(0) = Options.MultimediaKeys.Name Then
                     MultimediaKeys = splitter(1)
@@ -2119,6 +2168,7 @@ again:
             Loop
 
             reader.Close()
+            reader.Dispose()
 
             If RadioStation = DIFM.Text Then
                 DIFM_Click(Me, Nothing)
@@ -2235,35 +2285,6 @@ again:
         Me.CenterToScreen()
     End Sub
 
-    Private Sub Seconds_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Seconds.TextChanged
-
-        ' BASS reporting that -01 seconds have passed since playback has started means that connection has been droppped
-        ' In that case, if the user isn't using the My Favourites playlist, automatically stop playback, select a new
-        ' server and reconnect
-
-        If Seconds.Text = "-01" Then
-            PlayStop_Click(Me, Nothing)
-            Bufer.CancelAsync()
-
-
-            If SelectedChannel.Text = "My Favorites" = False Then
-
-                If SelectedServer.SelectedIndex = SelectedServer.Items.Count - 1 = False Then
-                    SelectedServer.SelectedIndex = SelectedServer.SelectedIndex + 1
-                Else
-                    SelectedServer.SelectedIndex = 0
-                End If
-
-                PlayStop_Click(Me, Nothing)
-            Else
-                RadioString.BackColor = Color.Red
-                RadioString.ForeColor = Color.White
-                RadioString.Text = "Lost connection to channel."
-            End If
-        End If
-
-    End Sub
-
     Sub DisplayMessage(ByVal text As String, ByVal style As MsgBoxStyle, ByVal title As String)
         MsgBox(text, style, title)
         Me.BringToFront()
@@ -2341,22 +2362,22 @@ again:
 
     End Function
 
-    Public Function downloadFavos(ByVal quality As String, ByVal serversFolder As String, ByVal premiumadd As String)
-        Dim pls
+    Public Function downloadFavos(ByVal serversFolder As String, ByVal listenkey As String)
+        Dim data
         If My.Computer.FileSystem.FileExists(serversFolder & "\favorites.db") = False Then
             Dim wc As Net.WebClient = New Net.WebClient
             Try
-                pls = wc.DownloadString("http://listen." & StationChooser.Tag & "/" & quality & "/favorites.pls" & premiumadd)
+                data = wc.DownloadString("http://tobiass.eu/api/favorites/" & StationChooser.Tag & "/" & listenkey)
             Catch ex As Exception
                 Return False
             End Try
         Else
             Dim reader As IO.StreamReader = New IO.StreamReader(serversFolder & "\favorites.db")
-            pls = reader.ReadToEnd()
+            data = reader.ReadToEnd()
             reader.Close()
 
         End If
-        Return Audioaddict.ParsePlaylistFavorites(pls)
+        Return Split(data, vbNewLine)
 
     End Function
 
@@ -2364,12 +2385,12 @@ again:
 
         Dim fileinfo As New IO.FileInfo(loc)
 
-        If My.Computer.FileSystem.FileExists(loc) = False Or Split(fileinfo.LastWriteTime.ToUniversalTime)(0) = Split(DateTime.UtcNow.ToUniversalTime)(0) = False Then
+        If My.Computer.FileSystem.FileExists(loc) = False Or fileinfo.LastWriteTime.Date = DateTime.UtcNow.Date = False Then
             Dim wc As Net.WebClient = New Net.WebClient
             Dim data
 
             Try
-                data = wc.DownloadString("http://tobiass.eu/channels.php?domain=" & StationChooser.Tag)
+                data = wc.DownloadString("http://tobiass.eu/api/channels/" & StationChooser.Tag)
             Catch ex As Exception
                 Return False
             End Try

@@ -33,7 +33,7 @@
 
             If Computer.Network.IsAvailable = False Then
                 MsgBox("This application requires an internet connection to run.", MsgBoxStyle.Critical, "Network connection unavailable")
-                Player.Close()
+                End
             End If
         End Sub
 

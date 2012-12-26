@@ -796,41 +796,41 @@
             Highest = Band5.Value
         End If
 
-        Try
-            Band0.Value -= Highest
-        Catch
+        If Band0.Value - Highest < Band0.Minimum Then
             Band0.Value = Band0.Minimum
-        End Try
+        Else
+            Band0.Value = Band0.Value - Highest
+        End If
 
-        Try
-            Band1.Value -= Highest
-        Catch
+        If Band1.Value - Highest < Band1.Minimum Then
             Band1.Value = Band1.Minimum
-        End Try
+        Else
+            Band1.Value = Band1.Value - Highest
+        End If
 
-        Try
-            Band2.Value -= Highest
-        Catch
+        If Band2.Value - Highest < Band2.Minimum Then
             Band2.Value = Band2.Minimum
-        End Try
+        Else
+            Band2.Value = Band2.Value - Highest
+        End If
 
-        Try
-            Band3.Value -= Highest
-        Catch
+        If Band3.Value - Highest < Band3.Minimum Then
             Band3.Value = Band3.Minimum
-        End Try
+        Else
+            Band3.Value = Band3.Value - Highest
+        End If
 
-        Try
-            Band4.Value -= Highest
-        Catch
+        If Band4.Value - Highest < Band4.Minimum Then
             Band4.Value = Band4.Minimum
-        End Try
+        Else
+            Band4.Value = Band4.Value - Highest
+        End If
 
-        Try
-            Band5.Value -= Highest
-        Catch
+        If Band5.Value - Highest < Band5.Minimum Then
             Band5.Value = Band5.Minimum
-        End Try
+        Else
+            Band5.Value = Band5.Value - Highest
+        End If
     End Sub
 
     Private Sub DevFacebook_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DevFacebook.Click
@@ -1230,28 +1230,27 @@
     Private Sub ValidateWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles ValidateWorker.DoWork
 
         Dim WebClient As Net.WebClient = New Net.WebClient()
-        Dim PLS As String
-        Dim URL As String
+        Dim data As String()
         Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
-        If StationSelector.Text = "Digitally Imported" OrElse StationSelector.Text = "RockRadio" Then
-            URL = Player.DIFM.Tag
-        ElseIf StationSelector.Text = "JazzRadio" Then
-            URL = Player.JazzRadio.Tag
-        ElseIf StationSelector.Text = "SKY.FM" Then
-            URL = Player.SKYFM.Tag
+        Try
+            data = Split(WebClient.DownloadString("http://tobiass.eu/api/key/text/" & ListenKey.Text), "|")
+        Catch ex As Exception
+            Me.Invoke(Message, "Couldn't validate the Listen Key due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try again.", MsgBoxStyle.Exclamation, "Validation failed")
+        End Try
+
+        If data(0) = "true" Then
+            Me.Invoke(Message, "That Listen Key is valid and Premium.", MsgBoxStyle.Information, "Valid and Premium")
+            PremiumFormats.Checked = True
+        ElseIf data(1).ToLower.Contains("premium") Then
+            Me.Invoke(Message, "That Listen Key is valid but is not Premium.", MsgBoxStyle.Information, "Valid but not Premium")
+            PremiumFormats.Checked = False
+        Else
+            Me.Invoke(Message, "That Listen Key is invalid.", MsgBoxStyle.Exclamation, "Invalid")
+            PremiumFormats.Checked = False
         End If
 
-        Try
-            PLS = WebClient.DownloadString("http://listen." & URL & "/premium/favorites.pls?" & ListenKey.Text)
-            Me.Invoke(Message, "That listen key is valid.", MsgBoxStyle.Information, "Success")
-        Catch ex As Exception
-            If ex.Message.Contains("403") Then
-                Me.Invoke(Message, "That Listen Key is invalid.", MsgBoxStyle.Exclamation, "Invalid key")
-            Else
-                Me.Invoke(Message, "Couldn't validate the Listen Key due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try again.", MsgBoxStyle.Exclamation, "Validation failed")
-            End If
-        End Try
+        WebClient.Dispose()
 
     End Sub
 
@@ -1402,7 +1401,7 @@
 
             If Player.SelectedChannel.Text = Nothing = False Then
 
-                If Player.PLSDownloader.IsBusy = False Then
+                If Player.ServersDownloader.IsBusy = False Then
                     Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
                 End If
 
@@ -1444,7 +1443,7 @@
 
 
                 If Player.SelectedChannel.Text = Nothing = False Then
-                    If Player.PLSDownloader.IsBusy = False Then
+                    If Player.ServersDownloader.IsBusy = False Then
                         Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
                     End If
                 Else
@@ -1483,7 +1482,7 @@
                 End If
 
                 If Player.SelectedChannel.Text = Nothing = False Then
-                    If Player.PLSDownloader.IsBusy = False Then
+                    If Player.ServersDownloader.IsBusy = False Then
                         Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
                     End If
                 Else
@@ -1522,7 +1521,7 @@
                 End If
 
                 If Player.SelectedChannel.Text = Nothing = False Then
-                    If Player.PLSDownloader.IsBusy = False Then
+                    If Player.ServersDownloader.IsBusy = False Then
                         Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
                     End If
                 Else
@@ -1849,7 +1848,9 @@
         Loop
 
         FS.Close()
+        FS.Dispose()
         theResponse.GetResponseStream.Close()
+        theResponse.GetResponseStream.Dispose()
     End Sub
 
     Private Sub DownloadUpdater_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadUpdater.RunWorkerCompleted
