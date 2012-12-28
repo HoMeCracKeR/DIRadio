@@ -6650,10 +6650,10 @@
   <data name="StationChooser.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACrSURBVDhPYxh4wNH3dxpn/ZM/nP3//5OKQXoZQJq529/9
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACrSURBVDhPYxh4wNH3dxpn/eM/nP3//5OKQXoZQJq529/9
         52l8hB03PfnP3fEBrAFZHYgN0ssAkgAJ4AIfvv/9n77hLVwzDIDYIL0EDYAB6c4nuA3A5QWQJhjwXPgS
         LAYDIDZWF4AUcnX/AEuii9PPABAfhK1mPoeKkmAALoA3EAkZgD8aCSUkIAYnGqBiZHVgMVBCAibHyZz9
-        L3+CFJCEgZpBeqE5YsAAAwMANlg7HaWzf9sAAAAASUVORK5CYII=
+        L3+CFJCEgZpBeqE5YsAAAwMAKis7Fz0OXiYAAAAASUVORK5CYII=
 </value>
   </data>
   <metadata name="EditFavorites.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

@@ -619,7 +619,7 @@
 
     End Sub
 
-    Private Sub ListenKey_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ListenKey.TextChanged
+    Private Sub ListenKeyBox_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ListenKey.TextChanged
         If ListenKey.TextLength = Nothing = False Then
             ValidateKey.Enabled = True
             PremiumFormats.Enabled = True
@@ -1225,16 +1225,19 @@
 
 #End Region
 
-#Region "ValidateWorker"
+#Region "Background Workers"
 
     Private Sub ValidateWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles ValidateWorker.DoWork
 
         Dim WebClient As Net.WebClient = New Net.WebClient()
+        WebClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded")
+        Dim listenkeybyte As Byte() = System.Text.Encoding.ASCII.GetBytes("key=" & ListenKey.Text & "&type=text")
+        Dim returnedData As Byte() = WebClient.UploadData("http://tobiass.eu/api/key/post", "POST", listenkeybyte)
         Dim data As String()
         Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
         Try
-            data = Split(WebClient.DownloadString("http://tobiass.eu/api/key/text/" & ListenKey.Text), "|")
+            data = Split(System.Text.Encoding.ASCII.GetString(returnedData), "|")
         Catch ex As Exception
             Me.Invoke(Message, "Couldn't validate the Listen Key due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try again.", MsgBoxStyle.Exclamation, "Validation failed")
         End Try
@@ -1260,7 +1263,169 @@
         ValidateKey.Enabled = True
     End Sub
 
+    Private Sub DownloadUpdater_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadUpdater.DoWork
+        Status.Text = "Status: Connecting to server, please wait..."
+        LookNow.Enabled = False
+        UndefinedProgress.Hide()
+
+        Dim file As String = Player.exeFolder & "\Updater.exe"
+        Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+
+        Dim theResponse As Net.HttpWebResponse
+        Dim theRequest As Net.HttpWebRequest
+
+        Try
+            theRequest = Net.WebRequest.Create("http://www.tobiass.eu/files/Updater.exe")
+            theResponse = theRequest.GetResponse
+        Catch ex As Exception
+            Me.Invoke(Message, "Couldn't download the updating utility. Please try again.", MsgBoxStyle.Exclamation, "Error while updating")
+            Status.Text = "Status: Idle"
+            LookNow.Enabled = True
+            UndefinedProgress.Hide()
+        End Try
+
+        Dim length As Long = theResponse.ContentLength
+
+        Dim FS As IO.FileStream
+
+        FS = New IO.FileStream(file, IO.FileMode.Create)
+
+        Dim nRead As Integer
+
+        Do
+            Dim readByte(1024) As Byte
+            Dim inMemory As IO.Stream = theResponse.GetResponseStream
+            Dim totalBytes As Integer
+            totalBytes = inMemory.Read(readByte, 0, 1024)
+            If totalBytes = 0 Then Exit Do
+            FS.Write(readByte, 0, totalBytes)
+            nRead += totalBytes
+            Dim percent As Short = (nRead * 100) / length
+            Status.Text = "Status: Downloading, please wait. " & percent & "% complete."
+            ProgressBar.Value = percent
+        Loop
+
+        FS.Close()
+        FS.Dispose()
+        theResponse.GetResponseStream.Close()
+        theResponse.GetResponseStream.Dispose()
+    End Sub
+
+    Private Sub DownloadUpdater_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadUpdater.RunWorkerCompleted
+        Status.Text = "Status: Updater downloaded. Launching and exiting..."
+
+        Dim executable As String = Application.ExecutablePath
+        Dim tabla() As String = Split(executable, "\")
+        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
+        Process.Start(file)
+        Player.Close()
+    End Sub
+
 #End Region
+
+#Region "Equalizer Presets"
+
+    Private Sub Presets_Click(sender As System.Object, e As System.EventArgs) Handles Presets.Click
+        PresetsMenu.Show(Me, Presets.Location.X + 15, Presets.Location.Y - 146)
+    End Sub
+
+    Private Sub ClassicalMusic_Click(sender As System.Object, e As System.EventArgs) Handles ClassicalMusic.Click
+        Band0.Value = 6
+        Band1.Value = 3
+        Band2.Value = 0
+        Band3.Value = 0
+        Band4.Value = 2
+        Band5.Value = 2
+    End Sub
+
+    Private Sub DancePreset_Click(sender As System.Object, e As System.EventArgs) Handles DancePreset.Click
+        Band0.Value = 4
+        Band1.Value = 1
+        Band2.Value = -1
+        Band3.Value = 0
+        Band4.Value = 0
+        Band5.Value = 4
+    End Sub
+
+    Private Sub JazzPreset_Click(sender As System.Object, e As System.EventArgs) Handles JazzPreset.Click
+        Band0.Value = 0
+        Band1.Value = 3
+        Band2.Value = 3
+        Band3.Value = 0
+        Band4.Value = 2
+        Band5.Value = 5
+    End Sub
+
+    Private Sub MetalPreset_Click(sender As System.Object, e As System.EventArgs) Handles MetalPreset.Click
+        Band0.Value = 0
+        Band1.Value = 0
+        Band2.Value = 0
+        Band3.Value = 3
+        Band4.Value = 0
+        Band5.Value = 1
+    End Sub
+
+    Private Sub NewAgePreset_Click(sender As System.Object, e As System.EventArgs) Handles NewAgePreset.Click
+        Band0.Value = 3
+        Band1.Value = 0
+        Band2.Value = 0
+        Band3.Value = 0
+        Band4.Value = 0
+        Band5.Value = 1
+    End Sub
+
+    Private Sub ReggaePreset_Click(sender As System.Object, e As System.EventArgs) Handles ReggaePreset.Click
+        Band0.Value = 0
+        Band1.Value = -3
+        Band2.Value = 0
+        Band3.Value = 4
+        Band4.Value = 0
+        Band5.Value = 4
+    End Sub
+
+    Private Sub RockPreset_Click(sender As System.Object, e As System.EventArgs) Handles RockPreset.Click
+        Band0.Value = 1
+        Band1.Value = 3
+        Band2.Value = -1
+        Band3.Value = 0
+        Band4.Value = 0
+        Band5.Value = 4
+    End Sub
+
+    Private Sub TechnoPreset_Click(sender As System.Object, e As System.EventArgs) Handles TechnoPreset.Click
+        Band0.Value = 1
+        Band1.Value = -1
+        Band2.Value = -1
+        Band3.Value = 0
+        Band4.Value = 0
+        Band5.Value = 5
+    End Sub
+
+#End Region
+
+#Region "Logos"
+
+    ' All of these open the homepage of their respective stations
+
+    Private Sub DILogo_Click(sender As System.Object, e As System.EventArgs) Handles DILogo.Click
+        Process.Start("http://www.di.fm")
+    End Sub
+
+    Private Sub JazzLogo_Click(sender As System.Object, e As System.EventArgs) Handles JazzLogo.Click
+        Process.Start("http://www.jazzradio.com")
+    End Sub
+
+    Private Sub RockLogo_Click(sender As System.Object, e As System.EventArgs) Handles RockLogo.Click
+        Process.Start("http://www.rockradio.com")
+    End Sub
+
+    Private Sub SkyLogo_Click(sender As System.Object, e As System.EventArgs) Handles SkyLogo.Click
+        Process.Start("http://www.sky.fm")
+    End Sub
+
+#End Region
+
+#Region "Others"
 
     Public Enum HotKeyModifiers As Integer
         MOD_ALT = &H1
@@ -1789,77 +1954,7 @@
         End If
     End Sub
 
-    Private Sub DILogo_Click(sender As System.Object, e As System.EventArgs) Handles DILogo.Click
-        Process.Start("http://www.di.fm")
-    End Sub
 
-    Private Sub JazzLogo_Click(sender As System.Object, e As System.EventArgs) Handles JazzLogo.Click
-        Process.Start("http://www.jazzradio.com")
-    End Sub
+#End Region
 
-    Private Sub RockLogo_Click(sender As System.Object, e As System.EventArgs) Handles RockLogo.Click
-        Process.Start("http://www.rockradio.com")
-    End Sub
-
-    Private Sub SkyLogo_Click(sender As System.Object, e As System.EventArgs) Handles SkyLogo.Click
-        Process.Start("http://www.sky.fm")
-    End Sub
-
-    Private Sub DownloadUpdater_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadUpdater.DoWork
-        Status.Text = "Status: Connecting to server, please wait..."
-        LookNow.Enabled = False
-        UndefinedProgress.Hide()
-
-        Dim file As String = Player.exeFolder & "\Updater.exe"
-        Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
-
-        Dim theResponse As Net.HttpWebResponse
-        Dim theRequest As Net.HttpWebRequest
-
-        Try
-            theRequest = Net.WebRequest.Create("http://www.tobiass.eu/files/Updater.exe")
-            theResponse = theRequest.GetResponse
-        Catch ex As Exception
-            Me.Invoke(Message, "Couldn't download the updating utility. Please try again.", MsgBoxStyle.Exclamation, "Error while updating")
-            Status.Text = "Status: Idle"
-            LookNow.Enabled = True
-            UndefinedProgress.Hide()
-        End Try
-
-        Dim length As Long = theResponse.ContentLength
-
-        Dim FS As IO.FileStream
-
-        FS = New IO.FileStream(file, IO.FileMode.Create)
-
-        Dim nRead As Integer
-
-        Do
-            Dim readByte(1024) As Byte
-            Dim inMemory As IO.Stream = theResponse.GetResponseStream
-            Dim totalBytes As Integer
-            totalBytes = inMemory.Read(readByte, 0, 1024)
-            If totalBytes = 0 Then Exit Do
-            FS.Write(readByte, 0, totalBytes)
-            nRead += totalBytes
-            Dim percent As Short = (nRead * 100) / length
-            Status.Text = "Status: Downloading, please wait. " & percent & "% complete."
-            ProgressBar.Value = percent
-        Loop
-
-        FS.Close()
-        FS.Dispose()
-        theResponse.GetResponseStream.Close()
-        theResponse.GetResponseStream.Dispose()
-    End Sub
-
-    Private Sub DownloadUpdater_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadUpdater.RunWorkerCompleted
-        Status.Text = "Status: Updater downloaded. Launching and exiting..."
-
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
-        Process.Start(file)
-        Player.Close()
-    End Sub
 End Class

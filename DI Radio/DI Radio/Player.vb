@@ -1,5 +1,4 @@
 ﻿' DI Radio Player by ViRUS
-' Source code for version 1.12
 '
 '
 ' I've done my best to document the most relevant parts of this source code, but if you still find yourself having problems
@@ -122,7 +121,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 30    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 31    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -438,6 +437,7 @@ Public Class Player
             If Me.WindowState = FormWindowState.Minimized And NotificationTitle = True And _
              RadioString.Text.ToLower.Contains("photonvps.com") = False And _
              RadioString.Text.ToLower.Contains("adwtag") = False And _
+             RadioString.Text.ToLower.Contains("job opportunity") = False And _
              RadioString.Text.ToLower = "get digitally imported premium" = False And _
              RadioString.Text.ToLower = "unleash the full potential of sky.fm. get sky.fm premium now!" = False And _
              RadioString.Text.ToLower = "it gets even better! jazzradio premium - www.jazzradio.com/join" = False And _
@@ -1398,10 +1398,8 @@ again:
             Else
 
                 Try
-                    Dim raw As String = String.Concat(Bass.BASS_ChannelGetTagsMETA(stream))
-                    Dim tabla() As String = Split(raw, "='")
-                    RadioString.Text = tabla(1).Replace("';", Nothing)
-                    RadioString.Text = RadioString.Text.Replace("StreamUrl", Nothing)
+                    Dim title = Split(String.Concat(Bass.BASS_ChannelGetTagsMETA(stream)), "='")(1).Replace("';", Nothing).Replace("StreamUrl", Nothing)
+                    RadioString.Text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(title))
                 Catch ex As Exception
                     RadioString.Text = "Now playing"
                 End Try
@@ -1517,10 +1515,12 @@ again:
                     If Splitter(2) > 0 And BetaVersions = True Then
                         If MsgBox("There's a new beta version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
                             Options.LookNow_Click(Me, Nothing)
+                            OptionsButton_Click(Me, Nothing)
                         End If
                     ElseIf Splitter(2) = 0 Then
                         If MsgBox("There's a new version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
                             Options.LookNow_Click(Me, Nothing)
+                            OptionsButton_Click(Me, Nothing)
                         End If
                     End If
 
@@ -1888,9 +1888,8 @@ again:
         Dim tag As String
 
         For Each tag In tags
-            Dim raw As String = String.Concat(Bass.BASS_ChannelGetTagsMETA(stream))
-            Dim tabla() As String = Split(raw, "='")
-            RadioString.Text = tabla(1).Replace("StreamUrl", Nothing).Replace("';", Nothing)
+            Dim title = Split(String.Concat(Bass.BASS_ChannelGetTagsMETA(stream)), "='")(1).Replace("';", Nothing).Replace("StreamUrl", Nothing)
+            RadioString.Text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(title))
 
             If ChangeWholeBackground = True Then
                 RadioString.BackColor = Color.FromArgb(BackgroundColour)

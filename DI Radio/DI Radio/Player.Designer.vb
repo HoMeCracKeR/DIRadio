@@ -372,7 +372,7 @@ Partial Class Player
         'Marquee
         '
         Me.Marquee.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.Marquee.Cursor = System.Windows.Forms.Cursors.WaitCursor
+        Me.Marquee.Cursor = System.Windows.Forms.Cursors.Arrow
         Me.Marquee.Location = New System.Drawing.Point(191, 59)
         Me.Marquee.Name = "Marquee"
         Me.Marquee.Size = New System.Drawing.Size(139, 22)

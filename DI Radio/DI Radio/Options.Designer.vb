@@ -93,6 +93,7 @@ Partial Class Options
         Me.HotkeyVolumeDown = New System.Windows.Forms.CheckBox()
         Me.CustomVolumeDown = New System.Windows.Forms.TextBox()
         Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.Presets = New System.Windows.Forms.Button()
         Me.AutoEq = New System.Windows.Forms.Button()
         Me.RestoreEq = New System.Windows.Forms.Button()
         Me.Zero = New System.Windows.Forms.Button()
@@ -136,6 +137,15 @@ Partial Class Options
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
         Me.DownloadUpdater = New System.ComponentModel.BackgroundWorker()
+        Me.PresetsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ClassicalMusic = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DancePreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.JazzPreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MetalPreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NewAgePreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ReggaePreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RockPreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TechnoPreset = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -164,6 +174,7 @@ Partial Class Options
         CType(Me.SkyLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DILogo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.PresetsMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -1038,6 +1049,7 @@ Partial Class Options
         '
         'TabPage5
         '
+        Me.TabPage5.Controls.Add(Me.Presets)
         Me.TabPage5.Controls.Add(Me.AutoEq)
         Me.TabPage5.Controls.Add(Me.RestoreEq)
         Me.TabPage5.Controls.Add(Me.Zero)
@@ -1066,13 +1078,24 @@ Partial Class Options
         Me.TabPage5.Text = "Equalizer"
         Me.TabPage5.UseVisualStyleBackColor = True
         '
+        'Presets
+        '
+        Me.Helper.SetHelpString(Me.Presets, "Clicking this button will move the sliders to the last applied settings.")
+        Me.Presets.Location = New System.Drawing.Point(10, 363)
+        Me.Presets.Name = "Presets"
+        Me.Helper.SetShowHelp(Me.Presets, True)
+        Me.Presets.Size = New System.Drawing.Size(64, 23)
+        Me.Presets.TabIndex = 42
+        Me.Presets.Text = "Presets"
+        Me.Presets.UseVisualStyleBackColor = True
+        '
         'AutoEq
         '
         Me.Helper.SetHelpString(Me.AutoEq, resources.GetString("AutoEq.HelpString"))
-        Me.AutoEq.Location = New System.Drawing.Point(125, 363)
+        Me.AutoEq.Location = New System.Drawing.Point(150, 363)
         Me.AutoEq.Name = "AutoEq"
         Me.Helper.SetShowHelp(Me.AutoEq, True)
-        Me.AutoEq.Size = New System.Drawing.Size(75, 23)
+        Me.AutoEq.Size = New System.Drawing.Size(64, 23)
         Me.AutoEq.TabIndex = 41
         Me.AutoEq.Text = "Auto level"
         Me.AutoEq.UseVisualStyleBackColor = True
@@ -1080,10 +1103,10 @@ Partial Class Options
         'RestoreEq
         '
         Me.Helper.SetHelpString(Me.RestoreEq, "Clicking this button will move the sliders to the last applied settings.")
-        Me.RestoreEq.Location = New System.Drawing.Point(44, 363)
+        Me.RestoreEq.Location = New System.Drawing.Point(80, 363)
         Me.RestoreEq.Name = "RestoreEq"
         Me.Helper.SetShowHelp(Me.RestoreEq, True)
-        Me.RestoreEq.Size = New System.Drawing.Size(75, 23)
+        Me.RestoreEq.Size = New System.Drawing.Size(64, 23)
         Me.RestoreEq.TabIndex = 40
         Me.RestoreEq.Text = "Restore"
         Me.RestoreEq.UseVisualStyleBackColor = True
@@ -1092,12 +1115,12 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.Zero, "Clicking this button will set the sliders to the +0dB position, meaning that the " & _
         "equalizer will be disabled.")
-        Me.Zero.Location = New System.Drawing.Point(206, 363)
+        Me.Zero.Location = New System.Drawing.Point(220, 363)
         Me.Zero.Name = "Zero"
         Me.Helper.SetShowHelp(Me.Zero, True)
-        Me.Zero.Size = New System.Drawing.Size(75, 23)
+        Me.Zero.Size = New System.Drawing.Size(64, 23)
         Me.Zero.TabIndex = 39
-        Me.Zero.Text = "Zero all"
+        Me.Zero.Text = "Zero"
         Me.Zero.UseVisualStyleBackColor = True
         '
         'Band6db
@@ -1519,6 +1542,62 @@ Partial Class Options
         'DownloadUpdater
         '
         '
+        'PresetsMenu
+        '
+        Me.PresetsMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PresetsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ClassicalMusic, Me.DancePreset, Me.JazzPreset, Me.MetalPreset, Me.NewAgePreset, Me.ReggaePreset, Me.RockPreset, Me.TechnoPreset})
+        Me.PresetsMenu.Name = "ContextMenuStrip1"
+        Me.PresetsMenu.ShowImageMargin = False
+        Me.PresetsMenu.Size = New System.Drawing.Size(102, 180)
+        '
+        'ClassicalMusic
+        '
+        Me.ClassicalMusic.Name = "ClassicalMusic"
+        Me.ClassicalMusic.Size = New System.Drawing.Size(101, 22)
+        Me.ClassicalMusic.Text = "Classical"
+        '
+        'DancePreset
+        '
+        Me.DancePreset.Name = "DancePreset"
+        Me.DancePreset.Size = New System.Drawing.Size(101, 22)
+        Me.DancePreset.Text = "Dance"
+        '
+        'JazzPreset
+        '
+        Me.JazzPreset.Name = "JazzPreset"
+        Me.JazzPreset.Size = New System.Drawing.Size(101, 22)
+        Me.JazzPreset.Text = "Jazz"
+        '
+        'MetalPreset
+        '
+        Me.MetalPreset.Name = "MetalPreset"
+        Me.MetalPreset.Size = New System.Drawing.Size(101, 22)
+        Me.MetalPreset.Text = "Metal"
+        '
+        'NewAgePreset
+        '
+        Me.NewAgePreset.Name = "NewAgePreset"
+        Me.NewAgePreset.Size = New System.Drawing.Size(101, 22)
+        Me.NewAgePreset.Text = "New Age"
+        '
+        'ReggaePreset
+        '
+        Me.ReggaePreset.Name = "ReggaePreset"
+        Me.ReggaePreset.Size = New System.Drawing.Size(101, 22)
+        Me.ReggaePreset.Text = "Reggae"
+        '
+        'RockPreset
+        '
+        Me.RockPreset.Name = "RockPreset"
+        Me.RockPreset.Size = New System.Drawing.Size(101, 22)
+        Me.RockPreset.Text = "Rock"
+        '
+        'TechnoPreset
+        '
+        Me.TechnoPreset.Name = "TechnoPreset"
+        Me.TechnoPreset.Size = New System.Drawing.Size(101, 22)
+        Me.TechnoPreset.Text = "Techno"
+        '
         'Options
         '
         Me.AcceptButton = Me.OK
@@ -1576,6 +1655,7 @@ Partial Class Options
         CType(Me.SkyLogo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DILogo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.PresetsMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -1691,4 +1771,14 @@ Partial Class Options
     Friend WithEvents SkyLogo As System.Windows.Forms.PictureBox
     Friend WithEvents DILogo As System.Windows.Forms.PictureBox
     Friend WithEvents DownloadUpdater As System.ComponentModel.BackgroundWorker
+    Friend WithEvents Presets As System.Windows.Forms.Button
+    Friend WithEvents PresetsMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents RockPreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ClassicalMusic As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents DancePreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents JazzPreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MetalPreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents NewAgePreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ReggaePreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents TechnoPreset As System.Windows.Forms.ToolStripMenuItem
 End Class
