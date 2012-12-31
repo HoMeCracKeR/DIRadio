@@ -74,9 +74,12 @@ Partial Class Player
         Me.RefreshFavorites = New System.Windows.Forms.LinkLabel()
         Me.GetUpdates = New System.ComponentModel.BackgroundWorker()
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
-        Me.Label2 = New System.Windows.Forms.Label()
         Me.DownloadDb = New System.ComponentModel.BackgroundWorker()
         Me.VisualisationBox = New System.Windows.Forms.PictureBox()
+        Me.HistoryList = New System.Windows.Forms.ListView()
+        Me.Title = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Length = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Label2 = New System.Windows.Forms.Label()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -383,6 +386,7 @@ Partial Class Player
         'ControlsPanel
         '
         Me.ControlsPanel.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.ControlsPanel.Controls.Add(Me.Label2)
         Me.ControlsPanel.Controls.Add(Me.DownloadingMessage)
         Me.ControlsPanel.Controls.Add(Me.Label1)
         Me.ControlsPanel.Controls.Add(Me.ToolStrip1)
@@ -520,15 +524,6 @@ Partial Class Player
         '
         Me.FadeOut.Interval = 1
         '
-        'Label2
-        '
-        Me.Label2.BackColor = System.Drawing.SystemColors.Control
-        Me.Label2.Location = New System.Drawing.Point(15, 431)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(30, 2)
-        Me.Label2.TabIndex = 13
-        Me.Label2.Text = " "
-        '
         'DownloadDb
         '
         '
@@ -544,12 +539,49 @@ Partial Class Player
         Me.VisualisationBox.TabIndex = 3
         Me.VisualisationBox.TabStop = False
         '
+        'HistoryList
+        '
+        Me.HistoryList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Title, Me.Length})
+        Me.HistoryList.FullRowSelect = True
+        Me.HistoryList.GridLines = True
+        Me.HistoryList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
+        Me.HistoryList.HideSelection = False
+        Me.HistoryList.Location = New System.Drawing.Point(12, 12)
+        Me.HistoryList.MultiSelect = False
+        Me.HistoryList.Name = "HistoryList"
+        Me.HistoryList.ShowItemToolTips = True
+        Me.HistoryList.Size = New System.Drawing.Size(331, 334)
+        Me.HistoryList.TabIndex = 14
+        Me.HistoryList.UseCompatibleStateImageBehavior = False
+        Me.HistoryList.View = System.Windows.Forms.View.Details
+        Me.HistoryList.Visible = False
+        '
+        'Title
+        '
+        Me.Title.Text = "Title"
+        Me.Title.Width = 255
+        '
+        'Length
+        '
+        Me.Length.Text = "Length"
+        Me.Length.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.Length.Width = 55
+        '
+        'Label2
+        '
+        Me.Label2.BackColor = System.Drawing.SystemColors.Control
+        Me.Label2.Location = New System.Drawing.Point(2, 79)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(30, 2)
+        Me.Label2.TabIndex = 14
+        Me.Label2.Text = " "
+        '
         'Player
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(356, 441)
-        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.HistoryList)
         Me.Controls.Add(Me.VisualisationBox)
         Me.Controls.Add(Me.ControlsPanel)
         Me.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -622,8 +654,11 @@ Partial Class Player
     Friend WithEvents ServerMenu As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents CopyServerURLToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RockRadio As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents DownloadDb As System.ComponentModel.BackgroundWorker
     Friend WithEvents DownloadingMessage As System.Windows.Forms.ComboBox
+    Friend WithEvents HistoryList As System.Windows.Forms.ListView
+    Friend WithEvents Title As System.Windows.Forms.ColumnHeader
+    Friend WithEvents Length As System.Windows.Forms.ColumnHeader
+    Friend WithEvents Label2 As System.Windows.Forms.Label
 
 End Class

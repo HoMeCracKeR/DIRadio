@@ -311,68 +311,11 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub ChangeWholeBackground_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles ChangeWholeBackground.CheckedChanged
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-    End Sub
-
     Private Sub MultimediaKeys_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles MultimediaKeys.CheckedChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
     End Sub
-
-    ' ---------------------------------------------------------------------------------------------
-
-    ' These only change the buttons if a valid colour was selected
-
-    Private Sub MainButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MainButton.Click
-        ColourPicker.Color = Color.FromArgb(MainColour.BackColor.ToArgb())
-
-        If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-            MainColour.Text = ColourPicker.Color.ToArgb.ToString
-            MainColour.BackColor = ColourPicker.Color
-            OK.Enabled = True
-            Cancel.Text = "Cancel"
-            Apply.Enabled = True
-        End If
-    End Sub
-
-    Private Sub SecondaryButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SecondaryButton.Click
-        ColourPicker.Color = Color.FromArgb(SecondaryColour.BackColor.ToArgb())
-
-        If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-            SecondaryColour.BackColor = ColourPicker.Color
-            OK.Enabled = True
-            Cancel.Text = "Cancel"
-            Apply.Enabled = True
-        End If
-    End Sub
-
-    Private Sub PeakButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PeakButton.Click
-        ColourPicker.Color = Color.FromArgb(PeakColour.BackColor.ToArgb())
-
-        If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-            PeakColour.BackColor = ColourPicker.Color
-            OK.Enabled = True
-            Cancel.Text = "Cancel"
-            Apply.Enabled = True
-        End If
-    End Sub
-
-    Private Sub BackgroundButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BackgroundButton.Click
-        ColourPicker.Color = Color.FromArgb(BackgroundColour.BackColor.ToArgb())
-
-        If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-            BackgroundColour.BackColor = ColourPicker.Color
-            OK.Enabled = True
-            Cancel.Text = "Cancel"
-            Apply.Enabled = True
-        End If
-    End Sub
-
-    ' -------------------------------------------------------------
 
     Private Sub PremiumFormats_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PremiumFormats.CheckedChanged
         If PremiumFormats.Checked = True And StationSelector.Text = "RockRadio" = False Then
@@ -657,16 +600,6 @@
         Changelog.Location = New Point(Me.Location.X + 5, Me.Location.Y + 28)
         Changelog.Show()
         Changelog.BringToFront()
-    End Sub
-
-    Private Sub RestoreColours_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RestoreColours.Click
-        MainColour.BackColor = SystemColors.Control
-        SecondaryColour.BackColor = Color.Black
-        PeakColour.BackColor = Color.Silver
-        BackgroundColour.BackColor = SystemColors.Control
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
     End Sub
 
     Private Sub Band0_ValueChanged(sender As Object, e As System.EventArgs) Handles Band0.ValueChanged
@@ -1323,10 +1256,202 @@
 
 #End Region
 
+#Region "Themes"
+
+    ' ---------------------------------------------------------------------------------------------
+
+    ' These only change the buttons if a valid colour was selected
+
+    Private Sub MainButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MainButton.Click
+        ColourPicker.Color = Color.FromArgb(MainColour.BackColor.ToArgb())
+
+        If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+            MainColour.Text = ColourPicker.Color.ToArgb.ToString
+            MainColour.BackColor = ColourPicker.Color
+            OK.Enabled = True
+            Cancel.Text = "Cancel"
+            Apply.Enabled = True
+        End If
+    End Sub
+
+    Private Sub SecondaryButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SecondaryButton.Click
+        ColourPicker.Color = Color.FromArgb(SecondaryColour.BackColor.ToArgb())
+
+        If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+            SecondaryColour.BackColor = ColourPicker.Color
+            OK.Enabled = True
+            Cancel.Text = "Cancel"
+            Apply.Enabled = True
+        End If
+    End Sub
+
+    Private Sub PeakButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PeakButton.Click
+        ColourPicker.Color = Color.FromArgb(PeakColour.BackColor.ToArgb())
+
+        If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+            PeakColour.BackColor = ColourPicker.Color
+            OK.Enabled = True
+            Cancel.Text = "Cancel"
+            Apply.Enabled = True
+        End If
+    End Sub
+
+    Private Sub BackgroundButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BackgroundButton.Click
+        ColourPicker.Color = Color.FromArgb(BackgroundColour.BackColor.ToArgb())
+
+        If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+            BackgroundColour.BackColor = ColourPicker.Color
+            OK.Enabled = True
+            Cancel.Text = "Cancel"
+            Apply.Enabled = True
+        End If
+    End Sub
+
+    ' -------------------------------------------------------------
+
+    Private Sub Themes_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Themes.Click
+
+        ThemesMenu.Show(Me, Themes.Location.X + 17, Themes.Location.Y + 239)
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+
+    End Sub
+
+    Private Sub RestoreColours_Click(sender As System.Object, e As System.EventArgs) Handles RestoreColours.Click
+        MainColour.BackColor = SystemColors.Control
+        SecondaryColour.BackColor = Color.Black
+        PeakColour.BackColor = Color.Silver
+        BackgroundColour.BackColor = SystemColors.Control
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub BlackNight_Click(sender As System.Object, e As System.EventArgs) Handles BlackNight.Click
+        MainColour.BackColor = Color.FromArgb(-16777216)
+        SecondaryColour.BackColor = Color.FromArgb(-1)
+        PeakColour.BackColor = Color.FromArgb(-1)
+        BackgroundColour.BackColor = Color.FromArgb(-16777216)
+        ChangeWholeBackground.Checked = True
+    End Sub
+
+    Private Sub BlueOcean_Click(sender As System.Object, e As System.EventArgs) Handles BlueOcean.Click
+        MainColour.BackColor = Color.FromArgb(-5000193)
+        SecondaryColour.BackColor = Color.FromArgb(-16777133)
+        PeakColour.BackColor = Color.FromArgb(-9455617)
+        BackgroundColour.BackColor = Color.FromArgb(-16760704)
+        ChangeWholeBackground.Checked = True
+    End Sub
+
+    Private Sub BlueSky_Click(sender As System.Object, e As System.EventArgs) Handles BlueSky.Click
+        MainColour.BackColor = Color.FromArgb(-16725302)
+        SecondaryColour.BackColor = Color.FromArgb(-3473409)
+        PeakColour.BackColor = Color.FromArgb(-143)
+        BackgroundColour.BackColor = Color.FromArgb(-4986881)
+        ChangeWholeBackground.Checked = True
+    End Sub
+
+    Private Sub BrownWood_Click(sender As System.Object, e As System.EventArgs) Handles BrownWood.Click
+        MainColour.BackColor = Color.FromArgb(-8388608)
+        SecondaryColour.BackColor = Color.FromArgb(-4497920)
+        PeakColour.BackColor = Color.FromArgb(-12582912)
+        BackgroundColour.BackColor = Color.FromArgb(-11327232)
+        ChangeWholeBackground.Checked = True
+    End Sub
+
+    Private Sub SilverMetal_Click(sender As System.Object, e As System.EventArgs) Handles SilverMetal.Click
+        MainColour.BackColor = Color.FromArgb(-16777216)
+        SecondaryColour.BackColor = Color.FromArgb(-8355712)
+        PeakColour.BackColor = Color.FromArgb(-10526799)
+        BackgroundColour.BackColor = Color.FromArgb(-4144960)
+        ChangeWholeBackground.Checked = True
+    End Sub
+
+    Private Sub YellowSunset_Click(sender As System.Object, e As System.EventArgs) Handles YellowSunset.Click
+        MainColour.BackColor = Color.FromArgb(-7237376)
+        SecondaryColour.BackColor = Color.FromArgb(-243)
+        PeakColour.BackColor = Color.FromArgb(-32704)
+        BackgroundColour.BackColor = Color.FromArgb(-88)
+        ChangeWholeBackground.Checked = True
+    End Sub
+
+    Private Sub WhiteMilk_Click(sender As System.Object, e As System.EventArgs) Handles WhiteMilk.Click
+        MainColour.BackColor = Color.FromArgb(-1)
+        SecondaryColour.BackColor = Color.FromArgb(-16777216)
+        PeakColour.BackColor = Color.FromArgb(-8355712)
+        BackgroundColour.BackColor = Color.FromArgb(-1)
+        ChangeWholeBackground.Checked = True
+    End Sub
+
+    Private Sub SaveTheme_Click(sender As System.Object, e As System.EventArgs) Handles SaveTheme.Click
+        SaveThemeDialog.InitialDirectory = Player.exeFolder
+        SaveThemeDialog.FileName = Nothing
+
+        If SaveThemeDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Dim writer As New IO.StreamWriter(SaveThemeDialog.FileName)
+
+            writer.WriteLine(MainColour.BackColor.ToArgb())
+            writer.WriteLine(SecondaryColour.BackColor.ToArgb())
+            writer.WriteLine(PeakColour.BackColor.ToArgb())
+            writer.WriteLine(BackgroundColour.BackColor.ToArgb())
+            writer.WriteLine(ChangeWholeBackground.Checked)
+
+            writer.Close()
+            writer.Dispose()
+        End If
+    End Sub
+
+    Private Sub LoadTheme_Click(sender As System.Object, e As System.EventArgs) Handles LoadTheme.Click
+        OpenThemeDialog.FileName = Nothing
+
+        If OpenThemeDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Dim reader As New IO.StreamReader(OpenThemeDialog.FileName)
+            Dim lineNumber As Integer = 0
+
+            Do While (reader.Peek > -1)
+                Dim line As String = reader.ReadLine
+
+                If lineNumber = 0 Then
+                    MainColour.BackColor = Color.FromArgb(line)
+                ElseIf lineNumber = 1 Then
+                    SecondaryColour.BackColor = Color.FromArgb(line)
+                ElseIf lineNumber = 2 Then
+                    PeakColour.BackColor = Color.FromArgb(line)
+                ElseIf lineNumber = 3 Then
+                    BackgroundColour.BackColor = Color.FromArgb(line)
+                ElseIf lineNumber = 4 Then
+                    ChangeWholeBackground.Checked = line
+                End If
+
+                lineNumber += 1
+            Loop
+
+            reader.Close()
+            reader.Dispose()
+        End If
+    End Sub
+
+    Private Sub ChangeWholeBackground_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles ChangeWholeBackground.CheckedChanged
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub SaveThemeDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles SaveThemeDialog.HelpRequest
+        MessageBox.Show("Saving your current theme will allow you to share it with other people by sending the .cth file.", "Saving theme file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+    Private Sub OpenThemeDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles OpenThemeDialog.HelpRequest
+        MessageBox.Show("Load a .cth file to replace your current colour theme.", "Loading a theme file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+#End Region
+
 #Region "Equalizer Presets"
 
     Private Sub Presets_Click(sender As System.Object, e As System.EventArgs) Handles Presets.Click
-        PresetsMenu.Show(Me, Presets.Location.X + 15, Presets.Location.Y - 146)
+        PresetsMenu.Show(Me, Presets.Location.X + 15, Presets.Location.Y - 196)
     End Sub
 
     Private Sub ClassicalMusic_Click(sender As System.Object, e As System.EventArgs) Handles ClassicalMusic.Click
@@ -1399,6 +1524,125 @@
         Band3.Value = 0
         Band4.Value = 0
         Band5.Value = 5
+    End Sub
+
+    Private Sub SavePreset_Click(sender As System.Object, e As System.EventArgs) Handles SavePreset.Click
+        SavePresetDialog.InitialDirectory = Player.exeFolder
+        SavePresetDialog.FileName = Nothing
+
+        If SavePresetDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Dim writer As New IO.StreamWriter(SavePresetDialog.FileName)
+
+            writer.WriteLine("0")
+            writer.WriteLine(Band0.Value)
+            writer.WriteLine("0")
+            writer.WriteLine(Band1.Value)
+            writer.WriteLine("0")
+            writer.WriteLine("0")
+            writer.WriteLine("0")
+            writer.WriteLine(Band2.Value)
+            writer.WriteLine("0")
+            writer.WriteLine("0")
+            writer.WriteLine(Band3.Value)
+            writer.WriteLine("0")
+            writer.WriteLine("0")
+            writer.WriteLine(Band4.Value)
+            writer.WriteLine("0")
+            writer.WriteLine("0")
+            writer.WriteLine(Band5.Value)
+            writer.WriteLine("0")
+
+            writer.Close()
+            writer.Dispose()
+        End If
+    End Sub
+
+    Private Sub LoadPreset_Click(sender As System.Object, e As System.EventArgs) Handles LoadPreset.Click
+        OpenPresetDialog.FileName = Nothing
+
+        If OpenPresetDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Dim reader As New IO.StreamReader(OpenPresetDialog.FileName)
+            Dim band As Integer = 0
+
+            Do While (reader.Peek > -1)
+                Dim bandValue As String = reader.ReadLine
+
+                If band = 1 Then
+
+                    If bandValue > Band0.Maximum Then
+                        Band0.Value = Band0.Maximum
+                    ElseIf bandValue < Band0.Minimum Then
+                        Band0.Value = Band0.Minimum
+                    Else
+                        Band0.Value = bandValue
+                    End If
+
+                ElseIf band = 3 Then
+
+                    If bandValue > Band1.Maximum Then
+                        Band1.Value = Band1.Maximum
+                    ElseIf bandValue < Band1.Minimum Then
+                        Band1.Value = Band1.Minimum
+                    Else
+                        Band1.Value = bandValue
+                    End If
+
+                ElseIf band = 7 Then
+
+                    If bandValue > Band2.Maximum Then
+                        Band2.Value = Band2.Maximum
+                    ElseIf bandValue < Band2.Minimum Then
+                        Band2.Value = Band2.Minimum
+                    Else
+                        Band2.Value = bandValue
+                    End If
+
+                ElseIf band = 10 Then
+
+                    If bandValue > Band3.Maximum Then
+                        Band3.Value = Band3.Maximum
+                    ElseIf bandValue < Band3.Minimum Then
+                        Band3.Value = Band3.Minimum
+                    Else
+                        Band3.Value = bandValue
+                    End If
+
+                ElseIf band = 13 Then
+
+                    If bandValue > Band4.Maximum Then
+                        Band4.Value = Band4.Maximum
+                    ElseIf bandValue < Band4.Minimum Then
+                        Band4.Value = Band4.Minimum
+                    Else
+                        Band4.Value = bandValue
+                    End If
+
+                ElseIf band = 16 Then
+
+                    If bandValue > Band5.Maximum Then
+                        Band5.Value = Band5.Maximum
+                    ElseIf bandValue < Band5.Minimum Then
+                        Band5.Value = Band5.Minimum
+                    Else
+                        Band5.Value = bandValue
+                    End If
+
+                End If
+
+                band += 1
+            Loop
+
+            reader.Close()
+            reader.Dispose()
+        End If
+    End Sub
+
+    Private Sub SavePresetDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles SavePresetDialog.HelpRequest
+        MessageBox.Show("Use this dialog to save your current equalizer levels to a file that can then be loaded in foobar2000.", "Preset saving", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+    Private Sub OpenPresetDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles OpenPresetDialog.HelpRequest
+        MessageBox.Show("Use this dialog to select a previously saved .feq file. Any .feq file saved by foobar2000 or this application will work.", "Preset loading", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
 #End Region

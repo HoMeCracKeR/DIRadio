@@ -53,8 +53,9 @@ Partial Class Options
         Me.UpdatesAtStart = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
-        Me.ChangeWholeBackground = New System.Windows.Forms.CheckBox()
         Me.RestoreColours = New System.Windows.Forms.Button()
+        Me.ChangeWholeBackground = New System.Windows.Forms.CheckBox()
+        Me.Themes = New System.Windows.Forms.Button()
         Me.BackgroundColour = New System.Windows.Forms.PictureBox()
         Me.PeakColour = New System.Windows.Forms.PictureBox()
         Me.SecondaryColour = New System.Windows.Forms.PictureBox()
@@ -133,11 +134,25 @@ Partial Class Options
         Me.ColourPicker = New System.Windows.Forms.ColorDialog()
         Me.Apply = New System.Windows.Forms.Button()
         Me.Helper = New System.Windows.Forms.HelpProvider()
+        Me.ThemesMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.BlackNight = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BlueOcean = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BlueSky = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BrownWood = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SilverMetal = New System.Windows.Forms.ToolStripMenuItem()
+        Me.YellowSunset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.WhiteMilk = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.LoadTheme = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaveTheme = New System.Windows.Forms.ToolStripMenuItem()
         Me.ValidateWorker = New System.ComponentModel.BackgroundWorker()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
         Me.DownloadUpdater = New System.ComponentModel.BackgroundWorker()
         Me.PresetsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.SavePreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LoadPreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ClassicalMusic = New System.Windows.Forms.ToolStripMenuItem()
         Me.DancePreset = New System.Windows.Forms.ToolStripMenuItem()
         Me.JazzPreset = New System.Windows.Forms.ToolStripMenuItem()
@@ -146,6 +161,10 @@ Partial Class Options
         Me.ReggaePreset = New System.Windows.Forms.ToolStripMenuItem()
         Me.RockPreset = New System.Windows.Forms.ToolStripMenuItem()
         Me.TechnoPreset = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SavePresetDialog = New System.Windows.Forms.SaveFileDialog()
+        Me.OpenPresetDialog = New System.Windows.Forms.OpenFileDialog()
+        Me.OpenThemeDialog = New System.Windows.Forms.OpenFileDialog()
+        Me.SaveThemeDialog = New System.Windows.Forms.SaveFileDialog()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -174,6 +193,7 @@ Partial Class Options
         CType(Me.SkyLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DILogo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.ThemesMenu.SuspendLayout()
         Me.PresetsMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -546,8 +566,9 @@ Partial Class Options
         '
         'GroupBox4
         '
-        Me.GroupBox4.Controls.Add(Me.ChangeWholeBackground)
         Me.GroupBox4.Controls.Add(Me.RestoreColours)
+        Me.GroupBox4.Controls.Add(Me.ChangeWholeBackground)
+        Me.GroupBox4.Controls.Add(Me.Themes)
         Me.GroupBox4.Controls.Add(Me.BackgroundColour)
         Me.GroupBox4.Controls.Add(Me.PeakColour)
         Me.GroupBox4.Controls.Add(Me.SecondaryColour)
@@ -570,6 +591,18 @@ Partial Class Options
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Colours"
         '
+        'RestoreColours
+        '
+        Me.Helper.SetHelpString(Me.RestoreColours, "Clicking this button will restore the visualisation's colours to their default va" & _
+        "lues.")
+        Me.RestoreColours.Location = New System.Drawing.Point(174, 18)
+        Me.RestoreColours.Name = "RestoreColours"
+        Me.Helper.SetShowHelp(Me.RestoreColours, True)
+        Me.RestoreColours.Size = New System.Drawing.Size(105, 23)
+        Me.RestoreColours.TabIndex = 16
+        Me.RestoreColours.Text = "Restore colours"
+        Me.RestoreColours.UseVisualStyleBackColor = True
+        '
         'ChangeWholeBackground
         '
         Me.Helper.SetHelpString(Me.ChangeWholeBackground, "Select this check box to make the application use the same background colour as t" & _
@@ -582,17 +615,17 @@ Partial Class Options
         Me.ChangeWholeBackground.Text = "Change the whole background"
         Me.ChangeWholeBackground.UseVisualStyleBackColor = True
         '
-        'RestoreColours
+        'Themes
         '
-        Me.Helper.SetHelpString(Me.RestoreColours, "Clicking this button will restore the visualisation's colours to their default va" & _
-        "lues.")
-        Me.RestoreColours.Location = New System.Drawing.Point(174, 18)
-        Me.RestoreColours.Name = "RestoreColours"
-        Me.Helper.SetShowHelp(Me.RestoreColours, True)
-        Me.RestoreColours.Size = New System.Drawing.Size(105, 23)
-        Me.RestoreColours.TabIndex = 8
-        Me.RestoreColours.Text = "Restore colours"
-        Me.RestoreColours.UseVisualStyleBackColor = True
+        Me.Helper.SetHelpString(Me.Themes, "Clicking this button will display a list of included colour themes and options to" & _
+        " load and save colour themes files.")
+        Me.Themes.Location = New System.Drawing.Point(94, 18)
+        Me.Themes.Name = "Themes"
+        Me.Helper.SetShowHelp(Me.Themes, True)
+        Me.Themes.Size = New System.Drawing.Size(74, 23)
+        Me.Themes.TabIndex = 8
+        Me.Themes.Text = "Themes"
+        Me.Themes.UseVisualStyleBackColor = True
         '
         'BackgroundColour
         '
@@ -1080,7 +1113,8 @@ Partial Class Options
         '
         'Presets
         '
-        Me.Helper.SetHelpString(Me.Presets, "Clicking this button will move the sliders to the last applied settings.")
+        Me.Helper.SetHelpString(Me.Presets, "Clicking this button will open a popup menu with several included presets for the" & _
+        " equalizer and options to load and save presets.")
         Me.Presets.Location = New System.Drawing.Point(10, 363)
         Me.Presets.Name = "Presets"
         Me.Helper.SetShowHelp(Me.Presets, True)
@@ -1531,6 +1565,74 @@ Partial Class Options
         Me.Apply.Text = "Apply"
         Me.Apply.UseVisualStyleBackColor = True
         '
+        'ThemesMenu
+        '
+        Me.ThemesMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ThemesMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BlackNight, Me.BlueOcean, Me.BlueSky, Me.BrownWood, Me.SilverMetal, Me.YellowSunset, Me.WhiteMilk, Me.ToolStripSeparator2, Me.LoadTheme, Me.SaveTheme})
+        Me.ThemesMenu.Name = "ThemesMenu"
+        Me.Helper.SetShowHelp(Me.ThemesMenu, False)
+        Me.ThemesMenu.ShowImageMargin = False
+        Me.ThemesMenu.Size = New System.Drawing.Size(127, 208)
+        '
+        'BlackNight
+        '
+        Me.BlackNight.Name = "BlackNight"
+        Me.BlackNight.Size = New System.Drawing.Size(126, 22)
+        Me.BlackNight.Text = "Black Night"
+        '
+        'BlueOcean
+        '
+        Me.BlueOcean.Name = "BlueOcean"
+        Me.BlueOcean.Size = New System.Drawing.Size(126, 22)
+        Me.BlueOcean.Text = "Blue Ocean"
+        '
+        'BlueSky
+        '
+        Me.BlueSky.Name = "BlueSky"
+        Me.BlueSky.Size = New System.Drawing.Size(126, 22)
+        Me.BlueSky.Text = "Blue Sky"
+        '
+        'BrownWood
+        '
+        Me.BrownWood.Name = "BrownWood"
+        Me.BrownWood.Size = New System.Drawing.Size(126, 22)
+        Me.BrownWood.Text = "Brown Wood"
+        '
+        'SilverMetal
+        '
+        Me.SilverMetal.Name = "SilverMetal"
+        Me.SilverMetal.Size = New System.Drawing.Size(126, 22)
+        Me.SilverMetal.Text = "Silver Metal"
+        '
+        'YellowSunset
+        '
+        Me.YellowSunset.Name = "YellowSunset"
+        Me.YellowSunset.Size = New System.Drawing.Size(126, 22)
+        Me.YellowSunset.Text = "Yellow Sunset"
+        '
+        'WhiteMilk
+        '
+        Me.WhiteMilk.Name = "WhiteMilk"
+        Me.WhiteMilk.Size = New System.Drawing.Size(126, 22)
+        Me.WhiteMilk.Text = "White Milk"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(123, 6)
+        '
+        'LoadTheme
+        '
+        Me.LoadTheme.Name = "LoadTheme"
+        Me.LoadTheme.Size = New System.Drawing.Size(126, 22)
+        Me.LoadTheme.Text = "Load theme"
+        '
+        'SaveTheme
+        '
+        Me.SaveTheme.Name = "SaveTheme"
+        Me.SaveTheme.Size = New System.Drawing.Size(126, 22)
+        Me.SaveTheme.Text = "Save theme"
+        '
         'ValidateWorker
         '
         '
@@ -1545,58 +1647,99 @@ Partial Class Options
         'PresetsMenu
         '
         Me.PresetsMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.PresetsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ClassicalMusic, Me.DancePreset, Me.JazzPreset, Me.MetalPreset, Me.NewAgePreset, Me.ReggaePreset, Me.RockPreset, Me.TechnoPreset})
+        Me.PresetsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SavePreset, Me.LoadPreset, Me.ToolStripSeparator1, Me.ClassicalMusic, Me.DancePreset, Me.JazzPreset, Me.MetalPreset, Me.NewAgePreset, Me.ReggaePreset, Me.RockPreset, Me.TechnoPreset})
         Me.PresetsMenu.Name = "ContextMenuStrip1"
         Me.PresetsMenu.ShowImageMargin = False
-        Me.PresetsMenu.Size = New System.Drawing.Size(102, 180)
+        Me.PresetsMenu.Size = New System.Drawing.Size(116, 230)
+        '
+        'SavePreset
+        '
+        Me.SavePreset.Name = "SavePreset"
+        Me.SavePreset.Size = New System.Drawing.Size(115, 22)
+        Me.SavePreset.Text = "Save preset"
+        '
+        'LoadPreset
+        '
+        Me.LoadPreset.Name = "LoadPreset"
+        Me.LoadPreset.Size = New System.Drawing.Size(115, 22)
+        Me.LoadPreset.Text = "Load preset"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(112, 6)
         '
         'ClassicalMusic
         '
         Me.ClassicalMusic.Name = "ClassicalMusic"
-        Me.ClassicalMusic.Size = New System.Drawing.Size(101, 22)
+        Me.ClassicalMusic.Size = New System.Drawing.Size(115, 22)
         Me.ClassicalMusic.Text = "Classical"
         '
         'DancePreset
         '
         Me.DancePreset.Name = "DancePreset"
-        Me.DancePreset.Size = New System.Drawing.Size(101, 22)
+        Me.DancePreset.Size = New System.Drawing.Size(115, 22)
         Me.DancePreset.Text = "Dance"
         '
         'JazzPreset
         '
         Me.JazzPreset.Name = "JazzPreset"
-        Me.JazzPreset.Size = New System.Drawing.Size(101, 22)
+        Me.JazzPreset.Size = New System.Drawing.Size(115, 22)
         Me.JazzPreset.Text = "Jazz"
         '
         'MetalPreset
         '
         Me.MetalPreset.Name = "MetalPreset"
-        Me.MetalPreset.Size = New System.Drawing.Size(101, 22)
+        Me.MetalPreset.Size = New System.Drawing.Size(115, 22)
         Me.MetalPreset.Text = "Metal"
         '
         'NewAgePreset
         '
         Me.NewAgePreset.Name = "NewAgePreset"
-        Me.NewAgePreset.Size = New System.Drawing.Size(101, 22)
+        Me.NewAgePreset.Size = New System.Drawing.Size(115, 22)
         Me.NewAgePreset.Text = "New Age"
         '
         'ReggaePreset
         '
         Me.ReggaePreset.Name = "ReggaePreset"
-        Me.ReggaePreset.Size = New System.Drawing.Size(101, 22)
+        Me.ReggaePreset.Size = New System.Drawing.Size(115, 22)
         Me.ReggaePreset.Text = "Reggae"
         '
         'RockPreset
         '
         Me.RockPreset.Name = "RockPreset"
-        Me.RockPreset.Size = New System.Drawing.Size(101, 22)
+        Me.RockPreset.Size = New System.Drawing.Size(115, 22)
         Me.RockPreset.Text = "Rock"
         '
         'TechnoPreset
         '
         Me.TechnoPreset.Name = "TechnoPreset"
-        Me.TechnoPreset.Size = New System.Drawing.Size(101, 22)
+        Me.TechnoPreset.Size = New System.Drawing.Size(115, 22)
         Me.TechnoPreset.Text = "Techno"
+        '
+        'SavePresetDialog
+        '
+        Me.SavePresetDialog.Filter = "Equalizer presets|*.feq"
+        Me.SavePresetDialog.ShowHelp = True
+        Me.SavePresetDialog.Title = "Save equalizer preset file"
+        '
+        'OpenPresetDialog
+        '
+        Me.OpenPresetDialog.Filter = "Equalizer presets|*.feq"
+        Me.OpenPresetDialog.ShowHelp = True
+        Me.OpenPresetDialog.Title = "Open equalizer preset file"
+        '
+        'OpenThemeDialog
+        '
+        Me.OpenThemeDialog.Filter = "Colour themes|*.cth"
+        Me.OpenThemeDialog.ShowHelp = True
+        Me.OpenThemeDialog.Title = "Open colour theme file"
+        '
+        'SaveThemeDialog
+        '
+        Me.SaveThemeDialog.Filter = "Colour themes|*.cth"
+        Me.SaveThemeDialog.ShowHelp = True
+        Me.SaveThemeDialog.Title = "Save colour theme file"
         '
         'Options
         '
@@ -1655,6 +1798,7 @@ Partial Class Options
         CType(Me.SkyLogo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DILogo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ThemesMenu.ResumeLayout(False)
         Me.PresetsMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -1738,7 +1882,7 @@ Partial Class Options
     Friend WithEvents GroupBox7 As System.Windows.Forms.GroupBox
     Friend WithEvents NoTaskbarButton As System.Windows.Forms.CheckBox
     Friend WithEvents GoogleSearch As System.Windows.Forms.CheckBox
-    Friend WithEvents RestoreColours As System.Windows.Forms.Button
+    Friend WithEvents Themes As System.Windows.Forms.Button
     Friend WithEvents OnlyModifiers As System.Windows.Forms.ToolTip
     Friend WithEvents BetaVersions As System.Windows.Forms.CheckBox
     Friend WithEvents StationSelector As System.Windows.Forms.ComboBox
@@ -1781,4 +1925,23 @@ Partial Class Options
     Friend WithEvents NewAgePreset As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ReggaePreset As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents TechnoPreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents SavePreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents LoadPreset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents SavePresetDialog As System.Windows.Forms.SaveFileDialog
+    Friend WithEvents OpenPresetDialog As System.Windows.Forms.OpenFileDialog
+    Friend WithEvents ThemesMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents BlackNight As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents BlueOcean As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents BlueSky As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents BrownWood As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents SilverMetal As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents YellowSunset As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents WhiteMilk As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents RestoreColours As System.Windows.Forms.Button
+    Friend WithEvents ToolStripSeparator2 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents LoadTheme As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents SaveTheme As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents OpenThemeDialog As System.Windows.Forms.OpenFileDialog
+    Friend WithEvents SaveThemeDialog As System.Windows.Forms.SaveFileDialog
 End Class
