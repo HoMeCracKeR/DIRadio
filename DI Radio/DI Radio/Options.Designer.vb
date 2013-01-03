@@ -1154,7 +1154,7 @@ Partial Class Options
         Me.Helper.SetShowHelp(Me.Zero, True)
         Me.Zero.Size = New System.Drawing.Size(64, 23)
         Me.Zero.TabIndex = 39
-        Me.Zero.Text = "Zero"
+        Me.Zero.Text = "Zero all"
         Me.Zero.UseVisualStyleBackColor = True
         '
         'Band6db
@@ -1572,65 +1572,65 @@ Partial Class Options
         Me.ThemesMenu.Name = "ThemesMenu"
         Me.Helper.SetShowHelp(Me.ThemesMenu, False)
         Me.ThemesMenu.ShowImageMargin = False
-        Me.ThemesMenu.Size = New System.Drawing.Size(127, 208)
+        Me.ThemesMenu.Size = New System.Drawing.Size(128, 230)
         '
         'BlackNight
         '
         Me.BlackNight.Name = "BlackNight"
-        Me.BlackNight.Size = New System.Drawing.Size(126, 22)
+        Me.BlackNight.Size = New System.Drawing.Size(127, 22)
         Me.BlackNight.Text = "Black Night"
         '
         'BlueOcean
         '
         Me.BlueOcean.Name = "BlueOcean"
-        Me.BlueOcean.Size = New System.Drawing.Size(126, 22)
+        Me.BlueOcean.Size = New System.Drawing.Size(127, 22)
         Me.BlueOcean.Text = "Blue Ocean"
         '
         'BlueSky
         '
         Me.BlueSky.Name = "BlueSky"
-        Me.BlueSky.Size = New System.Drawing.Size(126, 22)
+        Me.BlueSky.Size = New System.Drawing.Size(127, 22)
         Me.BlueSky.Text = "Blue Sky"
         '
         'BrownWood
         '
         Me.BrownWood.Name = "BrownWood"
-        Me.BrownWood.Size = New System.Drawing.Size(126, 22)
+        Me.BrownWood.Size = New System.Drawing.Size(127, 22)
         Me.BrownWood.Text = "Brown Wood"
         '
         'SilverMetal
         '
         Me.SilverMetal.Name = "SilverMetal"
-        Me.SilverMetal.Size = New System.Drawing.Size(126, 22)
+        Me.SilverMetal.Size = New System.Drawing.Size(127, 22)
         Me.SilverMetal.Text = "Silver Metal"
         '
         'YellowSunset
         '
         Me.YellowSunset.Name = "YellowSunset"
-        Me.YellowSunset.Size = New System.Drawing.Size(126, 22)
+        Me.YellowSunset.Size = New System.Drawing.Size(127, 22)
         Me.YellowSunset.Text = "Yellow Sunset"
         '
         'WhiteMilk
         '
         Me.WhiteMilk.Name = "WhiteMilk"
-        Me.WhiteMilk.Size = New System.Drawing.Size(126, 22)
+        Me.WhiteMilk.Size = New System.Drawing.Size(127, 22)
         Me.WhiteMilk.Text = "White Milk"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(123, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(124, 6)
         '
         'LoadTheme
         '
         Me.LoadTheme.Name = "LoadTheme"
-        Me.LoadTheme.Size = New System.Drawing.Size(126, 22)
+        Me.LoadTheme.Size = New System.Drawing.Size(127, 22)
         Me.LoadTheme.Text = "Load theme"
         '
         'SaveTheme
         '
         Me.SaveTheme.Name = "SaveTheme"
-        Me.SaveTheme.Size = New System.Drawing.Size(126, 22)
+        Me.SaveTheme.Size = New System.Drawing.Size(127, 22)
         Me.SaveTheme.Text = "Save theme"
         '
         'ValidateWorker

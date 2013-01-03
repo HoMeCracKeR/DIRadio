@@ -48,7 +48,6 @@ Partial Class Player
         Me.ExitTray = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.Forums = New System.Windows.Forms.Button()
-        Me.History = New System.Windows.Forms.Button()
         Me.Calendar = New System.Windows.Forms.Button()
         Me.Mute = New System.Windows.Forms.Button()
         Me.OptionsButton = New System.Windows.Forms.Button()
@@ -62,6 +61,8 @@ Partial Class Player
         Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Marquee = New System.Windows.Forms.ProgressBar()
         Me.ControlsPanel = New System.Windows.Forms.Panel()
+        Me.History = New System.Windows.Forms.CheckBox()
+        Me.Label2 = New System.Windows.Forms.Label()
         Me.DownloadingMessage = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
@@ -79,7 +80,11 @@ Partial Class Player
         Me.HistoryList = New System.Windows.Forms.ListView()
         Me.Title = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Length = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.Label2 = New System.Windows.Forms.Label()
+        Me.CopyHistoryMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.CopyHistory = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.GoogleHistory = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GetHistory = New System.ComponentModel.BackgroundWorker()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -87,6 +92,7 @@ Partial Class Player
         Me.ControlsPanel.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.CopyHistoryMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'CopyTitleMenu
@@ -237,18 +243,6 @@ Partial Class Player
         Me.ToolTip.SetToolTip(Me.Forums, "Open channel's forums")
         Me.Forums.UseVisualStyleBackColor = True
         '
-        'History
-        '
-        Me.History.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.History.Image = CType(resources.GetObject("History.Image"), System.Drawing.Image)
-        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
-        Me.History.Location = New System.Drawing.Point(98, 20)
-        Me.History.Name = "History"
-        Me.History.Size = New System.Drawing.Size(25, 25)
-        Me.History.TabIndex = 4
-        Me.ToolTip.SetToolTip(Me.History, "Open channel's track history")
-        Me.History.UseVisualStyleBackColor = True
-        '
         'Calendar
         '
         Me.Calendar.Anchor = System.Windows.Forms.AnchorStyles.Top
@@ -386,6 +380,7 @@ Partial Class Player
         'ControlsPanel
         '
         Me.ControlsPanel.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.ControlsPanel.Controls.Add(Me.History)
         Me.ControlsPanel.Controls.Add(Me.Label2)
         Me.ControlsPanel.Controls.Add(Me.DownloadingMessage)
         Me.ControlsPanel.Controls.Add(Me.Label1)
@@ -395,7 +390,6 @@ Partial Class Player
         Me.ControlsPanel.Controls.Add(Me.Marquee)
         Me.ControlsPanel.Controls.Add(Me.SelectedServer)
         Me.ControlsPanel.Controls.Add(Me.Forums)
-        Me.ControlsPanel.Controls.Add(Me.History)
         Me.ControlsPanel.Controls.Add(Me.SelectedChannel)
         Me.ControlsPanel.Controls.Add(Me.Calendar)
         Me.ControlsPanel.Controls.Add(Me.RadioString)
@@ -408,6 +402,27 @@ Partial Class Player
         Me.ControlsPanel.Name = "ControlsPanel"
         Me.ControlsPanel.Size = New System.Drawing.Size(330, 81)
         Me.ControlsPanel.TabIndex = 2
+        '
+        'History
+        '
+        Me.History.Appearance = System.Windows.Forms.Appearance.Button
+        Me.History.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.History.Image = CType(resources.GetObject("History.Image"), System.Drawing.Image)
+        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
+        Me.History.Location = New System.Drawing.Point(98, 20)
+        Me.History.Name = "History"
+        Me.History.Size = New System.Drawing.Size(25, 25)
+        Me.History.TabIndex = 15
+        Me.History.UseVisualStyleBackColor = True
+        '
+        'Label2
+        '
+        Me.Label2.BackColor = System.Drawing.SystemColors.Control
+        Me.Label2.Location = New System.Drawing.Point(2, 79)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(30, 2)
+        Me.Label2.TabIndex = 14
+        Me.Label2.Text = " "
         '
         'DownloadingMessage
         '
@@ -542,10 +557,12 @@ Partial Class Player
         'HistoryList
         '
         Me.HistoryList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Title, Me.Length})
+        Me.HistoryList.ContextMenuStrip = Me.CopyHistoryMenu
         Me.HistoryList.FullRowSelect = True
         Me.HistoryList.GridLines = True
         Me.HistoryList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
         Me.HistoryList.HideSelection = False
+        Me.HistoryList.LabelWrap = False
         Me.HistoryList.Location = New System.Drawing.Point(12, 12)
         Me.HistoryList.MultiSelect = False
         Me.HistoryList.Name = "HistoryList"
@@ -567,17 +584,38 @@ Partial Class Player
         Me.Length.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         Me.Length.Width = 55
         '
-        'Label2
+        'CopyHistoryMenu
         '
-        Me.Label2.BackColor = System.Drawing.SystemColors.Control
-        Me.Label2.Location = New System.Drawing.Point(2, 79)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(30, 2)
-        Me.Label2.TabIndex = 14
-        Me.Label2.Text = " "
+        Me.CopyHistoryMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CopyHistoryMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyHistory, Me.ToolStripSeparator5, Me.GoogleHistory})
+        Me.CopyHistoryMenu.Name = "CopyTitleMenu"
+        Me.CopyHistoryMenu.Size = New System.Drawing.Size(156, 54)
+        '
+        'CopyHistory
+        '
+        Me.CopyHistory.Image = CType(resources.GetObject("CopyHistory.Image"), System.Drawing.Image)
+        Me.CopyHistory.Name = "CopyHistory"
+        Me.CopyHistory.Size = New System.Drawing.Size(155, 22)
+        Me.CopyHistory.Text = "Copy"
+        '
+        'ToolStripSeparator5
+        '
+        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(152, 6)
+        '
+        'GoogleHistory
+        '
+        Me.GoogleHistory.Image = CType(resources.GetObject("GoogleHistory.Image"), System.Drawing.Image)
+        Me.GoogleHistory.Name = "GoogleHistory"
+        Me.GoogleHistory.Size = New System.Drawing.Size(155, 22)
+        Me.GoogleHistory.Text = "Google search"
+        '
+        'GetHistory
+        '
         '
         'Player
         '
+        Me.AllowDrop = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(356, 441)
@@ -601,6 +639,7 @@ Partial Class Player
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.CopyHistoryMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -621,7 +660,6 @@ Partial Class Player
     Friend WithEvents RadioString As System.Windows.Forms.Label
     Friend WithEvents Calendar As System.Windows.Forms.Button
     Friend WithEvents SelectedChannel As System.Windows.Forms.ComboBox
-    Friend WithEvents History As System.Windows.Forms.Button
     Friend WithEvents Forums As System.Windows.Forms.Button
     Friend WithEvents SelectedServer As System.Windows.Forms.ComboBox
     Friend WithEvents Marquee As System.Windows.Forms.ProgressBar
@@ -660,5 +698,11 @@ Partial Class Player
     Friend WithEvents Title As System.Windows.Forms.ColumnHeader
     Friend WithEvents Length As System.Windows.Forms.ColumnHeader
     Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents History As System.Windows.Forms.CheckBox
+    Friend WithEvents GetHistory As System.ComponentModel.BackgroundWorker
+    Friend WithEvents CopyHistoryMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents CopyHistory As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator5 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents GoogleHistory As System.Windows.Forms.ToolStripMenuItem
 
 End Class

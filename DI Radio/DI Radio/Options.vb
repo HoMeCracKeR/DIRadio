@@ -1264,6 +1264,7 @@
 
     Private Sub MainButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MainButton.Click
         ColourPicker.Color = Color.FromArgb(MainColour.BackColor.ToArgb())
+        ColourPicker.Tag = "main"
 
         If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
             MainColour.Text = ColourPicker.Color.ToArgb.ToString
@@ -1276,6 +1277,7 @@
 
     Private Sub SecondaryButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SecondaryButton.Click
         ColourPicker.Color = Color.FromArgb(SecondaryColour.BackColor.ToArgb())
+        ColourPicker.Tag = "secondary"
 
         If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
             SecondaryColour.BackColor = ColourPicker.Color
@@ -1287,6 +1289,7 @@
 
     Private Sub PeakButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PeakButton.Click
         ColourPicker.Color = Color.FromArgb(PeakColour.BackColor.ToArgb())
+        ColourPicker.Tag = "peak"
 
         If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
             PeakColour.BackColor = ColourPicker.Color
@@ -1298,6 +1301,7 @@
 
     Private Sub BackgroundButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BackgroundButton.Click
         ColourPicker.Color = Color.FromArgb(BackgroundColour.BackColor.ToArgb())
+        ColourPicker.Tag = "background"
 
         If ColourPicker.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
             BackgroundColour.BackColor = ColourPicker.Color
@@ -1779,7 +1783,7 @@
                 End If
 
                 If JazzSettingPremium > -1 Then
-                    Player.JazzFormat = JazzSetting
+                    Player.JazzFormat = JazzSettingPremium
                 Else
                     Player.JazzFormat = 3
                 End If
@@ -1952,7 +1956,7 @@
             Player.VisualisationBox.Show()
             Player.Size = New Size(Player.MaximumSize)
 
-            If Player.PlayStop.Tag = "Stop" Then
+            If Player.PlayStop.Tag = "Stop" And Player.History.Checked = False Then
                 Player.VisTimer.Start()
             End If
 
@@ -1960,7 +1964,11 @@
 
             Player.VisTimer.Stop()
             Player.VisualisationBox.Hide()
-            Player.Size = New Size(Player.MinimumSize)
+
+            If Player.History.Checked = False Then
+                Player.Size = New Size(Player.MinimumSize)
+            End If
+
 
         End If
 
@@ -2191,7 +2199,7 @@
             MessageBox.Show("You're selecting the Secondary colour of the visualisation." & vbNewLine & "This colour is used at the top of the visualisation as the frequency levels reach higher values." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
         ElseIf ColourPicker.Tag.ToString.Contains("main") Then
             MessageBox.Show("You're selecting the Main colour of the visualisation." & vbNewLine & "This colour is used at the bottom of the visualisation and is almost always displayed." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        ElseIf ColourPicker.Tag.ToString.Contains("peaks") Then
+        ElseIf ColourPicker.Tag.ToString.Contains("peak") Then
             MessageBox.Show("You're selecting the colour that will be used for the peaks when the Lines with peaks visualisation is selected." & vbNewLine & "The peaks are the squares displayed at the top of the lines." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
         ElseIf ColourPicker.Tag.ToString.Contains("background") Then
             MessageBox.Show("You're selecting the colour that will be used as a background on the visualisation area." & vbNewLine & "If you check the 'Change the whole background' box, this colour will be used as a background for the entire player, even when the visualisation is disabled." & vbNewLine & "If you select a colour that's too dark, the title and time displays will use a white font colour; and if you select a colour that's too bright, they will use a black font colour." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)

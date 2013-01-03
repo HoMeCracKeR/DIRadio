@@ -10,7 +10,7 @@
             Text = "Couldn't download the changelog due to the following error:" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try again later."
         End Try
 
-        Changelog.Text = Text
+        ChangelogText.Text = Text
     End Sub
 
     Private Sub Form3_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyUp
@@ -23,13 +23,13 @@
         GetChangelog.RunWorkerAsync()
     End Sub
 
-    Private Sub Changelog_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Changelog.KeyUp
+    Private Sub Changelog_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles ChangelogText.KeyUp
         If e.KeyCode = Keys.Escape Then
             Me.Close()
         End If
     End Sub
 
-    Private Sub Changelog_LinkClicked(sender As Object, e As System.Windows.Forms.LinkClickedEventArgs) Handles Changelog.LinkClicked
+    Private Sub Changelog_LinkClicked(sender As Object, e As System.Windows.Forms.LinkClickedEventArgs) Handles ChangelogText.LinkClicked
         Process.Start(e.LinkText)
     End Sub
 
