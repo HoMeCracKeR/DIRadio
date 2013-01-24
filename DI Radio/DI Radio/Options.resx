@@ -5118,7 +5118,11 @@ Head over to https://github.com/ViRUS2012/DIRadio to download the complete sourc
     <value>1003, 9</value>
   </metadata>
   <metadata name="OpenThemeDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+<<<<<<< HEAD
     <value>1428, 9</value>
+=======
+    <value>442, 48</value>
+>>>>>>> 1.14
   </metadata>
   <metadata name="SaveThemeDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>1279, 9</value>

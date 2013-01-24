@@ -55,7 +55,7 @@
             JazzSettingPremium = Player.JazzFormat
             SKYSettingPremium = Player.SKYFormat
         End If
-        
+
         NotificationTitle.Checked = Player.NotificationTitle
         Visualisation.Checked = Player.Visualisation
         NotificationIcon.Checked = Player.NotificationIcon
@@ -1201,7 +1201,11 @@
         LookNow.Enabled = False
         UndefinedProgress.Hide()
 
-        Dim file As String = Player.exeFolder & "\Updater.exe"
+        Dim executable As String = Application.ExecutablePath
+        Dim tabla() As String = Split(executable, "\")
+        Dim exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
+
+        Dim file As String = exeFolder & "\Updater.exe"
         Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
         Dim theResponse As Net.HttpWebResponse
@@ -1828,7 +1832,7 @@
 
         Player.ListenKey = ListenKey.Text
 
-        If Player.DIFormat = DISetting = False And Player.DIFormat = DISettingPremium = False Then
+        If Player.DIFormat = DISetting = False OrElse Player.DIFormat = DISettingPremium = False Then
 
             If PremiumFormats.Checked = False Then
                 Player.DIFormat = DISetting
@@ -1869,7 +1873,7 @@
 
         End If
 
-        If Player.SKYFormat = SKYSetting = False And Player.SKYFormat = SKYSettingPremium = False Then
+        If Player.SKYFormat = SKYSetting = False OrElse Player.SKYFormat = SKYSettingPremium = False Then
 
             If PremiumFormats.Checked = False Then
                 Player.SKYFormat = SKYSetting
@@ -1908,7 +1912,7 @@
 
         End If
 
-        If Player.JazzFormat = JazzSetting = False And Player.JazzFormat = JazzSettingPremium = False Then
+        If Player.JazzFormat = JazzSetting = False OrElse Player.JazzFormat = JazzSettingPremium = False Then
 
             If PremiumFormats.Checked = False Then
                 Player.JazzFormat = JazzSetting

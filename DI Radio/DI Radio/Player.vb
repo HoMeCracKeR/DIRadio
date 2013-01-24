@@ -121,7 +121,11 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
+<<<<<<< HEAD
     Public TotalVersionFixed As Integer = 33    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+=======
+    Public TotalVersionFixed As Integer = 34    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+>>>>>>> 1.14
 
 #End Region
 
@@ -720,6 +724,11 @@ Public Class Player
 
     Private Sub History_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles History.CheckedChanged
         If History.Checked = True Then
+<<<<<<< HEAD
+=======
+            History.ImageAlign = ContentAlignment.BottomCenter
+            History.Image = My.Resources.back
+>>>>>>> 1.14
             HistoryList.Show()
             HistoryList.Items.Clear()
             If GetHistory.IsBusy = False Then
@@ -728,14 +737,26 @@ Public Class Player
 
             VisTimer.Stop()
             Me.Size = Me.MaximumSize
+<<<<<<< HEAD
         Else
             HistoryList.Hide()
 
+=======
+            ToolTip.SetToolTip(History, "Hide track history")
+        Else
+            History.ImageAlign = ContentAlignment.BottomRight
+            History.Image = My.Resources.history
+            HistoryList.Hide()
+>>>>>>> 1.14
             If Visualisation = False Then
                 Me.Size = Me.MinimumSize
             Else
                 VisTimer.Start()
             End If
+<<<<<<< HEAD
+=======
+            ToolTip.SetToolTip(History, "Show track history")
+>>>>>>> 1.14
         End If
     End Sub
 
@@ -933,6 +954,7 @@ Public Class Player
     Private Sub StationChooser_TextChanged(sender As Object, e As System.EventArgs) Handles StationChooser.TextChanged
 
         ' Long lists were removed by _Tobias. Now the player doesn't have to be updated in order to add new channels!
+
         PlayStop.Enabled = False
         StationChooser.Enabled = False
         SelectedChannel.Enabled = False
@@ -943,6 +965,11 @@ Public Class Player
         If ListenKey = Nothing = False And StationChooser.Text = RockRadio.Text = False Then
             SelectedChannel.Items.Add("My Favorites")
         End If
+
+        Calendar.Enabled = False
+        History.Enabled = False
+        Forums.Enabled = False
+        HistoryList.Items.Clear()
 
         DownloadingMessage.Show()
         Marquee.Show()
@@ -1552,6 +1579,7 @@ again:
     End Sub
 
     Private Sub GetUpdates_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles GetUpdates.RunWorkerCompleted
+        Dim updating As Boolean = False
         If My.Computer.FileSystem.FileExists(exeFolder & "\Info.txt") Then
             Dim FullLine As String = LatestVersionString
             Dim Splitter As String() = Split(FullLine, ".")
@@ -1567,11 +1595,13 @@ again:
                         If MsgBox("There's a new beta version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
                             Options.LookNow_Click(Me, Nothing)
                             OptionsButton_Click(Me, Nothing)
+                            updating = True
                         End If
                     ElseIf Splitter(2) = 0 Then
                         If MsgBox("There's a new version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
                             Options.LookNow_Click(Me, Nothing)
                             OptionsButton_Click(Me, Nothing)
+                            updating = True
                         End If
                     End If
 
@@ -1602,7 +1632,10 @@ again:
 
         Options.UndefinedProgress.Hide()
         Options.Status.Text = "Status: Idle"
-        Options.LookNow.Enabled = True
+        If updating = False Then
+            Options.LookNow.Enabled = True
+        End If
+
     End Sub
 
     Private Sub GetHistory_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetHistory.DoWork
@@ -1610,6 +1643,7 @@ again:
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim HistoryLog As String
         Dim file As String = exeFolder & "\servers\historytemp"
+<<<<<<< HEAD
         Dim writer As New IO.StreamWriter(file)
 
         HistoryLog = WebClient.DownloadString("http://tobiass.eu/api/history/text/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
@@ -1645,6 +1679,49 @@ again:
 
         Kill(exeFolder & "\servers\historytemp")
         HistoryList.Enabled = True
+=======
+
+
+        Try
+            Dim writer As New IO.StreamWriter(file)
+            HistoryLog = WebClient.DownloadString("http://tobiass.eu/api/history/text/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
+
+            writer.Write(HistoryLog)
+            writer.Close()
+            writer.Dispose()
+
+            Dim reader As New IO.StreamReader(file)
+
+            HistoryList.Items.Clear()
+
+            Do While (reader.Peek > -1)
+
+                Dim line As String = reader.ReadLine
+                Dim splitter() As String = Split(line, "|")
+
+                HistoryList.Items.Add(splitter(0))
+
+                Dim span As TimeSpan = TimeSpan.FromSeconds(splitter(1))
+
+                If span.Hours < 1 Then
+                    HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}", span.Minutes, span.Seconds))
+
+                Else
+                    HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}:{2:00}", span.Hours, span.Minutes, span.Seconds))
+                End If
+
+            Loop
+
+            reader.Close()
+            reader.Dispose()
+
+            Kill(exeFolder & "\servers\historytemp")
+            HistoryList.Enabled = True
+        Catch
+            HistoryList.Items.Add("Couldn't download history information.")
+            HistoryList.Items.Add("Please go back and try again.")
+        End Try
+>>>>>>> 1.14
     End Sub
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
@@ -1653,8 +1730,29 @@ again:
 
         Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
 
-        Dim readerChdb As IO.StreamReader = channelDb(chdb)
+        Try
 
+            Dim readerChdb As IO.StreamReader = channelDb(chdb)
+
+            Do While (readerChdb.Peek > -1)
+                Dim line = readerChdb.ReadLine()
+                Dim splitter = Split(line, "|")
+                SelectedChannel.Items.Add(splitter(0))
+                KeysArray.Items.Add(splitter(0))
+                KeysArray.Items.Item(KeysArray.Items.Count - 1).Tag = splitter(2)
+                KeysArray.Items.Item(KeysArray.Items.Count - 1).Name = splitter(0)
+            Loop
+
+            readerChdb.Close()
+            readerChdb.Dispose()
+
+        Catch ex As Exception
+            MessageBox.Show("Couldn't download channels list", "Error downloading channels list", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Marquee.Hide()
+        End Try
+
+
+<<<<<<< HEAD
         Do While (readerChdb.Peek > -1)
             Dim line = readerChdb.ReadLine()
             Dim splitter = Split(line, "|")
@@ -1663,43 +1761,61 @@ again:
             KeysArray.Items.Item(KeysArray.Items.Count - 1).Tag = splitter(2)
             KeysArray.Items.Item(KeysArray.Items.Count - 1).Name = splitter(0)
         Loop
+=======
+>>>>>>> 1.14
 
-        readerChdb.Close()
-        readerChdb.Dispose()
 
     End Sub
 
     Private Sub DownloadDb_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadDb.RunWorkerCompleted
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & StationChooser.Text & "\channels.db") Then
+            If StationChooser.Text = DIFM.Text Then
 
-        If StationChooser.Text = DIFM.Text Then
+                SelectedChannel.SelectedIndex = DIChannel
+                Calendar.Enabled = True
+                History.Enabled = True
 
-            SelectedChannel.SelectedIndex = DIChannel
-            Calendar.Enabled = True
-            History.Enabled = True
+            ElseIf StationChooser.Text = SKYFM.Text Then
 
-        ElseIf StationChooser.Text = SKYFM.Text Then
+                SelectedChannel.SelectedIndex = SKYChannel
+                Calendar.Enabled = False
+                History.Enabled = True
 
-            SelectedChannel.SelectedIndex = SKYChannel
-            Calendar.Enabled = False
-            History.Enabled = True
+            ElseIf StationChooser.Text = JazzRadio.Text Then
 
-        ElseIf StationChooser.Text = JazzRadio.Text Then
-
+<<<<<<< HEAD
             SelectedChannel.SelectedIndex = JazzChannel
             Calendar.Enabled = False
             History.Enabled = False
             History.Checked = False
             Forums.Enabled = False
+=======
+                SelectedChannel.SelectedIndex = JazzChannel
+                Calendar.Enabled = False
+                History.Enabled = False
+                History.Checked = False
+                Forums.Enabled = False
+>>>>>>> 1.14
 
-        ElseIf StationChooser.Text = RockRadio.Text Then
+            ElseIf StationChooser.Text = RockRadio.Text Then
 
+<<<<<<< HEAD
             SelectedChannel.SelectedIndex = RockChannel
             Calendar.Enabled = False
             History.Enabled = False
             History.Checked = False
             Forums.Enabled = False
+=======
+                SelectedChannel.SelectedIndex = RockChannel
+                Calendar.Enabled = False
+                History.Enabled = False
+                History.Checked = False
+                Forums.Enabled = False
+>>>>>>> 1.14
 
+            End If
         End If
+        
 
     End Sub
 

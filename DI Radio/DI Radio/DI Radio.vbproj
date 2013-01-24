@@ -186,9 +186,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Radio.ico" />
-    <None Include="Resources\face-smile.png" />
-    <None Include="Resources\face-sad.png" />
-    <None Include="Resources\face-plain.png" />
+    <None Include="Resources\text-x-generic.png" />
+    <None Include="Resources\go-previous.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

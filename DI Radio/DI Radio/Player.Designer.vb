@@ -52,6 +52,7 @@ Partial Class Player
         Me.Mute = New System.Windows.Forms.Button()
         Me.OptionsButton = New System.Windows.Forms.Button()
         Me.PlayStop = New System.Windows.Forms.Button()
+        Me.History = New System.Windows.Forms.CheckBox()
         Me.Volume = New System.Windows.Forms.TrackBar()
         Me.TimerString = New System.Windows.Forms.Label()
         Me.RadioString = New System.Windows.Forms.Label()
@@ -61,7 +62,10 @@ Partial Class Player
         Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Marquee = New System.Windows.Forms.ProgressBar()
         Me.ControlsPanel = New System.Windows.Forms.Panel()
+<<<<<<< HEAD
         Me.History = New System.Windows.Forms.CheckBox()
+=======
+>>>>>>> 1.14
         Me.Label2 = New System.Windows.Forms.Label()
         Me.DownloadingMessage = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -76,7 +80,6 @@ Partial Class Player
         Me.GetUpdates = New System.ComponentModel.BackgroundWorker()
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
         Me.DownloadDb = New System.ComponentModel.BackgroundWorker()
-        Me.VisualisationBox = New System.Windows.Forms.PictureBox()
         Me.HistoryList = New System.Windows.Forms.ListView()
         Me.Title = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Length = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -85,12 +88,17 @@ Partial Class Player
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.GoogleHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.GetHistory = New System.ComponentModel.BackgroundWorker()
+<<<<<<< HEAD
+=======
+        Me.VisualisationBox = New System.Windows.Forms.PictureBox()
+>>>>>>> 1.14
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ServerMenu.SuspendLayout()
         Me.ControlsPanel.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
+        Me.CopyHistoryMenu.SuspendLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.CopyHistoryMenu.SuspendLayout()
         Me.SuspendLayout()
@@ -290,6 +298,19 @@ Partial Class Player
         Me.ToolTip.SetToolTip(Me.PlayStop, "Play")
         Me.PlayStop.UseVisualStyleBackColor = True
         '
+        'History
+        '
+        Me.History.Appearance = System.Windows.Forms.Appearance.Button
+        Me.History.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.History.Image = CType(resources.GetObject("History.Image"), System.Drawing.Image)
+        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
+        Me.History.Location = New System.Drawing.Point(98, 20)
+        Me.History.Name = "History"
+        Me.History.Size = New System.Drawing.Size(25, 25)
+        Me.History.TabIndex = 15
+        Me.ToolTip.SetToolTip(Me.History, "Show track history")
+        Me.History.UseVisualStyleBackColor = True
+        '
         'Volume
         '
         Me.Volume.Anchor = System.Windows.Forms.AnchorStyles.Top
@@ -403,6 +424,7 @@ Partial Class Player
         Me.ControlsPanel.Size = New System.Drawing.Size(330, 81)
         Me.ControlsPanel.TabIndex = 2
         '
+<<<<<<< HEAD
         'History
         '
         Me.History.Appearance = System.Windows.Forms.Appearance.Button
@@ -415,6 +437,8 @@ Partial Class Player
         Me.History.TabIndex = 15
         Me.History.UseVisualStyleBackColor = True
         '
+=======
+>>>>>>> 1.14
         'Label2
         '
         Me.Label2.BackColor = System.Drawing.SystemColors.Control
@@ -439,7 +463,6 @@ Partial Class Player
         Me.DownloadingMessage.MaxDropDownItems = 7
         Me.DownloadingMessage.Name = "DownloadingMessage"
         Me.DownloadingMessage.Size = New System.Drawing.Size(149, 22)
-        Me.DownloadingMessage.Sorted = True
         Me.DownloadingMessage.TabIndex = 13
         '
         'Label1
@@ -542,18 +565,6 @@ Partial Class Player
         'DownloadDb
         '
         '
-        'VisualisationBox
-        '
-        Me.VisualisationBox.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.VisualisationBox.Location = New System.Drawing.Point(12, 12)
-        Me.VisualisationBox.Name = "VisualisationBox"
-        Me.VisualisationBox.Size = New System.Drawing.Size(331, 334)
-        Me.VisualisationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
-        Me.VisualisationBox.TabIndex = 3
-        Me.VisualisationBox.TabStop = False
-        '
         'HistoryList
         '
         Me.HistoryList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Title, Me.Length})
@@ -585,6 +596,35 @@ Partial Class Player
         Me.Length.Width = 55
         '
         'CopyHistoryMenu
+<<<<<<< HEAD
+        '
+        Me.CopyHistoryMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CopyHistoryMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyHistory, Me.ToolStripSeparator5, Me.GoogleHistory})
+        Me.CopyHistoryMenu.Name = "CopyTitleMenu"
+        Me.CopyHistoryMenu.Size = New System.Drawing.Size(156, 54)
+        '
+        'CopyHistory
+        '
+        Me.CopyHistory.Image = CType(resources.GetObject("CopyHistory.Image"), System.Drawing.Image)
+        Me.CopyHistory.Name = "CopyHistory"
+        Me.CopyHistory.Size = New System.Drawing.Size(155, 22)
+        Me.CopyHistory.Text = "Copy"
+        '
+        'ToolStripSeparator5
+        '
+        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(152, 6)
+        '
+        'GoogleHistory
+        '
+        Me.GoogleHistory.Image = CType(resources.GetObject("GoogleHistory.Image"), System.Drawing.Image)
+        Me.GoogleHistory.Name = "GoogleHistory"
+        Me.GoogleHistory.Size = New System.Drawing.Size(155, 22)
+        Me.GoogleHistory.Text = "Google search"
+        '
+        'GetHistory
+        '
+=======
         '
         Me.CopyHistoryMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CopyHistoryMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyHistory, Me.ToolStripSeparator5, Me.GoogleHistory})
@@ -613,6 +653,19 @@ Partial Class Player
         'GetHistory
         '
         '
+        'VisualisationBox
+        '
+        Me.VisualisationBox.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.VisualisationBox.Location = New System.Drawing.Point(12, 12)
+        Me.VisualisationBox.Name = "VisualisationBox"
+        Me.VisualisationBox.Size = New System.Drawing.Size(331, 334)
+        Me.VisualisationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
+        Me.VisualisationBox.TabIndex = 3
+        Me.VisualisationBox.TabStop = False
+>>>>>>> 1.14
+        '
         'Player
         '
         Me.AllowDrop = True
@@ -638,6 +691,7 @@ Partial Class Player
         Me.ControlsPanel.ResumeLayout(False)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
+        Me.CopyHistoryMenu.ResumeLayout(False)
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.CopyHistoryMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
