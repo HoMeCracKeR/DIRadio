@@ -121,11 +121,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-<<<<<<< HEAD
-    Public TotalVersionFixed As Integer = 33    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
-=======
     Public TotalVersionFixed As Integer = 34    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
->>>>>>> 1.14
 
 #End Region
 
@@ -724,11 +720,8 @@ Public Class Player
 
     Private Sub History_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles History.CheckedChanged
         If History.Checked = True Then
-<<<<<<< HEAD
-=======
             History.ImageAlign = ContentAlignment.BottomCenter
             History.Image = My.Resources.back
->>>>>>> 1.14
             HistoryList.Show()
             HistoryList.Items.Clear()
             If GetHistory.IsBusy = False Then
@@ -737,26 +730,17 @@ Public Class Player
 
             VisTimer.Stop()
             Me.Size = Me.MaximumSize
-<<<<<<< HEAD
-        Else
-            HistoryList.Hide()
-
-=======
             ToolTip.SetToolTip(History, "Hide track history")
         Else
             History.ImageAlign = ContentAlignment.BottomRight
             History.Image = My.Resources.history
             HistoryList.Hide()
->>>>>>> 1.14
             If Visualisation = False Then
                 Me.Size = Me.MinimumSize
             Else
                 VisTimer.Start()
             End If
-<<<<<<< HEAD
-=======
             ToolTip.SetToolTip(History, "Show track history")
->>>>>>> 1.14
         End If
     End Sub
 
@@ -1643,43 +1627,6 @@ again:
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim HistoryLog As String
         Dim file As String = exeFolder & "\servers\historytemp"
-<<<<<<< HEAD
-        Dim writer As New IO.StreamWriter(file)
-
-        HistoryLog = WebClient.DownloadString("http://tobiass.eu/api/history/text/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
-
-        writer.Write(HistoryLog)
-        writer.Close()
-        writer.Dispose()
-
-        Dim reader As New IO.StreamReader(file)
-
-        HistoryList.Items.Clear()
-
-        Do While (reader.Peek > -1)
-
-            Dim line As String = reader.ReadLine
-            Dim splitter() As String = Split(line, "|")
-
-            HistoryList.Items.Add(splitter(0))
-
-            Dim span As TimeSpan = TimeSpan.FromSeconds(splitter(1))
-
-            If span.Hours < 1 Then
-                HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}", span.Minutes, span.Seconds))
-
-            Else
-                HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}:{2:00}", span.Hours, span.Minutes, span.Seconds))
-            End If
-
-        Loop
-
-        reader.Close()
-        reader.Dispose()
-
-        Kill(exeFolder & "\servers\historytemp")
-        HistoryList.Enabled = True
-=======
 
 
         Try
@@ -1721,7 +1668,6 @@ again:
             HistoryList.Items.Add("Couldn't download history information.")
             HistoryList.Items.Add("Please go back and try again.")
         End Try
->>>>>>> 1.14
     End Sub
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
@@ -1752,19 +1698,6 @@ again:
         End Try
 
 
-<<<<<<< HEAD
-        Do While (readerChdb.Peek > -1)
-            Dim line = readerChdb.ReadLine()
-            Dim splitter = Split(line, "|")
-            SelectedChannel.Items.Add(splitter(0))
-            KeysArray.Items.Add(splitter(0))
-            KeysArray.Items.Item(KeysArray.Items.Count - 1).Tag = splitter(2)
-            KeysArray.Items.Item(KeysArray.Items.Count - 1).Name = splitter(0)
-        Loop
-=======
->>>>>>> 1.14
-
-
     End Sub
 
     Private Sub DownloadDb_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadDb.RunWorkerCompleted
@@ -1783,35 +1716,19 @@ again:
 
             ElseIf StationChooser.Text = JazzRadio.Text Then
 
-<<<<<<< HEAD
-            SelectedChannel.SelectedIndex = JazzChannel
-            Calendar.Enabled = False
-            History.Enabled = False
-            History.Checked = False
-            Forums.Enabled = False
-=======
                 SelectedChannel.SelectedIndex = JazzChannel
                 Calendar.Enabled = False
                 History.Enabled = False
                 History.Checked = False
                 Forums.Enabled = False
->>>>>>> 1.14
 
             ElseIf StationChooser.Text = RockRadio.Text Then
 
-<<<<<<< HEAD
-            SelectedChannel.SelectedIndex = RockChannel
-            Calendar.Enabled = False
-            History.Enabled = False
-            History.Checked = False
-            Forums.Enabled = False
-=======
                 SelectedChannel.SelectedIndex = RockChannel
                 Calendar.Enabled = False
                 History.Enabled = False
                 History.Checked = False
                 Forums.Enabled = False
->>>>>>> 1.14
 
             End If
         End If

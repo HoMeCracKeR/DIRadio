@@ -118,11 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="CopyTitleMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-<<<<<<< HEAD
-    <value>1115, 21</value>
-=======
     <value>123, 60</value>
->>>>>>> 1.14
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="CopyToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -164,11 +160,7 @@
     <value>911, 21</value>
   </metadata>
   <metadata name="TrayMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-<<<<<<< HEAD
-    <value>1009, 21</value>
-=======
     <value>17, 60</value>
->>>>>>> 1.14
   </metadata>
   <data name="OptionsTray.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -6461,11 +6453,7 @@
 </value>
   </data>
   <metadata name="ToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-<<<<<<< HEAD
-    <value>1366, 21</value>
-=======
-    <value>374, 60</value>
->>>>>>> 1.14
+    <value>524, 60</value>
   </metadata>
   <metadata name="Forums.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -6579,11 +6567,7 @@
     <value>True</value>
   </metadata>
   <metadata name="ServerMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-<<<<<<< HEAD
-    <value>1249, 21</value>
-=======
-    <value>257, 60</value>
->>>>>>> 1.14
+    <value>407, 60</value>
   </metadata>
   <data name="CopyServerURLToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -6602,9 +6586,6 @@
   <metadata name="ControlsPanel.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="History.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <metadata name="Label2.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -6615,61 +6596,11 @@
     <value>True</value>
   </metadata>
   <metadata name="ToolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-<<<<<<< HEAD
-    <value>1458, 21</value>
-=======
-    <value>466, 60</value>
->>>>>>> 1.14
+    <value>616, 60</value>
   </metadata>
   <metadata name="ToolStrip1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-<<<<<<< HEAD
-  <metadata name="EditFavorites.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="RefreshFavorites.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="History.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="History.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DAAACwwBP0AiyAAAAAd0SU1FB9UEFhQPOLpgJkIAAAC9SURBVDhPpY/BEYMgFESpMv1YhAc6yCHHlIBC
-        I8lBBYQGSJb4iTooYbIz78Afdvd/xjm/NU0TKrkwEga1gmexfwOmaQrDMETGcUxgDrTWYZ7n+DcbAKMQ
-        InRdF+n7foOUshywb6VmYIw5D4Ax10wUN8jd/OER3z9tsG+FCWj9LAfkbgbW2kQxYN2Om4FSKlEMyDXD
-        5JxLQNkAmI+ayey9j38PA2iDdTttAPNpQI02AW3b3jGo4e25LvZ/xdgL/0LONhkKrGQAAAAASUVORK5C
-        YII=
-</value>
-  </data>
-  <metadata name="Label2.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="DownloadingMessage.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="Label1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ToolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>1458, 21</value>
-  </metadata>
-  <metadata name="ToolStrip1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="StationChooser.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACrSURBVDhPYxh4wNH3dxpn/ZU/nP3//5OKQXoZQJq529/9
-        52l8hB03PfnP3fEBrAFZHYgN0ssAkgAJ4AIfvv/9n77hLVwzDIDYIL0EDYAB6c4nuA3A5QWQJhjwXPgS
-        LAYDIDZWF4AUcnX/AEuii9PPABAfhK1mPoeKkmAALoA3EAkZgD8aCSUkIAYnGqBiZHVgMVBCAibHyZz9
-        L3+CFJCEgZpBeqE5YsAAAwMAc3k6vU2ZRpoAAAAASUVORK5CYII=
-</value>
-  </data>
-=======
->>>>>>> 1.14
   <data name="DIFM.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -6719,8 +6650,6 @@
         jmb5Ybogt1TnVyu0O3UG3prN2xW3xnX+AyXPVIqso7nJAAAAAElFTkSuQmCC
 </value>
   </data>
-<<<<<<< HEAD
-=======
   <data name="StationChooser.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -6730,7 +6659,6 @@
         L3+CFJCEgZpBeqE5YsAAAwMAc3k6vU2ZRpoAAAAASUVORK5CYII=
 </value>
   </data>
->>>>>>> 1.14
   <metadata name="EditFavorites.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -6750,7 +6678,7 @@
     <value>True</value>
   </metadata>
   <metadata name="CopyHistoryMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>573, 60</value>
+    <value>257, 60</value>
   </metadata>
   <data name="CopyHistory.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -6780,35 +6708,6 @@
   </metadata>
   <metadata name="VisualisationBox.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </metadata>
-  <metadata name="CopyHistoryMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>138, 60</value>
-  </metadata>
-  <data name="CopyHistory.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DAAACwwBP0AiyAAAAAd0SU1FB9UKGhQIL4MUNJsAAAEoSURBVDhPnZPLToNAFIZ5Q018HjMrL9Da6sJL
-        6tKlD+EChC5cuOAJxBWXoWEQCpQZz6EgwhA78U++kCFzPv6zQLtaGkeXxhlRYXGjn2jj6LPzUyEEUQEl
-        7VifTrDZxCSOqQS+R5QE67VDVo/373BRqADrPw8EiDG/qOGsFJRIDeDcCOD8JxhJgDt3DfCS49iTTApw
-        2LZf/9+A0ohEUXiwwaSAc07CMCSWZSo1KMtSMMZ6QVEUJAgC4vv+wQaUUpHnmTAtsxcwlpA0ZSRJkoFg
-        zHyhD2gEy+vZMUiwekfNeS0NY+2H1W3z3G5z4X1+7AXjgKAqy0Ia/i3wvP0w8NaO9UFBmqbNnln2JXa7
-        SlRVJVzXBcHdz5cB+b/AwG5PIOkuTfECtMOa9g3mdtnhv256TwAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="GoogleHistory.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAWVJREFUOE+lk8tLQkEUxv3XlDByUbQp+hNqIbSKWnutFhGF2CLoRVDWosiCshe4
-        KegJ9oIgsnwsKnvc0et4H19nBBOdKawWH8yd+c7vnJlzrssTYC0eTc94NIbfiWIo1vW34Ir0DAHkg6Yg
-        QyjGEd7mOE9asB1g5aiEvgVD8ioBkcMSJnZ4eS1glykb+1em5BNSAj4KDrTV4tf3cLSIookaT0VKwFve
-        QfS0mrF33sD9k13jqUgJGNvk4JSxf9FA20geaycmeqYLkk9ICRDqnipgfIuD3q/mOvX6FiDkHWR4p/dI
-        PFhoH80rPUrAQMTAEnUiTJ2YiXPkmIPHFxsd4zJEAkzucRzfWWgequ51UmDy2cb6mdxKCZDO2eUBqt8X
-        gxVLNACI35jlbF2harlequbg1oJ/roFJbKW2LdP9s68OrtM2di9MbFDp/lk5WIgA//iZAnrW5Q4yn1go
-        DT/Irekpd5D5PgHhN9+KNzsLhAAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <metadata name="GetHistory.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>490, 21</value>
   </metadata>
   <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
