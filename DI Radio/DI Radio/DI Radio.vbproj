@@ -139,6 +139,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Player.resx">
       <DependentUpon>Player.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options.resx">
       <DependentUpon>Options.vb</DependentUpon>

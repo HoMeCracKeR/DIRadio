@@ -62,6 +62,7 @@ Partial Class Player
         Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Marquee = New System.Windows.Forms.ProgressBar()
         Me.ControlsPanel = New System.Windows.Forms.Panel()
+        Me.RetryChannels = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.DownloadingMessage = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -85,6 +86,7 @@ Partial Class Player
         Me.GoogleHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.GetHistory = New System.ComponentModel.BackgroundWorker()
         Me.VisualisationBox = New System.Windows.Forms.PictureBox()
+        Me.RetryServers = New System.Windows.Forms.Button()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -393,6 +395,8 @@ Partial Class Player
         'ControlsPanel
         '
         Me.ControlsPanel.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.ControlsPanel.Controls.Add(Me.RetryServers)
+        Me.ControlsPanel.Controls.Add(Me.RetryChannels)
         Me.ControlsPanel.Controls.Add(Me.History)
         Me.ControlsPanel.Controls.Add(Me.Label2)
         Me.ControlsPanel.Controls.Add(Me.DownloadingMessage)
@@ -415,6 +419,16 @@ Partial Class Player
         Me.ControlsPanel.Name = "ControlsPanel"
         Me.ControlsPanel.Size = New System.Drawing.Size(330, 81)
         Me.ControlsPanel.TabIndex = 2
+        '
+        'RetryChannels
+        '
+        Me.RetryChannels.Location = New System.Drawing.Point(36, 59)
+        Me.RetryChannels.Name = "RetryChannels"
+        Me.RetryChannels.Size = New System.Drawing.Size(149, 22)
+        Me.RetryChannels.TabIndex = 15
+        Me.RetryChannels.Text = "Retry download"
+        Me.RetryChannels.UseVisualStyleBackColor = True
+        Me.RetryChannels.Visible = False
         '
         'Label2
         '
@@ -613,6 +627,16 @@ Partial Class Player
         Me.VisualisationBox.TabIndex = 3
         Me.VisualisationBox.TabStop = False
         '
+        'RetryServers
+        '
+        Me.RetryServers.Location = New System.Drawing.Point(191, 59)
+        Me.RetryServers.Name = "RetryServers"
+        Me.RetryServers.Size = New System.Drawing.Size(139, 22)
+        Me.RetryServers.TabIndex = 16
+        Me.RetryServers.Text = "Retry download"
+        Me.RetryServers.UseVisualStyleBackColor = True
+        Me.RetryServers.Visible = False
+        '
         'Player
         '
         Me.AllowDrop = True
@@ -704,5 +728,7 @@ Partial Class Player
     Friend WithEvents CopyHistory As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator5 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents GoogleHistory As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents RetryChannels As System.Windows.Forms.Button
+    Friend WithEvents RetryServers As System.Windows.Forms.Button
 
 End Class

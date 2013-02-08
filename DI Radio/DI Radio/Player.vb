@@ -121,7 +121,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 34    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 35    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
 
 #End Region
 
@@ -187,14 +187,34 @@ Public Class Player
 
                 If lineNumber = 0 Then
                     MainColour = line
+
+                    If Options.Visible = True Then
+                        Options.MainColour.BackColor = Color.FromArgb(line)
+                    End If
                 ElseIf lineNumber = 1 Then
                     SecondaryColour = line
+
+                    If Options.Visible = True Then
+                        Options.SecondaryColour.BackColor = Color.FromArgb(line)
+                    End If
                 ElseIf lineNumber = 2 Then
                     PeakColour = line
+
+                    If Options.Visible = True Then
+                        Options.PeakColour.BackColor = Color.FromArgb(line)
+                    End If
                 ElseIf lineNumber = 3 Then
                     BackgroundColour = line
+
+                    If Options.Visible = True Then
+                        Options.BackgroundColour.BackColor = Color.FromArgb(line)
+                    End If
                 ElseIf lineNumber = 4 Then
                     ChangeWholeBackground = line
+
+                    If Options.Visible = True Then
+                        Options.ChangeWholeBackground.Checked = line
+                    End If
                 End If
 
                 lineNumber += 1
@@ -954,7 +974,7 @@ Public Class Player
         History.Enabled = False
         Forums.Enabled = False
         HistoryList.Items.Clear()
-
+        RetryChannels.Hide()
         DownloadingMessage.Show()
         Marquee.Show()
 
@@ -1102,6 +1122,19 @@ Public Class Player
         e.NewWidth = HistoryList.Columns(e.ColumnIndex).Width
     End Sub
 
+    Private Sub RetryChannels_Click(sender As System.Object, e As System.EventArgs) Handles RetryChannels.Click
+        StationChooser_TextChanged(Me, Nothing)
+        RetryChannels.Hide()
+        Marquee.Show()
+        StationChooser.Enabled = False
+    End Sub
+
+    Private Sub RetryServers_Click(sender As System.Object, e As System.EventArgs) Handles RetryServers.Click
+        SelectedChannel_SelectedIndexChanged(Me, Nothing)
+        RetryServers.Hide()
+        Marquee.Show()
+    End Sub
+
 #End Region
 
 #Region "Background Workers"
@@ -1130,19 +1163,28 @@ Public Class Player
         End If
 
         ' open file
-        Dim readerChdb As IO.StreamReader = channelDb(chdb)
 
-        ' read file
-        Do While (readerChdb.Peek > -1)
-            Dim line = readerChdb.ReadLine()
-            Dim splitter = Split(line, "|")
-            If splitter(0) = channel Then
-                channel = splitter(1)
-            End If
-        Loop
+        Try
+            Dim readerChdb As IO.StreamReader = channelDb(chdb)
 
-        readerChdb.Close()
-        readerChdb.Dispose()
+            ' read file
+            Do While (readerChdb.Peek > -1)
+                Dim line = readerChdb.ReadLine()
+                Dim splitter = Split(line, "|")
+                If splitter(0) = channel Then
+                    channel = splitter(1)
+                End If
+            Loop
+
+            readerChdb.Close()
+            readerChdb.Dispose()
+        Catch ex As Exception
+            MessageBox.Show("Couldn't download servers list.", "Error getting servers list", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        End Try
+
+
+  
 
         Dim file = serversFolder & "\" & channel & ".db"
 
@@ -1413,6 +1455,10 @@ Public Class Player
 
         DownloadingMessage.Hide()
 
+        If SelectedServer.Items.Count < 1 Then
+            RetryServers.Show()
+        End If
+
     End Sub
 
     Private Sub Bufer_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles Bufer.DoWork
@@ -1610,9 +1656,11 @@ again:
 
 
             AtStartup = False
+
+            Kill(exeFolder & "\Info.txt")
         End If
 
-        Kill(exeFolder & "\Info.txt")
+
 
         Options.UndefinedProgress.Hide()
         Options.Status.Text = "Status: Idle"
@@ -1674,7 +1722,7 @@ again:
 
     Private Sub DownloadDb_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadDb.DoWork
 
-        Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
+         Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
 
         Try
 
@@ -1697,11 +1745,10 @@ again:
             Marquee.Hide()
         End Try
 
-
     End Sub
 
     Private Sub DownloadDb_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadDb.RunWorkerCompleted
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & StationChooser.Text & "\channels.db") Then
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & StationChooser.Text & "\channels.db") And SelectedChannel.Items.Count > 1 Then
             If StationChooser.Text = DIFM.Text Then
 
                 SelectedChannel.SelectedIndex = DIChannel
@@ -1731,6 +1778,8 @@ again:
                 Forums.Enabled = False
 
             End If
+        Else
+            RetryChannels.Show()
         End If
         
 
@@ -2570,8 +2619,13 @@ again:
                 Return False
             End Try
         Else
-            Dim reader As IO.StreamReader = New IO.StreamReader(serversFolder & "\" & key & ".db")
-            pls = reader.ReadToEnd()
+            If My.Computer.FileSystem.FileExists(serversFolder & "/" & key & ".db") Then
+                Dim reader As IO.StreamReader = New IO.StreamReader(serversFolder & "/" & key & ".db")
+                pls = reader.ReadToEnd()
+            Else
+                Return False
+            End If
+            
 
         End If
         Return Audioaddict.ParsePlaylistAudioaddict(pls)
@@ -2588,9 +2642,14 @@ again:
                 Return False
             End Try
         Else
-            Dim reader As IO.StreamReader = New IO.StreamReader(serversFolder & "\favorites.db")
-            data = reader.ReadToEnd()
-            reader.Close()
+            If My.Computer.FileSystem.FileExists(serversFolder & "\favorites.db") Then
+                Dim reader As IO.StreamReader = New IO.StreamReader(serversFolder & "\favorites.db")
+                data = reader.ReadToEnd()
+                reader.Close()
+            Else
+                Return False
+            End If
+            
 
         End If
         Return Split(data, vbNewLine)
@@ -2608,7 +2667,7 @@ again:
             Try
                 data = wc.DownloadString("http://tobiass.eu/api/channels/" & StationChooser.Tag)
             Catch ex As Exception
-                Return False
+                Return "Didn't download"
             End Try
 
             Dim writer As New IO.StreamWriter(loc, False)

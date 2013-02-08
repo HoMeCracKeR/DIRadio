@@ -1728,19 +1728,19 @@
 
         Else
 
-            If Player.StationChooser.Text = Player.DIFM.Text Then
+            If Player.StationChooser.Text = Player.DIFM.Text And Player.SelectedChannel.Items.Count > 1 Then
 
                 If Player.SelectedChannel.Items.Item(38).ToString() = "My Favorites" = False Then
                     Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
-            ElseIf Player.StationChooser.Text = Player.SKYFM.Text Then
+            ElseIf Player.StationChooser.Text = Player.SKYFM.Text And Player.SelectedChannel.Items.Count > 1 Then
 
                 If Player.SelectedChannel.Items.Item(33).ToString() = "My Favorites" = False Then
                     Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
-            ElseIf Player.StationChooser.Text = Player.JazzRadio.Text Then
+            ElseIf Player.StationChooser.Text = Player.JazzRadio.Text And Player.SelectedChannel.Items.Count > 1 Then
 
                 If Player.SelectedChannel.Items.Item(16).ToString() = "My Favorites" = False Then
                     Player.SelectedChannel.Items.Add("My Favorites")
@@ -1828,128 +1828,129 @@
                 Player.SelectedServer.SelectedIndex = 0
             End If
 
+        Else
+
+            If Player.DIFormat = DISetting = False And Player.DIFormat = DISettingPremium = False Then
+
+                If PremiumFormats.Checked = False Then
+                    Player.DIFormat = DISetting
+                Else
+                    Player.DIFormat = DISettingPremium
+                End If
+
+
+                Try
+                    Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
+                Catch
+                End Try
+
+                If Player.StationChooser.Text = Player.DIFM.Text Then
+
+                    If Player.SelectedChannel.Text = "My Favorites" Then
+                        Player.OldFav = Player.SelectedServer.Text
+                    End If
+
+
+                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                        Player.PlayStop_Click(Me, Nothing)
+                        Player.RestartPlayback = True
+                    End If
+
+
+                    If Player.SelectedChannel.Text = Nothing = False Then
+                        If Player.ServersDownloader.IsBusy = False Then
+                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                        End If
+                    Else
+                        Player.SelectedServer.Enabled = False
+                        Player.SelectedServer.Items.Add("Pick a server")
+                        Player.SelectedServer.SelectedIndex = 0
+                    End If
+
+                End If
+
+            End If
+
+            If Player.SKYFormat = SKYSetting = False And Player.SKYFormat = SKYSettingPremium = False Then
+
+                If PremiumFormats.Checked = False Then
+                    Player.SKYFormat = SKYSetting
+                Else
+                    Player.SKYFormat = SKYSettingPremium
+                End If
+
+
+                Try
+                    Kill(Player.exeFolder & "servers\SKY.FM\*.*")
+                Catch
+                End Try
+
+                If Player.StationChooser.Text = Player.SKYFM.Text Then
+
+                    If Player.SelectedChannel.Text = "My Favorites" Then
+                        Player.OldFav = Player.SelectedServer.Text
+                    End If
+
+                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                        Player.PlayStop_Click(Me, Nothing)
+                        Player.RestartPlayback = True
+                    End If
+
+                    If Player.SelectedChannel.Text = Nothing = False Then
+                        If Player.ServersDownloader.IsBusy = False Then
+                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                        End If
+                    Else
+                        Player.SelectedServer.Enabled = False
+                        Player.SelectedServer.Items.Add("Pick a server")
+                        Player.SelectedServer.SelectedIndex = 0
+                    End If
+
+                End If
+
+            End If
+
+            If Player.JazzFormat = JazzSetting = False And Player.JazzFormat = JazzSettingPremium = False Then
+
+                If PremiumFormats.Checked = False Then
+                    Player.JazzFormat = JazzSetting
+                Else
+                    Player.JazzFormat = JazzSettingPremium
+                End If
+
+
+                Try
+                    Kill(Player.exeFolder & "servers\JazzRadio\*.*")
+                Catch
+                End Try
+
+                If Player.StationChooser.Text = Player.JazzRadio.Text Then
+
+                    If Player.SelectedChannel.Text = "My Favorites" Then
+                        Player.OldFav = Player.SelectedServer.Text
+                    End If
+
+                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                        Player.PlayStop_Click(Me, Nothing)
+                        Player.RestartPlayback = True
+                    End If
+
+                    If Player.SelectedChannel.Text = Nothing = False Then
+                        If Player.ServersDownloader.IsBusy = False Then
+                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                        End If
+                    Else
+                        Player.SelectedServer.Enabled = False
+                        Player.SelectedServer.Items.Add("Pick a server")
+                        Player.SelectedServer.SelectedIndex = 0
+                    End If
+
+                End If
+            End If
+
         End If
 
         Player.ListenKey = ListenKey.Text
-
-        If Player.DIFormat = DISetting = False OrElse Player.DIFormat = DISettingPremium = False Then
-
-            If PremiumFormats.Checked = False Then
-                Player.DIFormat = DISetting
-            Else
-                Player.DIFormat = DISettingPremium
-            End If
-
-
-            Try
-                Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
-            Catch
-            End Try
-
-            If Player.StationChooser.Text = Player.DIFM.Text Then
-
-                If Player.SelectedChannel.Text = "My Favorites" Then
-                    Player.OldFav = Player.SelectedServer.Text
-                End If
-
-
-                If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
-                    Player.PlayStop_Click(Me, Nothing)
-                    Player.RestartPlayback = True
-                End If
-
-
-                If Player.SelectedChannel.Text = Nothing = False Then
-                    If Player.ServersDownloader.IsBusy = False Then
-                        Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
-                    End If
-                Else
-                    Player.SelectedServer.Enabled = False
-                    Player.SelectedServer.Items.Add("Pick a server")
-                    Player.SelectedServer.SelectedIndex = 0
-                End If
-
-            End If
-
-        End If
-
-        If Player.SKYFormat = SKYSetting = False OrElse Player.SKYFormat = SKYSettingPremium = False Then
-
-            If PremiumFormats.Checked = False Then
-                Player.SKYFormat = SKYSetting
-            Else
-                Player.SKYFormat = SKYSettingPremium
-            End If
-
-
-            Try
-                Kill(Player.exeFolder & "servers\SKY.FM\*.*")
-            Catch
-            End Try
-
-            If Player.StationChooser.Text = Player.SKYFM.Text Then
-
-                If Player.SelectedChannel.Text = "My Favorites" Then
-                    Player.OldFav = Player.SelectedServer.Text
-                End If
-
-                If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
-                    Player.PlayStop_Click(Me, Nothing)
-                    Player.RestartPlayback = True
-                End If
-
-                If Player.SelectedChannel.Text = Nothing = False Then
-                    If Player.ServersDownloader.IsBusy = False Then
-                        Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
-                    End If
-                Else
-                    Player.SelectedServer.Enabled = False
-                    Player.SelectedServer.Items.Add("Pick a server")
-                    Player.SelectedServer.SelectedIndex = 0
-                End If
-
-            End If
-
-        End If
-
-        If Player.JazzFormat = JazzSetting = False OrElse Player.JazzFormat = JazzSettingPremium = False Then
-
-            If PremiumFormats.Checked = False Then
-                Player.JazzFormat = JazzSetting
-            Else
-                Player.JazzFormat = JazzSettingPremium
-            End If
-
-
-            Try
-                Kill(Player.exeFolder & "servers\JazzRadio\*.*")
-            Catch
-            End Try
-
-            If Player.StationChooser.Text = Player.JazzRadio.Text Then
-
-                If Player.SelectedChannel.Text = "My Favorites" Then
-                    Player.OldFav = Player.SelectedServer.Text
-                End If
-
-                If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
-                    Player.PlayStop_Click(Me, Nothing)
-                    Player.RestartPlayback = True
-                End If
-
-                If Player.SelectedChannel.Text = Nothing = False Then
-                    If Player.ServersDownloader.IsBusy = False Then
-                        Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
-                    End If
-                Else
-                    Player.SelectedServer.Enabled = False
-                    Player.SelectedServer.Items.Add("Pick a server")
-                    Player.SelectedServer.SelectedIndex = 0
-                End If
-
-            End If
-        End If
-
         Player.PremiumFormats = PremiumFormats.Checked
         Player.UpdatesAtStart = UpdatesAtStart.Checked
         Player.BetaVersions = BetaVersions.Checked
@@ -1973,6 +1974,124 @@
                 Player.Size = New Size(Player.MinimumSize)
             End If
 
+            If Player.DIFormat = DISetting = False OrElse Player.DIFormat = DISettingPremium = False Then
+
+                If PremiumFormats.Checked = False Then
+                    Player.DIFormat = DISetting
+                Else
+                    Player.DIFormat = DISettingPremium
+                End If
+
+
+                Try
+                    Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
+                Catch
+                End Try
+
+                If Player.StationChooser.Text = Player.DIFM.Text Then
+
+                    If Player.SelectedChannel.Text = "My Favorites" Then
+                        Player.OldFav = Player.SelectedServer.Text
+                    End If
+
+
+                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                        Player.PlayStop_Click(Me, Nothing)
+                        Player.RestartPlayback = True
+                    End If
+
+
+                    If Player.SelectedChannel.Text = Nothing = False Then
+                        If Player.ServersDownloader.IsBusy = False Then
+                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                        End If
+                    Else
+                        Player.SelectedServer.Enabled = False
+                        Player.SelectedServer.Items.Add("Pick a server")
+                        Player.SelectedServer.SelectedIndex = 0
+                    End If
+
+                End If
+
+            End If
+
+            If Player.SKYFormat = SKYSetting = False OrElse Player.SKYFormat = SKYSettingPremium = False Then
+
+                If PremiumFormats.Checked = False Then
+                    Player.SKYFormat = SKYSetting
+                Else
+                    Player.SKYFormat = SKYSettingPremium
+                End If
+
+
+                Try
+                    Kill(Player.exeFolder & "servers\SKY.FM\*.*")
+                Catch
+                End Try
+
+                If Player.StationChooser.Text = Player.SKYFM.Text Then
+
+                    If Player.SelectedChannel.Text = "My Favorites" Then
+                        Player.OldFav = Player.SelectedServer.Text
+                    End If
+
+                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                        Player.PlayStop_Click(Me, Nothing)
+                        Player.RestartPlayback = True
+                    End If
+
+                    If Player.SelectedChannel.Text = Nothing = False Then
+                        If Player.ServersDownloader.IsBusy = False Then
+                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                        End If
+                    Else
+                        Player.SelectedServer.Enabled = False
+                        Player.SelectedServer.Items.Add("Pick a server")
+                        Player.SelectedServer.SelectedIndex = 0
+                    End If
+
+                End If
+
+            End If
+
+            If Player.JazzFormat = JazzSetting = False OrElse Player.JazzFormat = JazzSettingPremium = False Then
+
+                If PremiumFormats.Checked = False Then
+                    Player.JazzFormat = JazzSetting
+                Else
+                    Player.JazzFormat = JazzSettingPremium
+                End If
+
+
+                Try
+                    Kill(Player.exeFolder & "servers\JazzRadio\*.*")
+                Catch
+                End Try
+
+                If Player.StationChooser.Text = Player.JazzRadio.Text Then
+
+                    If Player.SelectedChannel.Text = "My Favorites" Then
+                        Player.OldFav = Player.SelectedServer.Text
+                    End If
+
+                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
+                        Player.PlayStop_Click(Me, Nothing)
+                        Player.RestartPlayback = True
+                    End If
+
+                    If Player.SelectedChannel.Text = Nothing = False Then
+                        If Player.ServersDownloader.IsBusy = False Then
+                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
+                        End If
+                    Else
+                        Player.SelectedServer.Enabled = False
+                        Player.SelectedServer.Items.Add("Pick a server")
+                        Player.SelectedServer.SelectedIndex = 0
+                    End If
+
+                End If
+
+            End If
 
         End If
 
