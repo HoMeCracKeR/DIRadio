@@ -52,7 +52,6 @@ Partial Class Player
         Me.Mute = New System.Windows.Forms.Button()
         Me.OptionsButton = New System.Windows.Forms.Button()
         Me.PlayStop = New System.Windows.Forms.Button()
-        Me.History = New System.Windows.Forms.CheckBox()
         Me.Volume = New System.Windows.Forms.TrackBar()
         Me.TimerString = New System.Windows.Forms.Label()
         Me.RadioString = New System.Windows.Forms.Label()
@@ -62,6 +61,8 @@ Partial Class Player
         Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Marquee = New System.Windows.Forms.ProgressBar()
         Me.ControlsPanel = New System.Windows.Forms.Panel()
+        Me.History = New System.Windows.Forms.Button()
+        Me.RetryServers = New System.Windows.Forms.Button()
         Me.RetryChannels = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.DownloadingMessage = New System.Windows.Forms.ComboBox()
@@ -86,7 +87,6 @@ Partial Class Player
         Me.GoogleHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.GetHistory = New System.ComponentModel.BackgroundWorker()
         Me.VisualisationBox = New System.Windows.Forms.PictureBox()
-        Me.RetryServers = New System.Windows.Forms.Button()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -292,19 +292,6 @@ Partial Class Player
         Me.ToolTip.SetToolTip(Me.PlayStop, "Play")
         Me.PlayStop.UseVisualStyleBackColor = True
         '
-        'History
-        '
-        Me.History.Appearance = System.Windows.Forms.Appearance.Button
-        Me.History.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.History.Image = CType(resources.GetObject("History.Image"), System.Drawing.Image)
-        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
-        Me.History.Location = New System.Drawing.Point(98, 20)
-        Me.History.Name = "History"
-        Me.History.Size = New System.Drawing.Size(25, 25)
-        Me.History.TabIndex = 15
-        Me.ToolTip.SetToolTip(Me.History, "Show track history")
-        Me.History.UseVisualStyleBackColor = True
-        '
         'Volume
         '
         Me.Volume.Anchor = System.Windows.Forms.AnchorStyles.Top
@@ -395,9 +382,9 @@ Partial Class Player
         'ControlsPanel
         '
         Me.ControlsPanel.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.ControlsPanel.Controls.Add(Me.History)
         Me.ControlsPanel.Controls.Add(Me.RetryServers)
         Me.ControlsPanel.Controls.Add(Me.RetryChannels)
-        Me.ControlsPanel.Controls.Add(Me.History)
         Me.ControlsPanel.Controls.Add(Me.Label2)
         Me.ControlsPanel.Controls.Add(Me.DownloadingMessage)
         Me.ControlsPanel.Controls.Add(Me.Label1)
@@ -415,10 +402,31 @@ Partial Class Player
         Me.ControlsPanel.Controls.Add(Me.Mute)
         Me.ControlsPanel.Controls.Add(Me.OptionsButton)
         Me.ControlsPanel.Controls.Add(Me.PlayStop)
-        Me.ControlsPanel.Location = New System.Drawing.Point(13, 352)
+        Me.ControlsPanel.Location = New System.Drawing.Point(13, 364)
         Me.ControlsPanel.Name = "ControlsPanel"
         Me.ControlsPanel.Size = New System.Drawing.Size(330, 81)
         Me.ControlsPanel.TabIndex = 2
+        '
+        'History
+        '
+        Me.History.Image = Global.DI_Radio.My.Resources.Resources.history
+        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
+        Me.History.Location = New System.Drawing.Point(98, 20)
+        Me.History.Name = "History"
+        Me.History.Size = New System.Drawing.Size(25, 25)
+        Me.History.TabIndex = 15
+        Me.ToolTip.SetToolTip(Me.History, "Show track history")
+        Me.History.UseVisualStyleBackColor = True
+        '
+        'RetryServers
+        '
+        Me.RetryServers.Location = New System.Drawing.Point(191, 59)
+        Me.RetryServers.Name = "RetryServers"
+        Me.RetryServers.Size = New System.Drawing.Size(139, 22)
+        Me.RetryServers.TabIndex = 16
+        Me.RetryServers.Text = "Retry download"
+        Me.RetryServers.UseVisualStyleBackColor = True
+        Me.RetryServers.Visible = False
         '
         'RetryChannels
         '
@@ -562,14 +570,14 @@ Partial Class Player
         Me.HistoryList.ContextMenuStrip = Me.CopyHistoryMenu
         Me.HistoryList.FullRowSelect = True
         Me.HistoryList.GridLines = True
-        Me.HistoryList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
+        Me.HistoryList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.HistoryList.HideSelection = False
         Me.HistoryList.LabelWrap = False
         Me.HistoryList.Location = New System.Drawing.Point(12, 12)
         Me.HistoryList.MultiSelect = False
         Me.HistoryList.Name = "HistoryList"
         Me.HistoryList.ShowItemToolTips = True
-        Me.HistoryList.Size = New System.Drawing.Size(331, 334)
+        Me.HistoryList.Size = New System.Drawing.Size(331, 346)
         Me.HistoryList.TabIndex = 14
         Me.HistoryList.UseCompatibleStateImageBehavior = False
         Me.HistoryList.View = System.Windows.Forms.View.Details
@@ -622,27 +630,17 @@ Partial Class Player
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.VisualisationBox.Location = New System.Drawing.Point(12, 12)
         Me.VisualisationBox.Name = "VisualisationBox"
-        Me.VisualisationBox.Size = New System.Drawing.Size(331, 334)
+        Me.VisualisationBox.Size = New System.Drawing.Size(331, 346)
         Me.VisualisationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.VisualisationBox.TabIndex = 3
         Me.VisualisationBox.TabStop = False
-        '
-        'RetryServers
-        '
-        Me.RetryServers.Location = New System.Drawing.Point(191, 59)
-        Me.RetryServers.Name = "RetryServers"
-        Me.RetryServers.Size = New System.Drawing.Size(139, 22)
-        Me.RetryServers.TabIndex = 16
-        Me.RetryServers.Text = "Retry download"
-        Me.RetryServers.UseVisualStyleBackColor = True
-        Me.RetryServers.Visible = False
         '
         'Player
         '
         Me.AllowDrop = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(356, 441)
+        Me.ClientSize = New System.Drawing.Size(356, 453)
         Me.Controls.Add(Me.HistoryList)
         Me.Controls.Add(Me.VisualisationBox)
         Me.Controls.Add(Me.ControlsPanel)
@@ -650,7 +648,7 @@ Partial Class Player
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(362, 470)
+        Me.MaximumSize = New System.Drawing.Size(362, 482)
         Me.MinimumSize = New System.Drawing.Size(362, 125)
         Me.Name = "Player"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -722,7 +720,6 @@ Partial Class Player
     Friend WithEvents Title As System.Windows.Forms.ColumnHeader
     Friend WithEvents Length As System.Windows.Forms.ColumnHeader
     Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents History As System.Windows.Forms.CheckBox
     Friend WithEvents GetHistory As System.ComponentModel.BackgroundWorker
     Friend WithEvents CopyHistoryMenu As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents CopyHistory As System.Windows.Forms.ToolStripMenuItem
@@ -730,5 +727,6 @@ Partial Class Player
     Friend WithEvents GoogleHistory As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RetryChannels As System.Windows.Forms.Button
     Friend WithEvents RetryServers As System.Windows.Forms.Button
+    Friend WithEvents History As System.Windows.Forms.Button
 
 End Class

@@ -121,7 +121,8 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 35    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 36    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
 
@@ -153,6 +154,8 @@ Public Class Player
     Dim executable As String = Application.ExecutablePath
     Dim tabla() As String = Split(executable, "\")
     Public exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
+
+    Public HotkeysSet As Boolean = False
 
 #End Region
 
@@ -379,6 +382,8 @@ Public Class Player
                         RegisterHotKey(Me.Handle, 6, ModifiersShowHide, KeyShowHide)
                     End If
 
+                    HotkeysSet = True
+
                 End If
             End If
 
@@ -389,12 +394,18 @@ Public Class Player
                 VisTimer.Start()
             End If
 
-            UnregisterHotKey(Me.Handle, 1)
-            UnregisterHotKey(Me.Handle, 2)
-            UnregisterHotKey(Me.Handle, 3)
-            UnregisterHotKey(Me.Handle, 4)
-            UnregisterHotKey(Me.Handle, 5)
-            UnregisterHotKey(Me.Handle, 6)
+            If HotkeysSet = True Then
+
+                UnregisterHotKey(Me.Handle, 1)
+                UnregisterHotKey(Me.Handle, 2)
+                UnregisterHotKey(Me.Handle, 3)
+                UnregisterHotKey(Me.Handle, 4)
+                UnregisterHotKey(Me.Handle, 5)
+                UnregisterHotKey(Me.Handle, 6)
+                HotkeysSet = False
+
+            End If
+
 
         End If
     End Sub
@@ -480,13 +491,16 @@ Public Class Player
             End Try
         End If
 
-        ' Unregister hotkeys
-        UnregisterHotKey(Me.Handle, 1)
-        UnregisterHotKey(Me.Handle, 2)
-        UnregisterHotKey(Me.Handle, 3)
-        UnregisterHotKey(Me.Handle, 4)
-        UnregisterHotKey(Me.Handle, 5)
-        UnregisterHotKey(Me.Handle, 6)
+        ' Unregister hotkeys if they were set
+
+        If HotkeysSet = True Then
+            UnregisterHotKey(Me.Handle, 1)
+            UnregisterHotKey(Me.Handle, 2)
+            UnregisterHotKey(Me.Handle, 3)
+            UnregisterHotKey(Me.Handle, 4)
+            UnregisterHotKey(Me.Handle, 5)
+            UnregisterHotKey(Me.Handle, 6)
+        End If
 
         ' If Volume is above 0 and music is playing, cancel closing and fade out the volume. Else just go away
         If PlayStop.Tag = "Stop" And Volume.Value > 0 Then
@@ -683,7 +697,7 @@ Public Class Player
                 ElseIf Me.Location.Y - 12 < 0 Then
                     Y = 0
                 Else
-                    Y = Me.Location.Y - 12
+                    Y = Me.Location.Y - 4
                 End If
             Else
                 If Me.Location.Y - 180 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
@@ -736,32 +750,6 @@ Public Class Player
         End If
 
         Process.Start("http://www.di.fm/calendar/week/" & channel)
-    End Sub
-
-    Private Sub History_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles History.CheckedChanged
-        If History.Checked = True Then
-            History.ImageAlign = ContentAlignment.BottomCenter
-            History.Image = My.Resources.back
-            HistoryList.Show()
-            HistoryList.Items.Clear()
-            If GetHistory.IsBusy = False Then
-                GetHistory.RunWorkerAsync()
-            End If
-
-            VisTimer.Stop()
-            Me.Size = Me.MaximumSize
-            ToolTip.SetToolTip(History, "Hide track history")
-        Else
-            History.ImageAlign = ContentAlignment.BottomRight
-            History.Image = My.Resources.history
-            HistoryList.Hide()
-            If Visualisation = False Then
-                Me.Size = Me.MinimumSize
-            Else
-                VisTimer.Start()
-            End If
-            ToolTip.SetToolTip(History, "Show track history")
-        End If
     End Sub
 
     Private Sub Forums_Click(sender As System.Object, e As System.EventArgs) Handles Forums.Click
@@ -984,6 +972,9 @@ Public Class Player
 
     Public Sub SelectedChannel_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SelectedChannel.SelectedIndexChanged
 
+        RetryChannels.Hide()
+        RetryServers.Hide()
+
         If PlayStop.Tag = "Play" Then
             PlayStop.Enabled = False
         End If
@@ -1135,6 +1126,33 @@ Public Class Player
         Marquee.Show()
     End Sub
 
+    Private Sub History_Click(sender As System.Object, e As System.EventArgs) Handles History.Click
+        If HistoryList.Visible = False Then
+            History.ImageAlign = ContentAlignment.BottomCenter
+            History.Image = My.Resources.back
+            HistoryList.Show()
+            HistoryList.Items.Clear()
+
+            If GetHistory.IsBusy = False Then
+                GetHistory.RunWorkerAsync()
+            End If
+
+            VisTimer.Stop()
+            Me.Size = Me.MaximumSize
+            ToolTip.SetToolTip(History, "Hide track history")
+        Else
+            History.ImageAlign = ContentAlignment.BottomRight
+            History.Image = My.Resources.history
+            HistoryList.Hide()
+            If Visualisation = False Then
+                Me.Size = Me.MinimumSize
+            Else
+                VisTimer.Start()
+            End If
+            ToolTip.SetToolTip(History, "Show track history")
+        End If
+    End Sub
+
 #End Region
 
 #Region "Background Workers"
@@ -1179,7 +1197,15 @@ Public Class Player
             readerChdb.Close()
             readerChdb.Dispose()
         Catch ex As Exception
-            MessageBox.Show("Couldn't download servers list.", "Error getting servers list", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Dim word As String
+
+            If SelectedChannel.Text = "My Favourites" Then
+                word = "favourites"
+            Else
+                word = "servers"
+            End If
+
+            MessageBox.Show("Couldn't download " & word & " list.", "Error getting " & word & " list", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End Try
 
@@ -1439,7 +1465,9 @@ Public Class Player
             SelectedServer.Enabled = False
             Forums.Enabled = False
             History.Enabled = False
-            History.Checked = False
+            HistoryList.Hide()
+            History.ImageAlign = ContentAlignment.BottomRight
+            History.Image = My.Resources.back
             Calendar.Enabled = False
         ElseIf StationChooser.Text = JazzRadio.Text = False And StationChooser.Text = RockRadio.Text = False Then
             History.Enabled = True
@@ -1713,6 +1741,7 @@ again:
             Kill(exeFolder & "\servers\historytemp")
             HistoryList.Enabled = True
         Catch
+            HistoryList.Items.Clear()
             HistoryList.Items.Add("Couldn't download history information.")
             HistoryList.Items.Add("Please go back and try again.")
         End Try
@@ -1766,7 +1795,9 @@ again:
                 SelectedChannel.SelectedIndex = JazzChannel
                 Calendar.Enabled = False
                 History.Enabled = False
-                History.Checked = False
+                HistoryList.Visible = False
+                History.ImageAlign = ContentAlignment.BottomRight
+                History.Image = My.Resources.history
                 Forums.Enabled = False
 
             ElseIf StationChooser.Text = RockRadio.Text Then
@@ -1774,7 +1805,9 @@ again:
                 SelectedChannel.SelectedIndex = RockChannel
                 Calendar.Enabled = False
                 History.Enabled = False
-                History.Checked = False
+                HistoryList.Visible = False
+                History.ImageAlign = ContentAlignment.BottomRight
+                History.Image = My.Resources.history
                 Forums.Enabled = False
 
             End If
@@ -1871,7 +1904,7 @@ again:
             UpdateWait += 1
 
             If HistoryList.Items.Count > 0 Then
-                If UpdateWait = 3 And GetHistory.IsBusy = False And HistoryList.Items.Item(0).Text = RadioString.Text = False And History.Checked = True Then
+                If UpdateWait = 3 And GetHistory.IsBusy = False And HistoryList.Items.Item(0).Text = RadioString.Text = False And HistoryList.Visible = True Then
                     GetHistory.RunWorkerAsync()
                 End If
             End If

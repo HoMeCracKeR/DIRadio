@@ -7,7 +7,7 @@
         Try
             Text = WebClient.DownloadString("http://www.tobiass.eu/files/Changelog.txt")
         Catch ex As Exception
-            Text = "Couldn't download the changelog due to the following error:" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try again later."
+            Text = "Couldn't download the changelog due to the following error:" & vbNewLine & vbNewLine & ex.Message
         End Try
 
         ChangelogText.Text = Text
@@ -33,4 +33,15 @@
         Process.Start(e.LinkText)
     End Sub
 
+    Private Sub Retry_Click(sender As System.Object, e As System.EventArgs) Handles Retry.Click
+        ChangelogText.Text = "Please wait, downloading changelog..."
+        GetChangelog.RunWorkerAsync()
+        Retry.Hide()
+    End Sub
+
+    Private Sub GetChangelog_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles GetChangelog.RunWorkerCompleted
+        If ChangelogText.Text.ToLower.StartsWith("couldn't download") Then
+            Retry.Show()
+        End If
+    End Sub
 End Class

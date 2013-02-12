@@ -175,6 +175,18 @@
             LatestVersion.ForeColor = Color.Green
         End If
 
+        Dim executable As String = Application.ExecutablePath
+        Dim tabla() As String = Split(executable, "\")
+        Dim exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
+
+        Dim file As String = exeFolder & "\Updater.exe"
+
+        If Player.UpdaterDownloaded = True And My.Computer.FileSystem.FileExists(file) Then
+            LookNow.Text = "Run updater"
+            LookNow.Enabled = True
+            Status.Text = "Status: Updater downloaded. Click button to launch."
+        End If
+
         CurrentVersion.Text = "Current version:" & Player.Text.Replace("DI Radio Player", Nothing)
         CurrentVersion.Text = CurrentVersion.Text.Replace("SKY.FM Radio Player", Nothing)
         CurrentVersion.Text = CurrentVersion.Text.Replace("JazzRadio Radio Player", Nothing)
@@ -251,18 +263,6 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub FileFormat_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles FileFormat.Click
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-    End Sub
-
-    Private Sub ListenKey_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles ListenKey.KeyUp
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-    End Sub
-
     Private Sub UpdatesAtStart_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles UpdatesAtStart.Click
         OK.Enabled = True
         Cancel.Text = "Cancel"
@@ -276,12 +276,6 @@
     End Sub
 
     Private Sub Visualisation_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Visualisation.Click
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-    End Sub
-
-    Private Sub VisualisationType_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles VisualisationType.Click
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -316,6 +310,14 @@
         Cancel.Text = "Cancel"
         Apply.Enabled = True
     End Sub
+
+    Private Sub VisualisationType_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles VisualisationType.SelectedIndexChanged
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    ' -----------------------------------------------------------
 
     Private Sub PremiumFormats_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PremiumFormats.CheckedChanged
         If PremiumFormats.Checked = True And StationSelector.Text = "RockRadio" = False Then
@@ -548,6 +550,10 @@
             End If
         End If
 
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+
     End Sub
 
     Private Sub ListenLink_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles ListenLink.LinkClicked
@@ -591,8 +597,10 @@
             Status.Text = "Status: Looking for updates, please wait..."
 
             Player.GetUpdates.RunWorkerAsync()
-        Else
+        ElseIf LookNow.Text = "Download update" Then
             DownloadUpdater.RunWorkerAsync()
+        Else
+            DownloadUpdater_RunWorkerCompleted(Me, Nothing)
         End If
     End Sub
 
@@ -1254,8 +1262,16 @@
         Dim executable As String = Application.ExecutablePath
         Dim tabla() As String = Split(executable, "\")
         Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
-        Process.Start(file)
-        Player.Close()
+
+        Try
+            Process.Start(file)
+            Player.Close()
+        Catch
+            LookNow.Text = "Run updater"
+            LookNow.Enabled = True
+            Status.Text = "Status: Updater downloaded. Click button to launch."
+            Player.UpdaterDownloaded = True
+        End Try
     End Sub
 
 #End Region
@@ -1318,12 +1334,7 @@
     ' -------------------------------------------------------------
 
     Private Sub Themes_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Themes.Click
-
         ThemesMenu.Show(Me, Themes.Location.X + 17, Themes.Location.Y + 239)
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-
     End Sub
 
     Private Sub RestoreColours_Click(sender As System.Object, e As System.EventArgs) Handles RestoreColours.Click
@@ -1331,6 +1342,7 @@
         SecondaryColour.BackColor = Color.Black
         PeakColour.BackColor = Color.Silver
         BackgroundColour.BackColor = SystemColors.Control
+
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -1824,7 +1836,7 @@
 
             Else
                 Player.SelectedServer.Enabled = False
-                Player.SelectedServer.Items.Add("Pick a server")
+                Player.SelectedServer.Items.Add("Pick a channel")
                 Player.SelectedServer.SelectedIndex = 0
             End If
 
@@ -1961,7 +1973,7 @@
             Player.VisualisationBox.Show()
             Player.Size = New Size(Player.MaximumSize)
 
-            If Player.PlayStop.Tag = "Stop" And Player.History.Checked = False Then
+            If Player.PlayStop.Tag = "Stop" And Player.HistoryList.Visible = True Then
                 Player.VisTimer.Start()
             End If
 
@@ -1970,127 +1982,8 @@
             Player.VisTimer.Stop()
             Player.VisualisationBox.Hide()
 
-            If Player.History.Checked = False Then
+            If Player.HistoryList.Visible = False Then
                 Player.Size = New Size(Player.MinimumSize)
-            End If
-
-            If Player.DIFormat = DISetting = False OrElse Player.DIFormat = DISettingPremium = False Then
-
-                If PremiumFormats.Checked = False Then
-                    Player.DIFormat = DISetting
-                Else
-                    Player.DIFormat = DISettingPremium
-                End If
-
-
-                Try
-                    Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
-                Catch
-                End Try
-
-                If Player.StationChooser.Text = Player.DIFM.Text Then
-
-                    If Player.SelectedChannel.Text = "My Favorites" Then
-                        Player.OldFav = Player.SelectedServer.Text
-                    End If
-
-
-                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
-                        Player.PlayStop_Click(Me, Nothing)
-                        Player.RestartPlayback = True
-                    End If
-
-
-                    If Player.SelectedChannel.Text = Nothing = False Then
-                        If Player.ServersDownloader.IsBusy = False Then
-                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
-                        End If
-                    Else
-                        Player.SelectedServer.Enabled = False
-                        Player.SelectedServer.Items.Add("Pick a server")
-                        Player.SelectedServer.SelectedIndex = 0
-                    End If
-
-                End If
-
-            End If
-
-            If Player.SKYFormat = SKYSetting = False OrElse Player.SKYFormat = SKYSettingPremium = False Then
-
-                If PremiumFormats.Checked = False Then
-                    Player.SKYFormat = SKYSetting
-                Else
-                    Player.SKYFormat = SKYSettingPremium
-                End If
-
-
-                Try
-                    Kill(Player.exeFolder & "servers\SKY.FM\*.*")
-                Catch
-                End Try
-
-                If Player.StationChooser.Text = Player.SKYFM.Text Then
-
-                    If Player.SelectedChannel.Text = "My Favorites" Then
-                        Player.OldFav = Player.SelectedServer.Text
-                    End If
-
-                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
-                        Player.PlayStop_Click(Me, Nothing)
-                        Player.RestartPlayback = True
-                    End If
-
-                    If Player.SelectedChannel.Text = Nothing = False Then
-                        If Player.ServersDownloader.IsBusy = False Then
-                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
-                        End If
-                    Else
-                        Player.SelectedServer.Enabled = False
-                        Player.SelectedServer.Items.Add("Pick a server")
-                        Player.SelectedServer.SelectedIndex = 0
-                    End If
-
-                End If
-
-            End If
-
-            If Player.JazzFormat = JazzSetting = False OrElse Player.JazzFormat = JazzSettingPremium = False Then
-
-                If PremiumFormats.Checked = False Then
-                    Player.JazzFormat = JazzSetting
-                Else
-                    Player.JazzFormat = JazzSettingPremium
-                End If
-
-
-                Try
-                    Kill(Player.exeFolder & "servers\JazzRadio\*.*")
-                Catch
-                End Try
-
-                If Player.StationChooser.Text = Player.JazzRadio.Text Then
-
-                    If Player.SelectedChannel.Text = "My Favorites" Then
-                        Player.OldFav = Player.SelectedServer.Text
-                    End If
-
-                    If Player.PlayStop.Tag = "Stop" And Player.PlayStop.Enabled = True Then
-                        Player.PlayStop_Click(Me, Nothing)
-                        Player.RestartPlayback = True
-                    End If
-
-                    If Player.SelectedChannel.Text = Nothing = False Then
-                        If Player.ServersDownloader.IsBusy = False Then
-                            Player.SelectedChannel_SelectedIndexChanged(Me, Nothing)
-                        End If
-                    Else
-                        Player.SelectedServer.Enabled = False
-                        Player.SelectedServer.Items.Add("Pick a server")
-                        Player.SelectedServer.SelectedIndex = 0
-                    End If
-
-                End If
-
             End If
 
         End If
@@ -2293,14 +2186,16 @@
             Player.KeyShowHide = KeyShowHide
         End If
 
-        If Player.WindowState = FormWindowState.Minimized And Player.MultimediaKeys = True Then
+        If Player.HotkeysSet = True Then
             Player.UnregisterHotKey(Player.Handle, 1)
             Player.UnregisterHotKey(Player.Handle, 2)
             Player.UnregisterHotKey(Player.Handle, 3)
             Player.UnregisterHotKey(Player.Handle, 4)
             Player.UnregisterHotKey(Player.Handle, 5)
             Player.UnregisterHotKey(Player.Handle, 6)
+        End If
 
+        If Player.WindowState = FormWindowState.Minimized And Player.MultimediaKeys = True Then
             Player.RegisterHotKey(Player.Handle, 1, Player.ModifiersPlayStop, Player.KeyPlayStop)
             Player.RegisterHotKey(Player.Handle, 2, Player.ModifiersVolumeUp, Player.KeyVolumeUp)
             Player.RegisterHotKey(Player.Handle, 3, Player.ModifiersVolumeDown, Player.KeyVolumeDown)

@@ -25,6 +25,7 @@ Partial Class Changelog
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Changelog))
         Me.ChangelogText = New System.Windows.Forms.RichTextBox()
         Me.GetChangelog = New System.ComponentModel.BackgroundWorker()
+        Me.Retry = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ChangelogText
@@ -42,11 +43,22 @@ Partial Class Changelog
         'GetChangelog
         '
         '
+        'Retry
+        '
+        Me.Retry.Location = New System.Drawing.Point(12, 61)
+        Me.Retry.Name = "Retry"
+        Me.Retry.Size = New System.Drawing.Size(75, 23)
+        Me.Retry.TabIndex = 1
+        Me.Retry.Text = "Retry"
+        Me.Retry.UseVisualStyleBackColor = True
+        Me.Retry.Visible = False
+        '
         'Changelog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(294, 390)
+        Me.Controls.Add(Me.Retry)
         Me.Controls.Add(Me.ChangelogText)
         Me.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -59,4 +71,5 @@ Partial Class Changelog
     End Sub
     Friend WithEvents ChangelogText As System.Windows.Forms.RichTextBox
     Friend WithEvents GetChangelog As System.ComponentModel.BackgroundWorker
+    Friend WithEvents Retry As System.Windows.Forms.Button
 End Class
