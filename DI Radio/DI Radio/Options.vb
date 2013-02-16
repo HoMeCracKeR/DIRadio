@@ -42,7 +42,7 @@
 
 #Region "Main Form events"
 
-    Private Sub Form2_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub Options_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
         ' Load values from the global variables of the main form and accomodate the interface
 
@@ -219,11 +219,11 @@
 
     End Sub
 
-    Private Sub Form2_Move(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Move
+    Private Sub Options_Move(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Move
         OnlyModifiers.Hide(Me)
     End Sub
 
-    Private Sub Form2_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub Options_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         Changelog.Close()
     End Sub
 
@@ -1354,6 +1354,10 @@
         PeakColour.BackColor = Color.FromArgb(-1)
         BackgroundColour.BackColor = Color.FromArgb(-16777216)
         ChangeWholeBackground.Checked = True
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
     End Sub
 
     Private Sub BlueOcean_Click(sender As System.Object, e As System.EventArgs) Handles BlueOcean.Click
@@ -1362,6 +1366,10 @@
         PeakColour.BackColor = Color.FromArgb(-9455617)
         BackgroundColour.BackColor = Color.FromArgb(-16760704)
         ChangeWholeBackground.Checked = True
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
     End Sub
 
     Private Sub BlueSky_Click(sender As System.Object, e As System.EventArgs) Handles BlueSky.Click
@@ -1370,6 +1378,10 @@
         PeakColour.BackColor = Color.FromArgb(-143)
         BackgroundColour.BackColor = Color.FromArgb(-4986881)
         ChangeWholeBackground.Checked = True
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
     End Sub
 
     Private Sub BrownWood_Click(sender As System.Object, e As System.EventArgs) Handles BrownWood.Click
@@ -1378,6 +1390,10 @@
         PeakColour.BackColor = Color.FromArgb(-12582912)
         BackgroundColour.BackColor = Color.FromArgb(-11327232)
         ChangeWholeBackground.Checked = True
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
     End Sub
 
     Private Sub SilverMetal_Click(sender As System.Object, e As System.EventArgs) Handles SilverMetal.Click
@@ -1386,6 +1402,10 @@
         PeakColour.BackColor = Color.FromArgb(-10526799)
         BackgroundColour.BackColor = Color.FromArgb(-4144960)
         ChangeWholeBackground.Checked = True
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
     End Sub
 
     Private Sub YellowSunset_Click(sender As System.Object, e As System.EventArgs) Handles YellowSunset.Click
@@ -1394,6 +1414,10 @@
         PeakColour.BackColor = Color.FromArgb(-32704)
         BackgroundColour.BackColor = Color.FromArgb(-88)
         ChangeWholeBackground.Checked = True
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
     End Sub
 
     Private Sub WhiteMilk_Click(sender As System.Object, e As System.EventArgs) Handles WhiteMilk.Click
@@ -1402,6 +1426,11 @@
         PeakColour.BackColor = Color.FromArgb(-8355712)
         BackgroundColour.BackColor = Color.FromArgb(-1)
         ChangeWholeBackground.Checked = True
+
+
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
     End Sub
 
     Private Sub SaveTheme_Click(sender As System.Object, e As System.EventArgs) Handles SaveTheme.Click
@@ -1449,6 +1478,10 @@
 
             reader.Close()
             reader.Dispose()
+
+            OK.Enabled = True
+            Cancel.Text = "Cancel"
+            Apply.Enabled = True
         End If
     End Sub
 

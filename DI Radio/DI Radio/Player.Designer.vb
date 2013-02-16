@@ -52,6 +52,7 @@ Partial Class Player
         Me.Mute = New System.Windows.Forms.Button()
         Me.OptionsButton = New System.Windows.Forms.Button()
         Me.PlayStop = New System.Windows.Forms.Button()
+        Me.History = New System.Windows.Forms.Button()
         Me.Volume = New System.Windows.Forms.TrackBar()
         Me.TimerString = New System.Windows.Forms.Label()
         Me.RadioString = New System.Windows.Forms.Label()
@@ -61,7 +62,6 @@ Partial Class Player
         Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Marquee = New System.Windows.Forms.ProgressBar()
         Me.ControlsPanel = New System.Windows.Forms.Panel()
-        Me.History = New System.Windows.Forms.Button()
         Me.RetryServers = New System.Windows.Forms.Button()
         Me.RetryChannels = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -292,6 +292,17 @@ Partial Class Player
         Me.ToolTip.SetToolTip(Me.PlayStop, "Play")
         Me.PlayStop.UseVisualStyleBackColor = True
         '
+        'History
+        '
+        Me.History.Image = Global.DI_Radio.My.Resources.Resources.history
+        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
+        Me.History.Location = New System.Drawing.Point(98, 20)
+        Me.History.Name = "History"
+        Me.History.Size = New System.Drawing.Size(25, 25)
+        Me.History.TabIndex = 15
+        Me.ToolTip.SetToolTip(Me.History, "Show track history")
+        Me.History.UseVisualStyleBackColor = True
+        '
         'Volume
         '
         Me.Volume.Anchor = System.Windows.Forms.AnchorStyles.Top
@@ -406,17 +417,6 @@ Partial Class Player
         Me.ControlsPanel.Name = "ControlsPanel"
         Me.ControlsPanel.Size = New System.Drawing.Size(330, 81)
         Me.ControlsPanel.TabIndex = 2
-        '
-        'History
-        '
-        Me.History.Image = Global.DI_Radio.My.Resources.Resources.history
-        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
-        Me.History.Location = New System.Drawing.Point(98, 20)
-        Me.History.Name = "History"
-        Me.History.Size = New System.Drawing.Size(25, 25)
-        Me.History.TabIndex = 15
-        Me.ToolTip.SetToolTip(Me.History, "Show track history")
-        Me.History.UseVisualStyleBackColor = True
         '
         'RetryServers
         '

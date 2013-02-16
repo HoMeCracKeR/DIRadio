@@ -121,7 +121,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 36    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 37    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -255,7 +255,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub Player_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
         ' I know how to check my threads. Don't need VS babysitting me
         Control.CheckForIllegalCrossThreadCalls = False
@@ -354,7 +354,7 @@ Public Class Player
 
     End Sub
 
-    Private Sub Form1_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
+    Private Sub Player_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
         If Me.WindowState = FormWindowState.Minimized Then
 
             VisTimer.Stop()
@@ -410,7 +410,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub Form1_TextChanged(sender As Object, e As System.EventArgs) Handles Me.TextChanged
+    Private Sub Player_TextChanged(sender As Object, e As System.EventArgs) Handles Me.TextChanged
 
         If TrayIcon.Text.StartsWith("DI Radio") OrElse TrayIcon.Text.StartsWith("JazzRadio Radio") OrElse TrayIcon.Text.StartsWith("SKY.FM Radio") OrElse TrayIcon.Text.StartsWith("RockRadio Radio") Then
             TrayIcon.Text = Me.Text
@@ -418,7 +418,7 @@ Public Class Player
 
     End Sub
 
-    Private Sub Form1_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub Player_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
 
         Dim file As String = exeFolder & "\options.ini"
 
@@ -567,7 +567,7 @@ Public Class Player
                 ElseIf RadioString.Text.Contains("Connection is taking some time") Then
                     TrayIcon.BalloonTipTitle = "Warning:"
                     TrayIcon.BalloonTipIcon = ToolTipIcon.Warning
-                ElseIf RadioString.Text.Contains("Lost connection to") OrElse RadioString.Text.Contains("Couldn't connect to") Then
+                ElseIf RadioString.Text.Contains("Lost connection to") OrElse RadioString.Text.Contains("Couldn't connect to") OrElse RadioString.Text.Contains("Internet connection") Then
                     TrayIcon.BalloonTipTitle = "Error:"
                     TrayIcon.BalloonTipIcon = ToolTipIcon.Error
                 Else
@@ -1959,7 +1959,7 @@ again:
                 Me.WindowState = FormWindowState.Normal
             Else
                 Me.WindowState = FormWindowState.Minimized
-                Form1_Resize(Me, Nothing)
+                Player_Resize(Me, Nothing)
             End If
         End If
 

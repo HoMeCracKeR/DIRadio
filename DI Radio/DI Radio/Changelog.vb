@@ -13,23 +13,23 @@
         ChangelogText.Text = Text
     End Sub
 
-    Private Sub Form3_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyUp
+    Private Sub Changelog_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.Escape Then
             Me.Close()
         End If
     End Sub
 
-    Private Sub Form3_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+    Private Sub Changelog_Load(sender As Object, e As System.EventArgs) Handles Me.Load
         GetChangelog.RunWorkerAsync()
     End Sub
 
-    Private Sub Changelog_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles ChangelogText.KeyUp
+    Private Sub ChangelogText_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles ChangelogText.KeyUp
         If e.KeyCode = Keys.Escape Then
             Me.Close()
         End If
     End Sub
 
-    Private Sub Changelog_LinkClicked(sender As Object, e As System.Windows.Forms.LinkClickedEventArgs) Handles ChangelogText.LinkClicked
+    Private Sub ChangelogText_LinkClicked(sender As Object, e As System.Windows.Forms.LinkClickedEventArgs) Handles ChangelogText.LinkClicked
         Process.Start(e.LinkText)
     End Sub
 
