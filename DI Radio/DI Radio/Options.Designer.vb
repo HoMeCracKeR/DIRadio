@@ -300,8 +300,7 @@ Partial Class Options
         '
         'ListenKey
         '
-        Me.Helper.SetHelpString(Me.ListenKey, "Write your Listen key to enable support for My Favorites and Premium file formats" & _
-        ".")
+        Me.Helper.SetHelpString(Me.ListenKey, resources.GetString("ListenKey.HelpString"))
         Me.ListenKey.Location = New System.Drawing.Point(5, 83)
         Me.ListenKey.Margin = New System.Windows.Forms.Padding(2)
         Me.ListenKey.MaxLength = 0
@@ -387,8 +386,8 @@ Partial Class Options
         '
         'PlayNewOnChannelChange
         '
-        Me.Helper.SetHelpString(Me.PlayNewOnChannelChange, "Selecting this check box will make the application stop playback when you change " & _
-        "channels so you can start playing the new one with just one click.")
+        Me.Helper.SetHelpString(Me.PlayNewOnChannelChange, "Selecting this check box will make the application restart playback when you chan" & _
+        "ge channels.")
         Me.PlayNewOnChannelChange.Location = New System.Drawing.Point(5, 37)
         Me.PlayNewOnChannelChange.Margin = New System.Windows.Forms.Padding(2)
         Me.PlayNewOnChannelChange.Name = "PlayNewOnChannelChange"
@@ -417,8 +416,8 @@ Partial Class Options
         '
         Me.NotificationTitle.Checked = True
         Me.NotificationTitle.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.Helper.SetHelpString(Me.NotificationTitle, "Selecting this check box will make the program display the new song title when it" & _
-        "'s minimised to the tray area.")
+        Me.Helper.SetHelpString(Me.NotificationTitle, "Selecting this check box will make the program display a balloon notification eve" & _
+        "ry time the song title changes when it's minimised to tray.")
         Me.NotificationTitle.Location = New System.Drawing.Point(5, 15)
         Me.NotificationTitle.Margin = New System.Windows.Forms.Padding(2)
         Me.NotificationTitle.Name = "NotificationTitle"
@@ -463,15 +462,15 @@ Partial Class Options
         '
         'ViewChangelog
         '
-        Me.Helper.SetHelpString(Me.ViewChangelog, "Click this button to read the changelog and know the various changes through vers" & _
-        "ions of this application.")
+        Me.Helper.SetHelpString(Me.ViewChangelog, "Click this button to read the changelog and know the various changes this applica" & _
+        "tion has had.")
         Me.ViewChangelog.Location = New System.Drawing.Point(147, 84)
         Me.ViewChangelog.Margin = New System.Windows.Forms.Padding(2)
         Me.ViewChangelog.Name = "ViewChangelog"
         Me.Helper.SetShowHelp(Me.ViewChangelog, True)
         Me.ViewChangelog.Size = New System.Drawing.Size(131, 23)
         Me.ViewChangelog.TabIndex = 8
-        Me.ViewChangelog.Text = "View changelog"
+        Me.ViewChangelog.Text = "Read changelog"
         Me.ViewChangelog.UseVisualStyleBackColor = True
         '
         'UndefinedProgress
@@ -929,7 +928,7 @@ Partial Class Options
         Me.MultimediaKeys.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Helper.SetHelpString(Me.MultimediaKeys, "Selecting this check box will allow the application to use the Play, Pause, Stop," & _
         " Volume Up, Volume Down and Mute buttons on your keyboard or your custom hotkeys" & _
-        " set on the Hotkeys tab.")
+        " set below.")
         Me.MultimediaKeys.Location = New System.Drawing.Point(8, 4)
         Me.MultimediaKeys.Margin = New System.Windows.Forms.Padding(2)
         Me.MultimediaKeys.Name = "MultimediaKeys"
