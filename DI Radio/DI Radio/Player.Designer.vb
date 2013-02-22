@@ -48,7 +48,7 @@ Partial Class Player
         Me.ExitTray = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.Forums = New System.Windows.Forms.Button()
-        Me.Calendar = New System.Windows.Forms.Button()
+        Me.Events = New System.Windows.Forms.Button()
         Me.Mute = New System.Windows.Forms.Button()
         Me.OptionsButton = New System.Windows.Forms.Button()
         Me.PlayStop = New System.Windows.Forms.Button()
@@ -79,6 +79,7 @@ Partial Class Player
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
         Me.DownloadDb = New System.ComponentModel.BackgroundWorker()
         Me.HistoryList = New System.Windows.Forms.ListView()
+        Me.Time = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Title = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Length = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CopyHistoryMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
@@ -87,6 +88,14 @@ Partial Class Player
         Me.GoogleHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.GetHistory = New System.ComponentModel.BackgroundWorker()
         Me.VisualisationBox = New System.Windows.Forms.PictureBox()
+        Me.EventsPanel = New System.Windows.Forms.Panel()
+        Me.EventDescription = New System.Windows.Forms.RichTextBox()
+        Me.EventTimes = New System.Windows.Forms.Label()
+        Me.EventTagline = New System.Windows.Forms.Label()
+        Me.EventName = New System.Windows.Forms.Label()
+        Me.SelectedEvent = New System.Windows.Forms.ComboBox()
+        Me.GetEvents = New System.ComponentModel.BackgroundWorker()
+        Me.GetEventDetails = New System.ComponentModel.BackgroundWorker()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -95,6 +104,7 @@ Partial Class Player
         Me.ToolStrip1.SuspendLayout()
         Me.CopyHistoryMenu.SuspendLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.EventsPanel.SuspendLayout()
         Me.SuspendLayout()
         '
         'CopyTitleMenu
@@ -245,16 +255,16 @@ Partial Class Player
         Me.ToolTip.SetToolTip(Me.Forums, "Open channel's forums")
         Me.Forums.UseVisualStyleBackColor = True
         '
-        'Calendar
+        'Events
         '
-        Me.Calendar.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.Calendar.Image = CType(resources.GetObject("Calendar.Image"), System.Drawing.Image)
-        Me.Calendar.Location = New System.Drawing.Point(67, 20)
-        Me.Calendar.Name = "Calendar"
-        Me.Calendar.Size = New System.Drawing.Size(25, 25)
-        Me.Calendar.TabIndex = 3
-        Me.ToolTip.SetToolTip(Me.Calendar, "Open channel's calendar")
-        Me.Calendar.UseVisualStyleBackColor = True
+        Me.Events.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.Events.Image = CType(resources.GetObject("Events.Image"), System.Drawing.Image)
+        Me.Events.Location = New System.Drawing.Point(67, 20)
+        Me.Events.Name = "Events"
+        Me.Events.Size = New System.Drawing.Size(25, 25)
+        Me.Events.TabIndex = 3
+        Me.ToolTip.SetToolTip(Me.Events, "Open channel's calendar")
+        Me.Events.UseVisualStyleBackColor = True
         '
         'Mute
         '
@@ -406,7 +416,7 @@ Partial Class Player
         Me.ControlsPanel.Controls.Add(Me.SelectedServer)
         Me.ControlsPanel.Controls.Add(Me.Forums)
         Me.ControlsPanel.Controls.Add(Me.SelectedChannel)
-        Me.ControlsPanel.Controls.Add(Me.Calendar)
+        Me.ControlsPanel.Controls.Add(Me.Events)
         Me.ControlsPanel.Controls.Add(Me.RadioString)
         Me.ControlsPanel.Controls.Add(Me.TimerString)
         Me.ControlsPanel.Controls.Add(Me.Volume)
@@ -566,7 +576,7 @@ Partial Class Player
         '
         'HistoryList
         '
-        Me.HistoryList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Title, Me.Length})
+        Me.HistoryList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Title, Me.Length})
         Me.HistoryList.ContextMenuStrip = Me.CopyHistoryMenu
         Me.HistoryList.FullRowSelect = True
         Me.HistoryList.GridLines = True
@@ -583,10 +593,14 @@ Partial Class Player
         Me.HistoryList.View = System.Windows.Forms.View.Details
         Me.HistoryList.Visible = False
         '
+        'Time
+        '
+        Me.Time.Width = 40
+        '
         'Title
         '
         Me.Title.Text = "Title"
-        Me.Title.Width = 255
+        Me.Title.Width = 215
         '
         'Length
         '
@@ -635,12 +649,81 @@ Partial Class Player
         Me.VisualisationBox.TabIndex = 3
         Me.VisualisationBox.TabStop = False
         '
+        'EventsPanel
+        '
+        Me.EventsPanel.Controls.Add(Me.EventDescription)
+        Me.EventsPanel.Controls.Add(Me.EventTimes)
+        Me.EventsPanel.Controls.Add(Me.EventTagline)
+        Me.EventsPanel.Controls.Add(Me.EventName)
+        Me.EventsPanel.Controls.Add(Me.SelectedEvent)
+        Me.EventsPanel.Location = New System.Drawing.Point(12, 12)
+        Me.EventsPanel.Name = "EventsPanel"
+        Me.EventsPanel.Size = New System.Drawing.Size(331, 346)
+        Me.EventsPanel.TabIndex = 15
+        Me.EventsPanel.Visible = False
+        '
+        'EventDescription
+        '
+        Me.EventDescription.AutoWordSelection = True
+        Me.EventDescription.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.EventDescription.Location = New System.Drawing.Point(5, 77)
+        Me.EventDescription.Name = "EventDescription"
+        Me.EventDescription.ReadOnly = True
+        Me.EventDescription.Size = New System.Drawing.Size(322, 268)
+        Me.EventDescription.TabIndex = 4
+        Me.EventDescription.Text = ""
+        '
+        'EventTimes
+        '
+        Me.EventTimes.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventTimes.Location = New System.Drawing.Point(3, 60)
+        Me.EventTimes.Name = "EventTimes"
+        Me.EventTimes.Size = New System.Drawing.Size(325, 15)
+        Me.EventTimes.TabIndex = 3
+        Me.EventTimes.UseMnemonic = False
+        '
+        'EventTagline
+        '
+        Me.EventTagline.AutoEllipsis = True
+        Me.EventTagline.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventTagline.Location = New System.Drawing.Point(3, 44)
+        Me.EventTagline.Name = "EventTagline"
+        Me.EventTagline.Size = New System.Drawing.Size(325, 16)
+        Me.EventTagline.TabIndex = 2
+        Me.EventTagline.UseMnemonic = False
+        '
+        'EventName
+        '
+        Me.EventName.AutoEllipsis = True
+        Me.EventName.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventName.Location = New System.Drawing.Point(3, 25)
+        Me.EventName.Name = "EventName"
+        Me.EventName.Size = New System.Drawing.Size(325, 19)
+        Me.EventName.TabIndex = 1
+        Me.EventName.UseMnemonic = False
+        '
+        'SelectedEvent
+        '
+        Me.SelectedEvent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.SelectedEvent.FormattingEnabled = True
+        Me.SelectedEvent.Location = New System.Drawing.Point(0, 0)
+        Me.SelectedEvent.Name = "SelectedEvent"
+        Me.SelectedEvent.Size = New System.Drawing.Size(331, 22)
+        Me.SelectedEvent.TabIndex = 0
+        '
+        'GetEvents
+        '
+        '
+        'GetEventDetails
+        '
+        '
         'Player
         '
         Me.AllowDrop = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(356, 453)
+        Me.Controls.Add(Me.EventsPanel)
         Me.Controls.Add(Me.HistoryList)
         Me.Controls.Add(Me.VisualisationBox)
         Me.Controls.Add(Me.ControlsPanel)
@@ -662,6 +745,7 @@ Partial Class Player
         Me.ToolStrip1.PerformLayout()
         Me.CopyHistoryMenu.ResumeLayout(False)
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.EventsPanel.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -680,7 +764,7 @@ Partial Class Player
     Friend WithEvents Volume As System.Windows.Forms.TrackBar
     Friend WithEvents TimerString As System.Windows.Forms.Label
     Friend WithEvents RadioString As System.Windows.Forms.Label
-    Friend WithEvents Calendar As System.Windows.Forms.Button
+    Friend WithEvents Events As System.Windows.Forms.Button
     Friend WithEvents SelectedChannel As System.Windows.Forms.ComboBox
     Friend WithEvents Forums As System.Windows.Forms.Button
     Friend WithEvents SelectedServer As System.Windows.Forms.ComboBox
@@ -728,5 +812,14 @@ Partial Class Player
     Friend WithEvents RetryChannels As System.Windows.Forms.Button
     Friend WithEvents RetryServers As System.Windows.Forms.Button
     Friend WithEvents History As System.Windows.Forms.Button
+    Friend WithEvents Time As System.Windows.Forms.ColumnHeader
+    Friend WithEvents EventsPanel As System.Windows.Forms.Panel
+    Friend WithEvents EventDescription As System.Windows.Forms.RichTextBox
+    Friend WithEvents EventTimes As System.Windows.Forms.Label
+    Friend WithEvents EventTagline As System.Windows.Forms.Label
+    Friend WithEvents EventName As System.Windows.Forms.Label
+    Friend WithEvents SelectedEvent As System.Windows.Forms.ComboBox
+    Friend WithEvents GetEvents As System.ComponentModel.BackgroundWorker
+    Friend WithEvents GetEventDetails As System.ComponentModel.BackgroundWorker
 
 End Class

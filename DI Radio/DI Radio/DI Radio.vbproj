@@ -79,9 +79,9 @@
     <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bass.Net, Version=2.4.9.0, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
+    <Reference Include="Bass.Net, Version=2.4.9.1, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Release\Bass.Net.dll</HintPath>
+      <HintPath>..\..\..\..\..\Desktop\Bass.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -187,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Radio.ico" />
+    <None Include="Resources\office-calendar.png" />
     <None Include="Resources\text-x-generic.png" />
     <None Include="Resources\go-previous.png" />
   </ItemGroup>

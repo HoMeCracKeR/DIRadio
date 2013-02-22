@@ -38,6 +38,8 @@ Public Class Player
     Public NotificationIcon As Boolean
     Public NoTaskbarButton As Boolean
     Public GoogleSearch As Boolean
+    Public ShowSongStart As Boolean = False
+    Public Use12hs As Boolean = False
 
     Public PremiumFormats As Boolean
     Public DIFormat As Integer = 0
@@ -121,7 +123,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 38    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 39    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -133,6 +135,7 @@ Public Class Player
     Public stream As Integer                        ' -> The stream that is passed to BASS so it plays it
     Public oldvol As Integer                        ' -> This stores the volume when the user clicks the Mute button; to know which volume level should be used when the user clicks the Unmute button
     Dim ServersArray As New ListView                ' -> Used to store a list of available servers for a particular channel
+    Dim EventsArray As New ListView                 ' -> Used to store some info when obtaining events
     ' v  The following list of channels don't have a forum board and should disable the Forums button when selected
     Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel"
     Private _mySync As SYNCPROC                     ' -> Sync so BASS says when the stream title has changed
@@ -431,6 +434,8 @@ Public Class Player
                 writer.WriteLine(Options.NotificationIcon.Name & "=" & NotificationIcon)
                 writer.WriteLine(Options.NoTaskbarButton.Name & "=" & NoTaskbarButton)
                 writer.WriteLine(Options.GoogleSearch.Name & "=" & GoogleSearch)
+                writer.WriteLine(Options.ShowSongStart.Name & "=" & ShowSongStart)
+                writer.WriteLine(Options.Use12hs.Name & "=" & Use12hs)
                 writer.WriteLine(Options.PremiumFormats.Name & "=" & PremiumFormats)
                 writer.WriteLine("DIFormat=" & DIFormat)
                 writer.WriteLine("SKYFormat=" & SKYFormat)
@@ -557,7 +562,9 @@ Public Class Player
              RadioString.Text.ToLower = "di - serving you non-stop trance" = False And _
              RadioString.Text.ToLower = "di - energizing" = False And _
              RadioString.Text.ToLower = "you are listening to di radio, the best of trance on the net (b)" = False And _
-             RadioString.Text.ToLower = "digitally imported radio (captivating)" = False Then
+             RadioString.Text.ToLower = "digitally imported radio (captivating)" = False And _
+             RadioString.Text.ToLower = "get ready for di radio's imported set of the day" = False And _
+             RadioString.Text.ToLower = "love thy neighbour as thyself - turn up the volume (ht)" = False Then
 
                 TrayIcon.BalloonTipText = RadioString.Text
 
@@ -692,20 +699,20 @@ Public Class Player
 
 
             If Visualisation = True Then
-                If Me.Location.Y - 12 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
+                If Me.Location.Y - 7 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
                     Y = Screen.PrimaryScreen.WorkingArea.Size.Height - OptionsButton.Size.Height
-                ElseIf Me.Location.Y - 12 < 0 Then
+                ElseIf Me.Location.Y - 7 < 0 Then
                     Y = 0
                 Else
-                    Y = Me.Location.Y - 4
+                    Y = Me.Location.Y - 7
                 End If
             Else
-                If Me.Location.Y - 180 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
+                If Me.Location.Y - 190 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
                     Y = Screen.PrimaryScreen.WorkingArea.Size.Height - OptionsButton.Size.Height
-                ElseIf Me.Location.Y - 180 < 0 Then
+                ElseIf Me.Location.Y - 190 < 0 Then
                     Y = 0
                 Else
-                    Y = Me.Location.Y - 180
+                    Y = Me.Location.Y - 190
                 End If
             End If
 
@@ -722,34 +729,40 @@ Public Class Player
 
     End Sub
 
-    Private Sub Calendar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Calendar.Click
-        ' Get the current channel, remove spaces and convert names to their URL counterparts if necessary. Then open DI's calendar
+    Private Sub Events_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Events.Click
+        If EventsPanel.Visible = False Then
 
-        Dim channel As String
+            If HistoryList.Visible = True Then
+                History_Click(Me, Nothing)
+            End If
 
-        If SelectedChannel.Text = "My Favorites" Then
-            channel = SelectedServer.Text.ToLower.Replace(" ", Nothing)
+            Events.ImageAlign = ContentAlignment.BottomCenter
+            Events.Image = My.Resources.back
+
+            If GetEvents.IsBusy = False Then
+                GetEvents.RunWorkerAsync()
+            End If
+
+            EventsPanel.Show()
+
+            VisTimer.Stop()
+            Me.Size = Me.MaximumSize
+
+            ToolTip.SetToolTip(Events, "Hide events panel")
         Else
-            channel = SelectedChannel.Text.ToLower.Replace(" ", Nothing)
-        End If
 
-        If channel = "classicelectronica" Then
-            channel = "classictechno"
-        ElseIf channel = "clubsounds" Then
-            channel = "club"
-        ElseIf channel = "deepnu-disco" Then
-            channel = "deepnudisco"
-        ElseIf channel = "drum'nbass" Then
-            channel = "drumandbass"
-        ElseIf channel = "electrohouse" Then
-            channel = "electro"
-        ElseIf channel = "goa-psytrance" Then
-            channel = "goapsy"
-        ElseIf channel = "spacedreams" Then
-            channel = "spacemusic"
-        End If
+            Events.ImageAlign = ContentAlignment.MiddleCenter
+            Events.Image = My.Resources.events
+            EventsPanel.Hide()
 
-        Process.Start("http://www.di.fm/calendar/week/" & channel)
+            If Visualisation = True Then
+                VisTimer.Start()
+            Else
+                Me.Size = Me.MinimumSize
+            End If
+
+            ToolTip.SetToolTip(Events, "Show events panel")
+        End If
     End Sub
 
     Private Sub Forums_Click(sender As System.Object, e As System.EventArgs) Handles Forums.Click
@@ -958,7 +971,7 @@ Public Class Player
             SelectedChannel.Items.Add("My Favorites")
         End If
 
-        Calendar.Enabled = False
+        Events.Enabled = False
         History.Enabled = False
         Forums.Enabled = False
         HistoryList.Items.Clear()
@@ -1013,10 +1026,13 @@ Public Class Player
             RockChannel = SelectedChannel.SelectedIndex
         End If
 
-        If GetHistory.IsBusy = False Then
+        If HistoryList.Visible = True And GetHistory.IsBusy = False Then
             GetHistory.RunWorkerAsync()
         End If
 
+        If EventsPanel.Visible = True And GetEvents.IsBusy = False Then
+            GetEvents.RunWorkerAsync()
+        End If
     End Sub
 
     Private Sub SelectedChannel_TextChanged(sender As Object, e As System.EventArgs) Handles SelectedChannel.TextChanged
@@ -1076,6 +1092,14 @@ Public Class Player
                     End If
                 Loop
             End If
+
+            If HistoryList.Visible = True And GetHistory.IsBusy = False Then
+                GetHistory.RunWorkerAsync()
+            End If
+
+            If EventsPanel.Visible = True And GetEvents.IsBusy = False Then
+                GetEvents.RunWorkerAsync()
+            End If
         End If
 
     End Sub
@@ -1108,11 +1132,6 @@ Public Class Player
 
     End Sub
 
-    Private Sub HistoryList_ColumnWidthChanging(sender As Object, e As System.Windows.Forms.ColumnWidthChangingEventArgs) Handles HistoryList.ColumnWidthChanging
-        e.Cancel = True
-        e.NewWidth = HistoryList.Columns(e.ColumnIndex).Width
-    End Sub
-
     Private Sub RetryChannels_Click(sender As System.Object, e As System.EventArgs) Handles RetryChannels.Click
         StationChooser_TextChanged(Me, Nothing)
         RetryChannels.Hide()
@@ -1128,6 +1147,11 @@ Public Class Player
 
     Private Sub History_Click(sender As System.Object, e As System.EventArgs) Handles History.Click
         If HistoryList.Visible = False Then
+
+            If EventsPanel.Visible = True Then
+                Events_Click(Me, Nothing)
+            End If
+
             History.ImageAlign = ContentAlignment.BottomCenter
             History.Image = My.Resources.back
             HistoryList.Show()
@@ -1144,13 +1168,31 @@ Public Class Player
             History.ImageAlign = ContentAlignment.BottomRight
             History.Image = My.Resources.history
             HistoryList.Hide()
+
             If Visualisation = False Then
                 Me.Size = Me.MinimumSize
             Else
                 VisTimer.Start()
             End If
+
             ToolTip.SetToolTip(History, "Show track history")
         End If
+    End Sub
+
+    Private Sub SelectedEvent_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles SelectedEvent.SelectedIndexChanged
+
+        If SelectedEvent.Text.ToLower.StartsWith("please wait,") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False Then
+            EventName.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).Text
+            EventTagline.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(1).Text
+            EventTimes.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text & " - " & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text
+            EventDescription.Text = "Please wait, downloading event details..."
+            GetEventDetails.RunWorkerAsync()
+        End If
+
+    End Sub
+
+    Private Sub EventDescription_LinkClicked(sender As Object, e As System.Windows.Forms.LinkClickedEventArgs) Handles EventDescription.LinkClicked
+        Process.Start(e.LinkText)
     End Sub
 
 #End Region
@@ -1467,13 +1509,16 @@ Public Class Player
             History.Enabled = False
             HistoryList.Hide()
             History.ImageAlign = ContentAlignment.BottomRight
-            History.Image = My.Resources.back
-            Calendar.Enabled = False
+            History.Image = My.Resources.history
+            Events.Enabled = False
+            EventsPanel.Hide()
+            Events.ImageAlign = ContentAlignment.MiddleCenter
+            Events.Image = My.Resources.events
         ElseIf StationChooser.Text = JazzRadio.Text = False And StationChooser.Text = RockRadio.Text = False Then
             History.Enabled = True
 
             If StationChooser.Text = SKYFM.Text = False Then
-                Calendar.Enabled = True
+                Events.Enabled = True
             End If
         End If
 
@@ -1707,7 +1752,13 @@ again:
 
         Try
             Dim writer As New IO.StreamWriter(file)
-            HistoryLog = WebClient.DownloadString("http://tobiass.eu/api/history/text/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
+
+            If SelectedChannel.Text = "My Favorites" Then
+                HistoryLog = WebClient.DownloadString("http://tobiass.eu/api/history/text/" & KeysArray.Items.Item(SelectedServer.Text).Tag)
+            Else
+                HistoryLog = WebClient.DownloadString("http://tobiass.eu/api/history/text/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
+            End If
+
 
             writer.Write(HistoryLog)
             writer.Close()
@@ -1722,13 +1773,39 @@ again:
                 Dim line As String = reader.ReadLine
                 Dim splitter() As String = Split(line, "|")
 
-                HistoryList.Items.Add(splitter(0))
+                Dim span As TimeSpan
+                span = TimeSpan.FromSeconds(splitter(2))
 
-                Dim span As TimeSpan = TimeSpan.FromSeconds(splitter(1))
+                Dim time As DateTime = DateTime.Parse(String.Format("{0:00}:{1:00}", span.Hours, span.Minutes))
+                Dim ampm As String
+                Dim hour As String
+
+                If Use12hs = True Then
+                    If time.ToLocalTime.Hour >= 12 Then
+                        ampm = "pm"
+                        If time.ToLocalTime.Hour = 12 Then
+                            hour = time.ToLocalTime.Hour
+                        Else
+                            hour = time.ToLocalTime.Hour - 12
+                        End If
+                    Else
+                        ampm = "am"
+                        hour = time.ToLocalTime.Hour
+                    End If
+                Else
+                    hour = time.ToLocalTime.Hour
+                End If
+
+                HistoryList.Items.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
+
+           
+
+                HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(splitter(0))
+
+                span = TimeSpan.FromSeconds(splitter(1))
 
                 If span.Hours < 1 Then
                     HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}", span.Minutes, span.Seconds))
-
                 Else
                     HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}:{2:00}", span.Hours, span.Minutes, span.Seconds))
                 End If
@@ -1744,6 +1821,139 @@ again:
             HistoryList.Items.Clear()
             HistoryList.Items.Add("Couldn't download history information.")
             HistoryList.Items.Add("Please go back and try again.")
+        End Try
+    End Sub
+
+    Private Sub GetEvents_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
+        SelectedEvent.Enabled = False
+        SelectedEvent.Items.Clear()
+
+        SelectedEvent.Items.Add("Please wait, downloading events...")
+        SelectedEvent.SelectedIndex = 0
+
+
+        EventsArray.Items.Clear()
+        EventName.Text = Nothing
+        EventTagline.Text = Nothing
+        EventTimes.Text = Nothing
+        EventDescription.Text = Nothing
+        Dim WebClient As Net.WebClient = New Net.WebClient()
+        Dim EventsLog As String
+        Dim file As String = exeFolder & "\servers\eventstemp"
+
+        Try
+            Dim writer As New IO.StreamWriter(file)
+
+            If SelectedChannel.Text = "My Favorites" Then
+                EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(SelectedServer.Text).Tag)
+            Else
+                EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
+            End If
+
+
+            writer.Write(EventsLog)
+            writer.Close()
+            writer.Dispose()
+            SelectedEvent.Items.RemoveAt(0)
+
+            Dim reader As New IO.StreamReader(file)
+
+            Do While (reader.Peek > -1)
+
+                Dim line As String = reader.ReadLine
+                Dim splitter() As String = Split(line, "|&|")
+
+                Dim firstDay As DateTime = #1/1/1970#
+                Dim time As DateTime = firstDay.AddSeconds(splitter(1))
+                Dim numeral As String
+
+                If time.Day.ToString.EndsWith("1") Then
+                    numeral = "st"
+                ElseIf time.Day.ToString.EndsWith("2") Then
+                    numeral = "nd"
+                ElseIf time.Day.ToString.EndsWith("3") Then
+                    numeral = "rd"
+                Else
+                    numeral = "th"
+                End If
+
+                Dim ampm As String
+                Dim hour As String
+
+                If Use12hs = True Then
+                    If time.ToLocalTime.Hour >= 12 Then
+                        ampm = "pm"
+                        If time.ToLocalTime.Hour = 12 Then
+                            hour = time.ToLocalTime.Hour
+                        Else
+                            hour = time.ToLocalTime.Hour - 12
+                        End If
+                    Else
+                        ampm = "am"
+                        hour = time.ToLocalTime.Hour
+                    End If
+                Else
+                    hour = time.ToLocalTime.Hour
+                End If
+
+
+                SelectedEvent.Items.Add(time.DayOfWeek.ToString.Remove(3) & ". " & time.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & ": " & splitter(3))
+
+                EventsArray.Items.Add(splitter(3))
+                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(4))
+                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
+
+                time = firstDay.AddSeconds(splitter(2))
+
+                If Use12hs = True Then
+                    If time.ToLocalTime.Hour >= 12 Then
+                        ampm = "pm"
+                        If time.ToLocalTime.Hour = 12 Then
+                            hour = time.ToLocalTime.Hour
+                        Else
+                            hour = time.ToLocalTime.Hour - 12
+                        End If
+                    Else
+                        ampm = "am"
+                        hour = time.ToLocalTime.Hour
+                    End If
+                Else
+                    hour = time.ToLocalTime.Hour
+                End If
+
+                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
+                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(0))
+
+                SelectedEvent.SelectedIndex = 0
+
+            Loop
+
+            reader.Close()
+            reader.Dispose()
+
+            If SelectedEvent.Items.Count > 0 Then
+                SelectedEvent.Enabled = True
+            Else
+                SelectedEvent.Items.Add("There are no future events for this channel.")
+                SelectedEvent.SelectedIndex = 0
+            End If
+
+        Catch
+            SelectedEvent.Items.Add("Couldn't download events information. Please go back and try again.")
+            SelectedEvent.SelectedIndex = 0
+        End Try
+    End Sub
+
+    Private Sub GetEventDetails_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEventDetails.DoWork
+        Dim WebClient As Net.WebClient = New Net.WebClient()
+        Dim EventsLog As String
+
+        Try
+            EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/event/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text)
+            Dim splitter() As String = Split(EventsLog, "|&|")
+            EventDescription.Text = splitter(5).Replace("**", Nothing).Replace("_", Nothing)
+        Catch
+
         End Try
     End Sub
 
@@ -1781,19 +1991,25 @@ again:
             If StationChooser.Text = DIFM.Text Then
 
                 SelectedChannel.SelectedIndex = DIChannel
-                Calendar.Enabled = True
+                Events.Enabled = True
                 History.Enabled = True
 
             ElseIf StationChooser.Text = SKYFM.Text Then
 
                 SelectedChannel.SelectedIndex = SKYChannel
-                Calendar.Enabled = False
+                Events.Enabled = False
+                Events.ImageAlign = ContentAlignment.MiddleCenter
+                Events.Image = My.Resources.events
+                EventsPanel.Visible = False
                 History.Enabled = True
 
             ElseIf StationChooser.Text = JazzRadio.Text Then
 
                 SelectedChannel.SelectedIndex = JazzChannel
-                Calendar.Enabled = False
+                Events.Enabled = False
+                Events.ImageAlign = ContentAlignment.MiddleCenter
+                Events.Image = My.Resources.events
+                EventsPanel.Visible = False
                 History.Enabled = False
                 HistoryList.Visible = False
                 History.ImageAlign = ContentAlignment.BottomRight
@@ -1803,7 +2019,10 @@ again:
             ElseIf StationChooser.Text = RockRadio.Text Then
 
                 SelectedChannel.SelectedIndex = RockChannel
-                Calendar.Enabled = False
+                Events.Enabled = False
+                Events.ImageAlign = ContentAlignment.MiddleCenter
+                Events.Image = My.Resources.events
+                EventsPanel.Visible = False
                 History.Enabled = False
                 HistoryList.Visible = False
                 History.ImageAlign = ContentAlignment.BottomRight
@@ -1843,11 +2062,9 @@ again:
             Dim SpectrumRectangle As New Rectangle(VisualisationBox.Location.X, VisualisationBox.Location.Y, VisualisationBox.Width, VisualisationBox.Height)
             Using g As Graphics = Graphics.FromImage(SpectrumImage)
 
-                Try
+                If VisualisationBox.Image Is Nothing = False Then
                     VisualisationBox.Image.Dispose()
-                Catch
-                End Try
-
+                End If
 
                 If VisualisationType = 0 Then
                     drawing.CreateSpectrumBean(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
@@ -1920,7 +2137,7 @@ again:
         PlayStopTray.Enabled = PlayStop.Enabled
         PlayStopTray.Text = PlayStop.Tag
         PlayStopTray.Image = PlayStop.Image
-        CalendarTray.Enabled = Calendar.Enabled
+        CalendarTray.Enabled = Events.Enabled
         TrackHistoryTray.Enabled = History.Enabled
         ForumsTray.Enabled = Forums.Enabled
 
@@ -2047,6 +2264,36 @@ again:
         Process.Start("http://www." & StationChooser.Tag & "/" & channel)
     End Sub
 
+    Private Sub CalendarTray_Click(sender As System.Object, e As System.EventArgs) Handles CalendarTray.Click
+        ' Get the current channel, remove spaces and convert names to their URL counterparts if necessary. Then open DI's calendar
+
+        Dim channel As String
+
+        If SelectedChannel.Text = "My Favorites" Then
+            channel = SelectedServer.Text.ToLower.Replace(" ", Nothing)
+        Else
+            channel = SelectedChannel.Text.ToLower.Replace(" ", Nothing)
+        End If
+
+        If channel = "classicelectronica" Then
+            channel = "classictechno"
+        ElseIf channel = "clubsounds" Then
+            channel = "club"
+        ElseIf channel = "deepnu-disco" Then
+            channel = "deepnudisco"
+        ElseIf channel = "drum'nbass" Then
+            channel = "drumandbass"
+        ElseIf channel = "electrohouse" Then
+            channel = "electro"
+        ElseIf channel = "goa-psytrance" Then
+            channel = "goapsy"
+        ElseIf channel = "spacedreams" Then
+            channel = "spacemusic"
+        End If
+
+        Process.Start("http://www.di.fm/calendar/week/" & channel)
+    End Sub
+
     Private Sub CopyHistoryMenu_Opening(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles CopyHistoryMenu.Opening
         If HistoryList.SelectedItems.Count > 0 Then
             CopyHistory.Enabled = True
@@ -2059,11 +2306,11 @@ again:
 
     Private Sub CopyHistory_Click(sender As System.Object, e As System.EventArgs) Handles CopyHistory.Click
         Clipboard.Clear()
-        Clipboard.SetDataObject(HistoryList.SelectedItems.Item(0).Text)
+        Clipboard.SetDataObject(HistoryList.SelectedItems.Item(0).SubItems(1).Text)
     End Sub
 
     Private Sub GoogleHistory_Click(sender As System.Object, e As System.EventArgs) Handles GoogleHistory.Click
-        Process.Start("https://www.google.com/search?q=" & HistoryList.SelectedItems.Item(0).Text.Replace("&", "%26"))
+        Process.Start("https://www.google.com/search?q=" & HistoryList.SelectedItems.Item(0).SubItems(1).Text.Replace("&", "%26"))
     End Sub
 
     ' These only call to the event function of their respective main form button counterparts
@@ -2080,10 +2327,6 @@ again:
         CopyToolStripMenuItem_Click(sender, e)
     End Sub
 
-    Private Sub CalendarTray_Click(sender As System.Object, e As System.EventArgs) Handles CalendarTray.Click
-        Calendar_Click(sender, e)
-    End Sub
-
     Private Sub ForumsTray_Click(sender As System.Object, e As System.EventArgs) Handles ForumsTray.Click
         Forums_Click(sender, e)
     End Sub
@@ -2097,6 +2340,11 @@ again:
     End Sub
 
     ' ----------------------------------------------------------------------------------------
+
+    Private Sub CopyServerURLToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles CopyServerURLToolStripMenuItem.Click
+        Clipboard.Clear()
+        Clipboard.SetDataObject(ServersArray.Items.Item(SelectedServer.SelectedIndex).Text.Replace(ListenKey, "*listen key removed*"))
+    End Sub
 
     Private Sub GoogleSearchToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GoogleSearchToolStripMenuItem.Click
         Process.Start("https://www.google.com/search?q=" & RadioString.Text.Replace("&", "%26"))
@@ -2220,6 +2468,8 @@ again:
             writer.WriteLine(Options.NotificationIcon.Name & "=True")
             writer.WriteLine(Options.NoTaskbarButton.Name & "=False")
             writer.WriteLine(Options.GoogleSearch.Name & "=True")
+            writer.WriteLine(Options.ShowSongStart.Name & "=False")
+            writer.WriteLine(Options.Use12hs.Name & "=False")
             writer.WriteLine(Options.ListenKey.Name & "=")
             writer.WriteLine(Options.PremiumFormats.Name & "=False")
             writer.WriteLine("DIFormat=1")
@@ -2288,6 +2538,20 @@ again:
                     End If
                 ElseIf splitter(0) = Options.GoogleSearch.Name Then
                     GoogleSearch = splitter(1)
+                ElseIf splitter(0) = Options.ShowSongStart.Name Then
+                    ShowSongStart = splitter(1)
+
+                    If ShowSongStart = False Then
+                        Time.Width = 0
+                        Title.Width = 255
+                    End If
+                ElseIf splitter(0) = Options.Use12hs.Name Then
+                    Use12hs = splitter(1)
+
+                    If ShowSongStart = True Then
+                        Time.Width = 50
+                        Title.Width = 222
+                    End If
                 ElseIf splitter(0) = Options.PremiumFormats.Name Then
                     PremiumFormats = splitter(1)
                 ElseIf splitter(0) = "DIFormat" Then

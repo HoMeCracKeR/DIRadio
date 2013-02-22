@@ -26,6 +26,7 @@ Partial Class Options
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Options))
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.Use12hs = New System.Windows.Forms.CheckBox()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.StationSelector = New System.Windows.Forms.ComboBox()
         Me.ValidateKey = New System.Windows.Forms.Button()
@@ -36,6 +37,7 @@ Partial Class Options
         Me.FileFormat = New System.Windows.Forms.ComboBox()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.ShowSongStart = New System.Windows.Forms.CheckBox()
         Me.GoogleSearch = New System.Windows.Forms.CheckBox()
         Me.NoTaskbarButton = New System.Windows.Forms.CheckBox()
         Me.PlayNewOnChannelChange = New System.Windows.Forms.CheckBox()
@@ -117,18 +119,6 @@ Partial Class Options
         Me.Band1 = New System.Windows.Forms.TrackBar()
         Me.Band0 = New System.Windows.Forms.TrackBar()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
-        Me.Label19 = New System.Windows.Forms.Label()
-        Me.RockLogo = New System.Windows.Forms.PictureBox()
-        Me.JazzLogo = New System.Windows.Forms.PictureBox()
-        Me.SkyLogo = New System.Windows.Forms.PictureBox()
-        Me.DILogo = New System.Windows.Forms.PictureBox()
-        Me.DevForums = New System.Windows.Forms.Button()
-        Me.DevMail = New System.Windows.Forms.Button()
-        Me.Label12 = New System.Windows.Forms.Label()
-        Me.DevTwitter = New System.Windows.Forms.Button()
-        Me.DevFacebook = New System.Windows.Forms.Button()
-        Me.AboutText = New System.Windows.Forms.RichTextBox()
-        Me.ApplicationLogo = New System.Windows.Forms.PictureBox()
         Me.OK = New System.Windows.Forms.Button()
         Me.Cancel = New System.Windows.Forms.Button()
         Me.ColourPicker = New System.Windows.Forms.ColorDialog()
@@ -141,10 +131,11 @@ Partial Class Options
         Me.BrownWood = New System.Windows.Forms.ToolStripMenuItem()
         Me.SilverMetal = New System.Windows.Forms.ToolStripMenuItem()
         Me.YellowSunset = New System.Windows.Forms.ToolStripMenuItem()
-        Me.WhiteMilk = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.LoadTheme = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTheme = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.GetMoreThemesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ValidateWorker = New System.ComponentModel.BackgroundWorker()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
@@ -165,6 +156,14 @@ Partial Class Options
         Me.OpenPresetDialog = New System.Windows.Forms.OpenFileDialog()
         Me.OpenThemeDialog = New System.Windows.Forms.OpenFileDialog()
         Me.SaveThemeDialog = New System.Windows.Forms.SaveFileDialog()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.AboutLabel = New System.Windows.Forms.Label()
+        Me.Copyright = New System.Windows.Forms.Label()
+        Me.AboutLicense = New System.Windows.Forms.LinkLabel()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.AboutWebsite = New System.Windows.Forms.LinkLabel()
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.AboutForums = New System.Windows.Forms.LinkLabel()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -188,13 +187,9 @@ Partial Class Options
         CType(Me.Band1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage4.SuspendLayout()
-        CType(Me.RockLogo, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.JazzLogo, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.SkyLogo, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.DILogo, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ThemesMenu.SuspendLayout()
         Me.PresetsMenu.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -211,11 +206,12 @@ Partial Class Options
         Me.TabControl1.Margin = New System.Windows.Forms.Padding(2)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(295, 418)
+        Me.TabControl1.Size = New System.Drawing.Size(295, 424)
         Me.TabControl1.TabIndex = 7
         '
         'TabPage1
         '
+        Me.TabPage1.Controls.Add(Me.Use12hs)
         Me.TabPage1.Controls.Add(Me.GroupBox5)
         Me.TabPage1.Controls.Add(Me.GroupBox1)
         Me.TabPage1.Controls.Add(Me.GroupBox2)
@@ -223,10 +219,22 @@ Partial Class Options
         Me.TabPage1.Margin = New System.Windows.Forms.Padding(2)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(2)
-        Me.TabPage1.Size = New System.Drawing.Size(287, 391)
+        Me.TabPage1.Size = New System.Drawing.Size(287, 397)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "General"
         Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'Use12hs
+        '
+        Me.Helper.SetHelpString(Me.Use12hs, "Selecting this box will make the application use the am/pm time format in the eve" & _
+        "nts panel and the history list.")
+        Me.Use12hs.Location = New System.Drawing.Point(7, 125)
+        Me.Use12hs.Name = "Use12hs"
+        Me.Helper.SetShowHelp(Me.Use12hs, True)
+        Me.Use12hs.Size = New System.Drawing.Size(273, 17)
+        Me.Use12hs.TabIndex = 9
+        Me.Use12hs.Text = "Use 12hs time format"
+        Me.Use12hs.UseVisualStyleBackColor = True
         '
         'GroupBox5
         '
@@ -239,11 +247,11 @@ Partial Class Options
         Me.GroupBox5.Controls.Add(Me.FileFormat)
         Me.GroupBox5.Controls.Add(Me.Label9)
         Me.GroupBox5.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupBox5.Location = New System.Drawing.Point(2, 132)
+        Me.GroupBox5.Location = New System.Drawing.Point(2, 149)
         Me.GroupBox5.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBox5.Name = "GroupBox5"
         Me.GroupBox5.Padding = New System.Windows.Forms.Padding(2)
-        Me.GroupBox5.Size = New System.Drawing.Size(283, 116)
+        Me.GroupBox5.Size = New System.Drawing.Size(283, 105)
         Me.GroupBox5.TabIndex = 6
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "File format, Listen Key && Premium support"
@@ -254,7 +262,7 @@ Partial Class Options
         Me.StationSelector.FormattingEnabled = True
         Me.Helper.SetHelpString(Me.StationSelector, "Select which radio station you'd like to change the file format for.")
         Me.StationSelector.Items.AddRange(New Object() {"Digitally Imported", "JazzRadio", "RockRadio", "SKY.FM"})
-        Me.StationSelector.Location = New System.Drawing.Point(4, 37)
+        Me.StationSelector.Location = New System.Drawing.Point(5, 36)
         Me.StationSelector.Margin = New System.Windows.Forms.Padding(2)
         Me.StationSelector.Name = "StationSelector"
         Me.Helper.SetShowHelp(Me.StationSelector, True)
@@ -264,7 +272,7 @@ Partial Class Options
         'ValidateKey
         '
         Me.Helper.SetHelpString(Me.ValidateKey, resources.GetString("ValidateKey.HelpString"))
-        Me.ValidateKey.Location = New System.Drawing.Point(220, 82)
+        Me.ValidateKey.Location = New System.Drawing.Point(220, 77)
         Me.ValidateKey.Name = "ValidateKey"
         Me.Helper.SetShowHelp(Me.ValidateKey, True)
         Me.ValidateKey.Size = New System.Drawing.Size(58, 22)
@@ -276,11 +284,11 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.PremiumFormats, "Selecting this check box will identify your Listen Key as a Premium one and will " & _
         "enable support for Premium file formats.")
-        Me.PremiumFormats.Location = New System.Drawing.Point(139, 12)
+        Me.PremiumFormats.Location = New System.Drawing.Point(139, 15)
         Me.PremiumFormats.Margin = New System.Windows.Forms.Padding(2)
         Me.PremiumFormats.Name = "PremiumFormats"
         Me.Helper.SetShowHelp(Me.PremiumFormats, True)
-        Me.PremiumFormats.Size = New System.Drawing.Size(142, 22)
+        Me.PremiumFormats.Size = New System.Drawing.Size(142, 17)
         Me.PremiumFormats.TabIndex = 6
         Me.PremiumFormats.Text = "Enable Premium formats"
         Me.PremiumFormats.UseVisualStyleBackColor = True
@@ -288,7 +296,7 @@ Partial Class Options
         'ListenLink
         '
         Me.Helper.SetHelpString(Me.ListenLink, resources.GetString("ListenLink.HelpString"))
-        Me.ListenLink.Location = New System.Drawing.Point(136, 61)
+        Me.ListenLink.Location = New System.Drawing.Point(136, 60)
         Me.ListenLink.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.ListenLink.Name = "ListenLink"
         Me.Helper.SetShowHelp(Me.ListenLink, True)
@@ -301,7 +309,7 @@ Partial Class Options
         'ListenKey
         '
         Me.Helper.SetHelpString(Me.ListenKey, resources.GetString("ListenKey.HelpString"))
-        Me.ListenKey.Location = New System.Drawing.Point(5, 83)
+        Me.ListenKey.Location = New System.Drawing.Point(5, 78)
         Me.ListenKey.Margin = New System.Windows.Forms.Padding(2)
         Me.ListenKey.MaxLength = 0
         Me.ListenKey.Name = "ListenKey"
@@ -311,7 +319,7 @@ Partial Class Options
         '
         'Label10
         '
-        Me.Label10.Location = New System.Drawing.Point(2, 61)
+        Me.Label10.Location = New System.Drawing.Point(2, 60)
         Me.Label10.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(130, 14)
@@ -324,7 +332,7 @@ Partial Class Options
         Me.FileFormat.FormattingEnabled = True
         Me.Helper.SetHelpString(Me.FileFormat, resources.GetString("FileFormat.HelpString"))
         Me.FileFormat.Items.AddRange(New Object() {"AAC-HE", "MP3", "Windows Media"})
-        Me.FileFormat.Location = New System.Drawing.Point(139, 37)
+        Me.FileFormat.Location = New System.Drawing.Point(139, 36)
         Me.FileFormat.Margin = New System.Windows.Forms.Padding(2)
         Me.FileFormat.Name = "FileFormat"
         Me.Helper.SetShowHelp(Me.FileFormat, True)
@@ -342,6 +350,7 @@ Partial Class Options
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.ShowSongStart)
         Me.GroupBox1.Controls.Add(Me.GoogleSearch)
         Me.GroupBox1.Controls.Add(Me.NoTaskbarButton)
         Me.GroupBox1.Controls.Add(Me.PlayNewOnChannelChange)
@@ -352,10 +361,22 @@ Partial Class Options
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(2)
-        Me.GroupBox1.Size = New System.Drawing.Size(283, 126)
+        Me.GroupBox1.Size = New System.Drawing.Size(283, 144)
         Me.GroupBox1.TabIndex = 4
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "General"
+        '
+        'ShowSongStart
+        '
+        Me.Helper.SetHelpString(Me.ShowSongStart, "Selecting this box will make the application show the start time of a song on the" & _
+        " left of the History list.")
+        Me.ShowSongStart.Location = New System.Drawing.Point(5, 105)
+        Me.ShowSongStart.Name = "ShowSongStart"
+        Me.Helper.SetShowHelp(Me.ShowSongStart, True)
+        Me.ShowSongStart.Size = New System.Drawing.Size(273, 17)
+        Me.ShowSongStart.TabIndex = 7
+        Me.ShowSongStart.Text = "Show song start time on History list"
+        Me.ShowSongStart.UseVisualStyleBackColor = True
         '
         'GoogleSearch
         '
@@ -363,10 +384,10 @@ Partial Class Options
         Me.GoogleSearch.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Helper.SetHelpString(Me.GoogleSearch, "Selecting this check box will make the application perform a Google search when y" & _
         "ou click the current song's title.")
-        Me.GoogleSearch.Location = New System.Drawing.Point(5, 104)
+        Me.GoogleSearch.Location = New System.Drawing.Point(5, 87)
         Me.GoogleSearch.Name = "GoogleSearch"
         Me.Helper.SetShowHelp(Me.GoogleSearch, True)
-        Me.GoogleSearch.Size = New System.Drawing.Size(273, 18)
+        Me.GoogleSearch.Size = New System.Drawing.Size(273, 17)
         Me.GoogleSearch.TabIndex = 6
         Me.GoogleSearch.Text = "Open Google when clicking the song title"
         Me.GoogleSearch.UseVisualStyleBackColor = True
@@ -376,10 +397,10 @@ Partial Class Options
         Me.Helper.SetHelpString(Me.NoTaskbarButton, "Selecting this check box will prevent the application from showing its taskbar bu" & _
         "tton and will always show the notification area icon, allowing you to use it as " & _
         "a taskbar button.")
-        Me.NoTaskbarButton.Location = New System.Drawing.Point(5, 82)
+        Me.NoTaskbarButton.Location = New System.Drawing.Point(5, 69)
         Me.NoTaskbarButton.Name = "NoTaskbarButton"
         Me.Helper.SetShowHelp(Me.NoTaskbarButton, True)
-        Me.NoTaskbarButton.Size = New System.Drawing.Size(273, 18)
+        Me.NoTaskbarButton.Size = New System.Drawing.Size(273, 17)
         Me.NoTaskbarButton.TabIndex = 5
         Me.NoTaskbarButton.Text = "Use the tray icon as a taskbar button"
         Me.NoTaskbarButton.UseVisualStyleBackColor = True
@@ -388,11 +409,11 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.PlayNewOnChannelChange, "Selecting this check box will make the application restart playback when you chan" & _
         "ge channels.")
-        Me.PlayNewOnChannelChange.Location = New System.Drawing.Point(5, 37)
+        Me.PlayNewOnChannelChange.Location = New System.Drawing.Point(5, 33)
         Me.PlayNewOnChannelChange.Margin = New System.Windows.Forms.Padding(2)
         Me.PlayNewOnChannelChange.Name = "PlayNewOnChannelChange"
         Me.Helper.SetShowHelp(Me.PlayNewOnChannelChange, True)
-        Me.PlayNewOnChannelChange.Size = New System.Drawing.Size(273, 18)
+        Me.PlayNewOnChannelChange.Size = New System.Drawing.Size(273, 17)
         Me.PlayNewOnChannelChange.TabIndex = 4
         Me.PlayNewOnChannelChange.Text = "Automatically play new channel when changing"
         Me.PlayNewOnChannelChange.UseVisualStyleBackColor = True
@@ -403,11 +424,11 @@ Partial Class Options
         Me.NotificationIcon.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Helper.SetHelpString(Me.NotificationIcon, "Selecting this check box will make the application hide its taskbar button and cr" & _
         "eate an icon on the notification area when you minimise it.")
-        Me.NotificationIcon.Location = New System.Drawing.Point(5, 59)
+        Me.NotificationIcon.Location = New System.Drawing.Point(5, 51)
         Me.NotificationIcon.Margin = New System.Windows.Forms.Padding(2)
         Me.NotificationIcon.Name = "NotificationIcon"
         Me.Helper.SetShowHelp(Me.NotificationIcon, True)
-        Me.NotificationIcon.Size = New System.Drawing.Size(273, 18)
+        Me.NotificationIcon.Size = New System.Drawing.Size(273, 17)
         Me.NotificationIcon.TabIndex = 3
         Me.NotificationIcon.Text = "Minimise to notification area"
         Me.NotificationIcon.UseVisualStyleBackColor = True
@@ -439,7 +460,7 @@ Partial Class Options
         Me.GroupBox2.Controls.Add(Me.LookNow)
         Me.GroupBox2.Controls.Add(Me.UpdatesAtStart)
         Me.GroupBox2.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupBox2.Location = New System.Drawing.Point(2, 248)
+        Me.GroupBox2.Location = New System.Drawing.Point(2, 254)
         Me.GroupBox2.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Padding = New System.Windows.Forms.Padding(2)
@@ -558,7 +579,7 @@ Partial Class Options
         Me.TabPage2.Margin = New System.Windows.Forms.Padding(2)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(2)
-        Me.TabPage2.Size = New System.Drawing.Size(287, 391)
+        Me.TabPage2.Size = New System.Drawing.Size(287, 397)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Visualisation"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -581,7 +602,7 @@ Partial Class Options
         Me.GroupBox4.Controls.Add(Me.Label3)
         Me.GroupBox4.Controls.Add(Me.Label2)
         Me.GroupBox4.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupBox4.Location = New System.Drawing.Point(2, 184)
+        Me.GroupBox4.Location = New System.Drawing.Point(2, 190)
         Me.GroupBox4.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Padding = New System.Windows.Forms.Padding(2)
@@ -606,10 +627,10 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.ChangeWholeBackground, "Select this check box to make the application use the same background colour as t" & _
         "he visualisation.")
-        Me.ChangeWholeBackground.Location = New System.Drawing.Point(5, 183)
+        Me.ChangeWholeBackground.Location = New System.Drawing.Point(5, 185)
         Me.ChangeWholeBackground.Name = "ChangeWholeBackground"
         Me.Helper.SetShowHelp(Me.ChangeWholeBackground, True)
-        Me.ChangeWholeBackground.Size = New System.Drawing.Size(274, 18)
+        Me.ChangeWholeBackground.Size = New System.Drawing.Size(274, 17)
         Me.ChangeWholeBackground.TabIndex = 15
         Me.ChangeWholeBackground.Text = "Change the whole background"
         Me.ChangeWholeBackground.UseVisualStyleBackColor = True
@@ -917,7 +938,7 @@ Partial Class Options
         Me.TabPage3.Location = New System.Drawing.Point(4, 23)
         Me.TabPage3.Margin = New System.Windows.Forms.Padding(2)
         Me.TabPage3.Name = "TabPage3"
-        Me.TabPage3.Size = New System.Drawing.Size(287, 391)
+        Me.TabPage3.Size = New System.Drawing.Size(287, 397)
         Me.TabPage3.TabIndex = 2
         Me.TabPage3.Text = "Hotkeys"
         Me.TabPage3.UseVisualStyleBackColor = True
@@ -1105,7 +1126,7 @@ Partial Class Options
         Me.TabPage5.Controls.Add(Me.Band0)
         Me.TabPage5.Location = New System.Drawing.Point(4, 23)
         Me.TabPage5.Name = "TabPage5"
-        Me.TabPage5.Size = New System.Drawing.Size(287, 391)
+        Me.TabPage5.Size = New System.Drawing.Size(287, 397)
         Me.TabPage5.TabIndex = 4
         Me.TabPage5.Text = "Equalizer"
         Me.TabPage5.UseVisualStyleBackColor = True
@@ -1350,168 +1371,21 @@ Partial Class Options
         '
         'TabPage4
         '
+        Me.TabPage4.Controls.Add(Me.AboutForums)
         Me.TabPage4.Controls.Add(Me.Label19)
-        Me.TabPage4.Controls.Add(Me.RockLogo)
-        Me.TabPage4.Controls.Add(Me.JazzLogo)
-        Me.TabPage4.Controls.Add(Me.SkyLogo)
-        Me.TabPage4.Controls.Add(Me.DILogo)
-        Me.TabPage4.Controls.Add(Me.DevForums)
-        Me.TabPage4.Controls.Add(Me.DevMail)
+        Me.TabPage4.Controls.Add(Me.AboutWebsite)
         Me.TabPage4.Controls.Add(Me.Label12)
-        Me.TabPage4.Controls.Add(Me.DevTwitter)
-        Me.TabPage4.Controls.Add(Me.DevFacebook)
-        Me.TabPage4.Controls.Add(Me.AboutText)
-        Me.TabPage4.Controls.Add(Me.ApplicationLogo)
+        Me.TabPage4.Controls.Add(Me.AboutLicense)
+        Me.TabPage4.Controls.Add(Me.Copyright)
+        Me.TabPage4.Controls.Add(Me.AboutLabel)
+        Me.TabPage4.Controls.Add(Me.PictureBox1)
         Me.TabPage4.Location = New System.Drawing.Point(4, 23)
         Me.TabPage4.Margin = New System.Windows.Forms.Padding(2)
         Me.TabPage4.Name = "TabPage4"
-        Me.TabPage4.Size = New System.Drawing.Size(287, 391)
+        Me.TabPage4.Size = New System.Drawing.Size(287, 397)
         Me.TabPage4.TabIndex = 3
         Me.TabPage4.Text = "About"
         Me.TabPage4.UseVisualStyleBackColor = True
-        '
-        'Label19
-        '
-        Me.Label19.AutoSize = True
-        Me.Label19.Location = New System.Drawing.Point(3, 156)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(128, 14)
-        Me.Label19.TabIndex = 23
-        Me.Label19.Text = "Supported radio stations:"
-        '
-        'RockLogo
-        '
-        Me.Helper.SetHelpString(Me.RockLogo, "RockRadio")
-        Me.RockLogo.Image = CType(resources.GetObject("RockLogo.Image"), System.Drawing.Image)
-        Me.RockLogo.Location = New System.Drawing.Point(0, 246)
-        Me.RockLogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.RockLogo.Name = "RockLogo"
-        Me.Helper.SetShowHelp(Me.RockLogo, True)
-        Me.RockLogo.Size = New System.Drawing.Size(70, 70)
-        Me.RockLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.RockLogo.TabIndex = 22
-        Me.RockLogo.TabStop = False
-        Me.ToolTip.SetToolTip(Me.RockLogo, "RockRadio")
-        '
-        'JazzLogo
-        '
-        Me.Helper.SetHelpString(Me.JazzLogo, "JazzRadio")
-        Me.JazzLogo.Image = CType(resources.GetObject("JazzLogo.Image"), System.Drawing.Image)
-        Me.JazzLogo.Location = New System.Drawing.Point(79, 172)
-        Me.JazzLogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.JazzLogo.Name = "JazzLogo"
-        Me.Helper.SetShowHelp(Me.JazzLogo, True)
-        Me.JazzLogo.Size = New System.Drawing.Size(70, 70)
-        Me.JazzLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.JazzLogo.TabIndex = 21
-        Me.JazzLogo.TabStop = False
-        Me.ToolTip.SetToolTip(Me.JazzLogo, "JazzRadio")
-        '
-        'SkyLogo
-        '
-        Me.Helper.SetHelpString(Me.SkyLogo, "SKY.FM")
-        Me.SkyLogo.Image = CType(resources.GetObject("SkyLogo.Image"), System.Drawing.Image)
-        Me.SkyLogo.Location = New System.Drawing.Point(79, 246)
-        Me.SkyLogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.SkyLogo.Name = "SkyLogo"
-        Me.Helper.SetShowHelp(Me.SkyLogo, True)
-        Me.SkyLogo.Size = New System.Drawing.Size(70, 70)
-        Me.SkyLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.SkyLogo.TabIndex = 20
-        Me.SkyLogo.TabStop = False
-        Me.ToolTip.SetToolTip(Me.SkyLogo, "SKY.FM")
-        '
-        'DILogo
-        '
-        Me.Helper.SetHelpString(Me.DILogo, "Digitally Imported")
-        Me.DILogo.Image = CType(resources.GetObject("DILogo.Image"), System.Drawing.Image)
-        Me.DILogo.Location = New System.Drawing.Point(0, 172)
-        Me.DILogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.DILogo.Name = "DILogo"
-        Me.Helper.SetShowHelp(Me.DILogo, True)
-        Me.DILogo.Size = New System.Drawing.Size(70, 70)
-        Me.DILogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.DILogo.TabIndex = 19
-        Me.DILogo.TabStop = False
-        Me.ToolTip.SetToolTip(Me.DILogo, "Digitally Imported")
-        '
-        'DevForums
-        '
-        Me.DevForums.Image = CType(resources.GetObject("DevForums.Image"), System.Drawing.Image)
-        Me.DevForums.Location = New System.Drawing.Point(117, 356)
-        Me.DevForums.Name = "DevForums"
-        Me.DevForums.Size = New System.Drawing.Size(32, 32)
-        Me.DevForums.TabIndex = 14
-        Me.DevForums.Tag = "Application's thread on Digitally Imported Forums"
-        Me.ToolTip.SetToolTip(Me.DevForums, "Application's thread on Digitally Imported Forums")
-        Me.DevForums.UseVisualStyleBackColor = True
-        '
-        'DevMail
-        '
-        Me.DevMail.Image = CType(resources.GetObject("DevMail.Image"), System.Drawing.Image)
-        Me.DevMail.Location = New System.Drawing.Point(79, 356)
-        Me.DevMail.Name = "DevMail"
-        Me.DevMail.Size = New System.Drawing.Size(32, 32)
-        Me.DevMail.TabIndex = 13
-        Me.DevMail.Tag = "Developer's E-mail"
-        Me.ToolTip.SetToolTip(Me.DevMail, "Developer's E-mail")
-        Me.DevMail.UseVisualStyleBackColor = True
-        '
-        'Label12
-        '
-        Me.Label12.Location = New System.Drawing.Point(3, 339)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(146, 13)
-        Me.Label12.TabIndex = 11
-        Me.Label12.Text = "Contact the developer:"
-        '
-        'DevTwitter
-        '
-        Me.DevTwitter.Image = CType(resources.GetObject("DevTwitter.Image"), System.Drawing.Image)
-        Me.DevTwitter.Location = New System.Drawing.Point(41, 356)
-        Me.DevTwitter.Name = "DevTwitter"
-        Me.DevTwitter.Size = New System.Drawing.Size(32, 32)
-        Me.DevTwitter.TabIndex = 12
-        Me.DevTwitter.Tag = "Developer's Twitter"
-        Me.ToolTip.SetToolTip(Me.DevTwitter, "Developer's Twitter")
-        Me.DevTwitter.UseVisualStyleBackColor = True
-        '
-        'DevFacebook
-        '
-        Me.DevFacebook.Image = CType(resources.GetObject("DevFacebook.Image"), System.Drawing.Image)
-        Me.DevFacebook.Location = New System.Drawing.Point(3, 356)
-        Me.DevFacebook.Name = "DevFacebook"
-        Me.DevFacebook.Size = New System.Drawing.Size(32, 32)
-        Me.DevFacebook.TabIndex = 11
-        Me.DevFacebook.Tag = "Developer's Facebook"
-        Me.ToolTip.SetToolTip(Me.DevFacebook, "Developer's Facebook")
-        Me.DevFacebook.UseVisualStyleBackColor = True
-        '
-        'AboutText
-        '
-        Me.AboutText.BackColor = System.Drawing.SystemColors.ControlLightLight
-        Me.AboutText.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.AboutText.Dock = System.Windows.Forms.DockStyle.Right
-        Me.AboutText.Location = New System.Drawing.Point(152, 0)
-        Me.AboutText.Margin = New System.Windows.Forms.Padding(2)
-        Me.AboutText.Name = "AboutText"
-        Me.AboutText.ReadOnly = True
-        Me.AboutText.Size = New System.Drawing.Size(135, 391)
-        Me.AboutText.TabIndex = 1
-        Me.AboutText.Text = resources.GetString("AboutText.Text")
-        '
-        'ApplicationLogo
-        '
-        Me.Helper.SetHelpString(Me.ApplicationLogo, "")
-        Me.ApplicationLogo.Image = CType(resources.GetObject("ApplicationLogo.Image"), System.Drawing.Image)
-        Me.ApplicationLogo.Location = New System.Drawing.Point(0, 0)
-        Me.ApplicationLogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.ApplicationLogo.Name = "ApplicationLogo"
-        Me.Helper.SetShowHelp(Me.ApplicationLogo, True)
-        Me.ApplicationLogo.Size = New System.Drawing.Size(148, 148)
-        Me.ApplicationLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.ApplicationLogo.TabIndex = 0
-        Me.ApplicationLogo.TabStop = False
         '
         'OK
         '
@@ -1519,7 +1393,7 @@ Partial Class Options
         Me.OK.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.OK.Enabled = False
         Me.Helper.SetHelpString(Me.OK, "Clicking this button will accept any changes made while closing this window.")
-        Me.OK.Location = New System.Drawing.Point(71, 432)
+        Me.OK.Location = New System.Drawing.Point(71, 438)
         Me.OK.Margin = New System.Windows.Forms.Padding(2)
         Me.OK.Name = "OK"
         Me.Helper.SetShowHelp(Me.OK, True)
@@ -1533,7 +1407,7 @@ Partial Class Options
         Me.Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.Helper.SetHelpString(Me.Cancel, "Clicking this button will cancel any changes made while closing this window.")
-        Me.Cancel.Location = New System.Drawing.Point(150, 432)
+        Me.Cancel.Location = New System.Drawing.Point(150, 438)
         Me.Cancel.Margin = New System.Windows.Forms.Padding(2)
         Me.Cancel.Name = "Cancel"
         Me.Helper.SetShowHelp(Me.Cancel, True)
@@ -1555,7 +1429,7 @@ Partial Class Options
         Me.Apply.Enabled = False
         Me.Helper.SetHelpString(Me.Apply, "Clicking this button will accept any changes made while leaving this window open." & _
         "")
-        Me.Apply.Location = New System.Drawing.Point(230, 432)
+        Me.Apply.Location = New System.Drawing.Point(230, 438)
         Me.Apply.Margin = New System.Windows.Forms.Padding(2)
         Me.Apply.Name = "Apply"
         Me.Helper.SetShowHelp(Me.Apply, True)
@@ -1567,70 +1441,75 @@ Partial Class Options
         'ThemesMenu
         '
         Me.ThemesMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ThemesMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BlackNight, Me.BlueOcean, Me.BlueSky, Me.BrownWood, Me.SilverMetal, Me.YellowSunset, Me.WhiteMilk, Me.ToolStripSeparator2, Me.LoadTheme, Me.SaveTheme})
+        Me.ThemesMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BlackNight, Me.BlueOcean, Me.BlueSky, Me.BrownWood, Me.SilverMetal, Me.YellowSunset, Me.ToolStripSeparator2, Me.LoadTheme, Me.SaveTheme, Me.ToolStripSeparator3, Me.GetMoreThemesToolStripMenuItem})
         Me.ThemesMenu.Name = "ThemesMenu"
         Me.Helper.SetShowHelp(Me.ThemesMenu, False)
         Me.ThemesMenu.ShowImageMargin = False
-        Me.ThemesMenu.Size = New System.Drawing.Size(127, 208)
+        Me.ThemesMenu.Size = New System.Drawing.Size(149, 214)
         '
         'BlackNight
         '
         Me.BlackNight.Name = "BlackNight"
-        Me.BlackNight.Size = New System.Drawing.Size(126, 22)
+        Me.BlackNight.Size = New System.Drawing.Size(148, 22)
         Me.BlackNight.Text = "Black Night"
         '
         'BlueOcean
         '
         Me.BlueOcean.Name = "BlueOcean"
-        Me.BlueOcean.Size = New System.Drawing.Size(126, 22)
+        Me.BlueOcean.Size = New System.Drawing.Size(148, 22)
         Me.BlueOcean.Text = "Blue Ocean"
         '
         'BlueSky
         '
         Me.BlueSky.Name = "BlueSky"
-        Me.BlueSky.Size = New System.Drawing.Size(126, 22)
+        Me.BlueSky.Size = New System.Drawing.Size(148, 22)
         Me.BlueSky.Text = "Blue Sky"
         '
         'BrownWood
         '
         Me.BrownWood.Name = "BrownWood"
-        Me.BrownWood.Size = New System.Drawing.Size(126, 22)
+        Me.BrownWood.Size = New System.Drawing.Size(148, 22)
         Me.BrownWood.Text = "Brown Wood"
         '
         'SilverMetal
         '
         Me.SilverMetal.Name = "SilverMetal"
-        Me.SilverMetal.Size = New System.Drawing.Size(126, 22)
+        Me.SilverMetal.Size = New System.Drawing.Size(148, 22)
         Me.SilverMetal.Text = "Silver Metal"
         '
         'YellowSunset
         '
         Me.YellowSunset.Name = "YellowSunset"
-        Me.YellowSunset.Size = New System.Drawing.Size(126, 22)
+        Me.YellowSunset.Size = New System.Drawing.Size(148, 22)
         Me.YellowSunset.Text = "Yellow Sunset"
-        '
-        'WhiteMilk
-        '
-        Me.WhiteMilk.Name = "WhiteMilk"
-        Me.WhiteMilk.Size = New System.Drawing.Size(126, 22)
-        Me.WhiteMilk.Text = "White Milk"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(123, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(145, 6)
         '
         'LoadTheme
         '
         Me.LoadTheme.Name = "LoadTheme"
-        Me.LoadTheme.Size = New System.Drawing.Size(126, 22)
+        Me.LoadTheme.Size = New System.Drawing.Size(148, 22)
         Me.LoadTheme.Text = "Load theme"
         '
         'SaveTheme
         '
         Me.SaveTheme.Name = "SaveTheme"
-        Me.SaveTheme.Size = New System.Drawing.Size(126, 22)
+        Me.SaveTheme.Size = New System.Drawing.Size(148, 22)
         Me.SaveTheme.Text = "Save theme"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(145, 6)
+        '
+        'GetMoreThemesToolStripMenuItem
+        '
+        Me.GetMoreThemesToolStripMenuItem.Name = "GetMoreThemesToolStripMenuItem"
+        Me.GetMoreThemesToolStripMenuItem.Size = New System.Drawing.Size(148, 22)
+        Me.GetMoreThemesToolStripMenuItem.Text = "Get more themes!"
         '
         'ValidateWorker
         '
@@ -1740,6 +1619,91 @@ Partial Class Options
         Me.SaveThemeDialog.ShowHelp = True
         Me.SaveThemeDialog.Title = "Save colour theme file"
         '
+        'PictureBox1
+        '
+        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
+        Me.PictureBox1.Location = New System.Drawing.Point(38, 32)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(208, 234)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.TabIndex = 0
+        Me.PictureBox1.TabStop = False
+        '
+        'AboutLabel
+        '
+        Me.AboutLabel.Font = New System.Drawing.Font("Arial", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AboutLabel.Location = New System.Drawing.Point(3, 269)
+        Me.AboutLabel.Name = "AboutLabel"
+        Me.AboutLabel.Size = New System.Drawing.Size(281, 22)
+        Me.AboutLabel.TabIndex = 1
+        Me.AboutLabel.Text = "Player name and version"
+        Me.AboutLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Copyright
+        '
+        Me.Copyright.Location = New System.Drawing.Point(3, 291)
+        Me.Copyright.Name = "Copyright"
+        Me.Copyright.Size = New System.Drawing.Size(281, 13)
+        Me.Copyright.TabIndex = 2
+        Me.Copyright.Text = "Copyright (C) 2012 - 2013, ViRUS"
+        Me.Copyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'AboutLicense
+        '
+        Me.AboutLicense.AutoSize = True
+        Me.AboutLicense.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AboutLicense.Location = New System.Drawing.Point(12, 324)
+        Me.AboutLicense.Name = "AboutLicense"
+        Me.AboutLicense.Size = New System.Drawing.Size(109, 16)
+        Me.AboutLicense.TabIndex = 3
+        Me.AboutLicense.TabStop = True
+        Me.AboutLicense.Text = "License & credits"
+        Me.AboutLicense.UseMnemonic = False
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label12.Location = New System.Drawing.Point(127, 324)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(11, 16)
+        Me.Label12.TabIndex = 4
+        Me.Label12.Text = "|"
+        '
+        'AboutWebsite
+        '
+        Me.AboutWebsite.AutoSize = True
+        Me.AboutWebsite.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AboutWebsite.Location = New System.Drawing.Point(144, 324)
+        Me.AboutWebsite.Name = "AboutWebsite"
+        Me.AboutWebsite.Size = New System.Drawing.Size(56, 16)
+        Me.AboutWebsite.TabIndex = 5
+        Me.AboutWebsite.TabStop = True
+        Me.AboutWebsite.Text = "Website"
+        Me.AboutWebsite.UseMnemonic = False
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label19.Location = New System.Drawing.Point(206, 324)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(11, 16)
+        Me.Label19.TabIndex = 6
+        Me.Label19.Text = "|"
+        '
+        'AboutForums
+        '
+        Me.AboutForums.AutoSize = True
+        Me.AboutForums.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AboutForums.Location = New System.Drawing.Point(223, 324)
+        Me.AboutForums.Name = "AboutForums"
+        Me.AboutForums.Size = New System.Drawing.Size(52, 16)
+        Me.AboutForums.TabIndex = 7
+        Me.AboutForums.TabStop = True
+        Me.AboutForums.Text = "Forums"
+        Me.AboutForums.UseMnemonic = False
+        '
         'Options
         '
         Me.AcceptButton = Me.OK
@@ -1747,7 +1711,7 @@ Partial Class Options
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.AutoSize = True
         Me.CancelButton = Me.Cancel
-        Me.ClientSize = New System.Drawing.Size(314, 460)
+        Me.ClientSize = New System.Drawing.Size(314, 466)
         Me.Controls.Add(Me.Apply)
         Me.Controls.Add(Me.OK)
         Me.Controls.Add(Me.Cancel)
@@ -1758,9 +1722,9 @@ Partial Class Options
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(2)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(320, 489)
+        Me.MaximumSize = New System.Drawing.Size(320, 495)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(320, 489)
+        Me.MinimumSize = New System.Drawing.Size(320, 495)
         Me.Name = "Options"
         Me.Helper.SetShowHelp(Me, False)
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
@@ -1792,13 +1756,9 @@ Partial Class Options
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage4.ResumeLayout(False)
         Me.TabPage4.PerformLayout()
-        CType(Me.RockLogo, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.JazzLogo, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.SkyLogo, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.DILogo, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ApplicationLogo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ThemesMenu.ResumeLayout(False)
         Me.PresetsMenu.ResumeLayout(False)
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1864,19 +1824,12 @@ Partial Class Options
     Friend WithEvents UndefinedProgress As System.Windows.Forms.ProgressBar
     Friend WithEvents ViewChangelog As System.Windows.Forms.Button
     Friend WithEvents TabPage4 As System.Windows.Forms.TabPage
-    Friend WithEvents AboutText As System.Windows.Forms.RichTextBox
-    Friend WithEvents ApplicationLogo As System.Windows.Forms.PictureBox
     Friend WithEvents HighQualityVis As System.Windows.Forms.CheckBox
     Friend WithEvents PremiumFormats As System.Windows.Forms.CheckBox
     Friend WithEvents CustomShowHide As System.Windows.Forms.TextBox
     Friend WithEvents HotkeyShowHide As System.Windows.Forms.CheckBox
     Friend WithEvents ValidateKey As System.Windows.Forms.Button
     Friend WithEvents ValidateWorker As System.ComponentModel.BackgroundWorker
-    Friend WithEvents DevForums As System.Windows.Forms.Button
-    Friend WithEvents DevMail As System.Windows.Forms.Button
-    Friend WithEvents Label12 As System.Windows.Forms.Label
-    Friend WithEvents DevTwitter As System.Windows.Forms.Button
-    Friend WithEvents DevFacebook As System.Windows.Forms.Button
     Friend WithEvents ToolTip As System.Windows.Forms.ToolTip
     Friend WithEvents GroupBox7 As System.Windows.Forms.GroupBox
     Friend WithEvents NoTaskbarButton As System.Windows.Forms.CheckBox
@@ -1908,11 +1861,6 @@ Partial Class Options
     Friend WithEvents Band2 As System.Windows.Forms.TrackBar
     Friend WithEvents Band1 As System.Windows.Forms.TrackBar
     Friend WithEvents Band0 As System.Windows.Forms.TrackBar
-    Friend WithEvents Label19 As System.Windows.Forms.Label
-    Friend WithEvents RockLogo As System.Windows.Forms.PictureBox
-    Friend WithEvents JazzLogo As System.Windows.Forms.PictureBox
-    Friend WithEvents SkyLogo As System.Windows.Forms.PictureBox
-    Friend WithEvents DILogo As System.Windows.Forms.PictureBox
     Friend WithEvents DownloadUpdater As System.ComponentModel.BackgroundWorker
     Friend WithEvents Presets As System.Windows.Forms.Button
     Friend WithEvents PresetsMenu As System.Windows.Forms.ContextMenuStrip
@@ -1936,11 +1884,22 @@ Partial Class Options
     Friend WithEvents BrownWood As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents SilverMetal As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents YellowSunset As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents WhiteMilk As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RestoreColours As System.Windows.Forms.Button
     Friend WithEvents ToolStripSeparator2 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents LoadTheme As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents SaveTheme As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents OpenThemeDialog As System.Windows.Forms.OpenFileDialog
     Friend WithEvents SaveThemeDialog As System.Windows.Forms.SaveFileDialog
+    Friend WithEvents ShowSongStart As System.Windows.Forms.CheckBox
+    Friend WithEvents Use12hs As System.Windows.Forms.CheckBox
+    Friend WithEvents ToolStripSeparator3 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents GetMoreThemesToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
+    Friend WithEvents AboutLabel As System.Windows.Forms.Label
+    Friend WithEvents AboutForums As System.Windows.Forms.LinkLabel
+    Friend WithEvents Label19 As System.Windows.Forms.Label
+    Friend WithEvents AboutWebsite As System.Windows.Forms.LinkLabel
+    Friend WithEvents Label12 As System.Windows.Forms.Label
+    Friend WithEvents AboutLicense As System.Windows.Forms.LinkLabel
+    Friend WithEvents Copyright As System.Windows.Forms.Label
 End Class

@@ -44,6 +44,8 @@
 
     Private Sub Options_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
+        AboutLabel.Text = Player.Text
+
         ' Load values from the global variables of the main form and accomodate the interface
 
         If Player.PremiumFormats = False Then
@@ -62,6 +64,8 @@
         NoTaskbarButton.Checked = Player.NoTaskbarButton
         MultimediaKeys.Checked = Player.MultimediaKeys
         GoogleSearch.Checked = Player.GoogleSearch
+        ShowSongStart.Checked = Player.ShowSongStart
+        Use12hs.Checked = Player.Use12hs
         ListenKey.Text = Player.ListenKey
 
         If ListenKey.Text = Nothing = False Then
@@ -258,6 +262,18 @@
     End Sub
 
     Private Sub GoogleSearch_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GoogleSearch.CheckedChanged
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub ShowSongStart_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles ShowSongStart.CheckedChanged
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub Use12hs_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles Use12hs.CheckedChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -772,32 +788,6 @@
         Else
             Band5.Value = Band5.Value - Highest
         End If
-    End Sub
-
-    Private Sub DevFacebook_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DevFacebook.Click
-        Process.Start("www.facebook.com/rodbernard")
-    End Sub
-
-    Private Sub DevTwitter_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DevTwitter.Click
-        Process.Start("www.twitter.com/rodbernard")
-    End Sub
-
-    Private Sub DevMail_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DevMail.Click
-
-        Try
-            Process.Start("mailto:newvirus@live.com.ar?subject=Digitally Imported Windows Player")
-        Catch
-            MsgBox("newvirus@live.com.ar", MsgBoxStyle.Information, DevMail.Tag)
-        End Try
-
-    End Sub
-
-    Private Sub DevForums_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DevForums.Click
-        Process.Start("http://forums.di.fm/general-help-and-support/digitally-imported-windows-player-unofficial-269504/")
-    End Sub
-
-    Private Sub AboutText_LinkClicked(ByVal sender As Object, ByVal e As System.Windows.Forms.LinkClickedEventArgs) Handles AboutText.LinkClicked
-        Process.Start(e.LinkText)
     End Sub
 
     Private Sub OK_Click(sender As System.Object, e As System.EventArgs) Handles OK.Click
@@ -1334,7 +1324,7 @@
     ' -------------------------------------------------------------
 
     Private Sub Themes_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Themes.Click
-        ThemesMenu.Show(Me, Themes.Location.X + 17, Themes.Location.Y + 239)
+        ThemesMenu.Show(Me, Themes.Location.X + 17, Themes.Location.Y + 245)
     End Sub
 
     Private Sub RestoreColours_Click(sender As System.Object, e As System.EventArgs) Handles RestoreColours.Click
@@ -1420,19 +1410,6 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub WhiteMilk_Click(sender As System.Object, e As System.EventArgs) Handles WhiteMilk.Click
-        MainColour.BackColor = Color.FromArgb(-1)
-        SecondaryColour.BackColor = Color.FromArgb(-16777216)
-        PeakColour.BackColor = Color.FromArgb(-8355712)
-        BackgroundColour.BackColor = Color.FromArgb(-1)
-        ChangeWholeBackground.Checked = True
-
-
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-    End Sub
-
     Private Sub SaveTheme_Click(sender As System.Object, e As System.EventArgs) Handles SaveTheme.Click
         SaveThemeDialog.InitialDirectory = Player.exeFolder
         SaveThemeDialog.FileName = Nothing
@@ -1497,6 +1474,10 @@
 
     Private Sub OpenThemeDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles OpenThemeDialog.HelpRequest
         MessageBox.Show("Load a .cth file to replace your current colour theme.", "Loading a theme file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+    Private Sub GetMoreThemesToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles GetMoreThemesToolStripMenuItem.Click
+        Process.Start("http://tobiass.eu/themes/browse")
     End Sub
 
 #End Region
@@ -1704,19 +1685,19 @@
 
     ' All of these open the homepage of their respective stations
 
-    Private Sub DILogo_Click(sender As System.Object, e As System.EventArgs) Handles DILogo.Click
+    Private Sub DILogo_Click(sender As System.Object, e As System.EventArgs)
         Process.Start("http://www.di.fm")
     End Sub
 
-    Private Sub JazzLogo_Click(sender As System.Object, e As System.EventArgs) Handles JazzLogo.Click
+    Private Sub JazzLogo_Click(sender As System.Object, e As System.EventArgs)
         Process.Start("http://www.jazzradio.com")
     End Sub
 
-    Private Sub RockLogo_Click(sender As System.Object, e As System.EventArgs) Handles RockLogo.Click
+    Private Sub RockLogo_Click(sender As System.Object, e As System.EventArgs)
         Process.Start("http://www.rockradio.com")
     End Sub
 
-    Private Sub SkyLogo_Click(sender As System.Object, e As System.EventArgs) Handles SkyLogo.Click
+    Private Sub SkyLogo_Click(sender As System.Object, e As System.EventArgs)
         Process.Start("http://www.sky.fm")
     End Sub
 
@@ -1760,6 +1741,34 @@
         End If
 
         Player.GoogleSearch = GoogleSearch.Checked
+
+        Player.ShowSongStart = ShowSongStart.Checked
+
+        If Player.ShowSongStart = False Then
+            Player.Time.Width = 0
+            Player.Title.Width = 255
+        Else
+            Player.Time.Width = 40
+            Player.Title.Width = 215
+        End If
+
+        Player.Use12hs = Use12hs.Checked
+
+        If Use12hs.Checked = True Then
+            If Player.ShowSongStart = True Then
+                Player.Time.Width = 50
+                Player.Title.Width = 222
+            End If
+        End If
+
+        If Player.HistoryList.Visible = True And Player.GetHistory.IsBusy = False Then
+            Player.HistoryList.Items.Clear()
+            Player.GetHistory.RunWorkerAsync()
+        End If
+
+        If Player.EventsPanel.Visible = True And Player.GetEvents.IsBusy = False Then
+            Player.GetEvents.RunWorkerAsync()
+        End If
 
         If ListenKey.Text.Length < 14 Then
 
@@ -2260,4 +2269,15 @@
 
 #End Region
 
+    Private Sub AboutWebsite_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutWebsite.LinkClicked
+        Process.Start("http://www.tobiass.eu")
+    End Sub
+
+    Private Sub AboutForums_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutForums.LinkClicked
+        Process.Start("http://forums.di.fm")
+    End Sub
+
+    Private Sub AboutLicense_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutLicense.LinkClicked
+        Process.Start("http://www.tobiass.eu/files/license.htm")
+    End Sub
 End Class
