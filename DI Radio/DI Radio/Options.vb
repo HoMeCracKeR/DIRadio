@@ -1752,23 +1752,23 @@
             Player.Title.Width = 215
         End If
 
-        Player.Use12hs = Use12hs.Checked
-
         If Use12hs.Checked = True Then
             If Player.ShowSongStart = True Then
                 Player.Time.Width = 50
-                Player.Title.Width = 222
+                Player.Title.Width = 209
             End If
         End If
 
-        If Player.HistoryList.Visible = True And Player.GetHistory.IsBusy = False Then
+        If Player.HistoryList.Visible = True And Player.GetHistory.IsBusy = False And Player.Use12hs = Use12hs.Checked = False Then
             Player.HistoryList.Items.Clear()
             Player.GetHistory.RunWorkerAsync()
         End If
 
-        If Player.EventsPanel.Visible = True And Player.GetEvents.IsBusy = False Then
+        If Player.EventsPanel.Visible = True And Player.GetEvents.IsBusy = False And Player.Use12hs = Use12hs.Checked = False Then
             Player.GetEvents.RunWorkerAsync()
         End If
+
+        Player.Use12hs = Use12hs.Checked
 
         If ListenKey.Text.Length < 14 Then
 
@@ -1784,19 +1784,19 @@
 
             If Player.StationChooser.Text = Player.DIFM.Text And Player.SelectedChannel.Items.Count > 1 Then
 
-                If Player.SelectedChannel.Items.Item(38).ToString() = "My Favorites" = False Then
+                If Player.SelectedChannel.Items.Item(37).ToString() = "My Favorites" = False Then
                     Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
             ElseIf Player.StationChooser.Text = Player.SKYFM.Text And Player.SelectedChannel.Items.Count > 1 Then
 
-                If Player.SelectedChannel.Items.Item(33).ToString() = "My Favorites" = False Then
+                If Player.SelectedChannel.Items.Item(32).ToString() = "My Favorites" = False Then
                     Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
             ElseIf Player.StationChooser.Text = Player.JazzRadio.Text And Player.SelectedChannel.Items.Count > 1 Then
 
-                If Player.SelectedChannel.Items.Item(16).ToString() = "My Favorites" = False Then
+                If Player.SelectedChannel.Items.Item(15).ToString() = "My Favorites" = False Then
                     Player.SelectedChannel.Items.Add("My Favorites")
                 End If
 
@@ -2132,7 +2132,6 @@
         Player.BackgroundColour = BackgroundColour.BackColor.ToArgb()
         Player.ChangeWholeBackground = ChangeWholeBackground.Checked
 
-
         If ChangeWholeBackground.Checked = True Then
 
             Player.BackColor = BackgroundColour.BackColor
@@ -2140,6 +2139,31 @@
             Player.StationChooser.BackColor = BackgroundColour.BackColor
             Player.Label1.BackColor = BackgroundColour.BackColor
             Player.Label2.BackColor = BackgroundColour.BackColor
+            Player.EventDescription.BackColor = BackgroundColour.BackColor
+            Player.HistoryList.BackColor = BackgroundColour.BackColor
+            Player.TimerString.BackColor = BackgroundColour.BackColor
+
+            If BackgroundColour.BackColor.ToArgb() < -8323328 Then
+                Player.EventName.ForeColor = Color.White
+                Player.EventDescription.ForeColor = Color.White
+                Player.EventTimes.ForeColor = Color.White
+                Player.EventTagline.ForeColor = Color.White
+                Player.HistoryList.ForeColor = Color.White
+            Else
+                Player.EventName.ForeColor = Color.Black
+                Player.EventDescription.ForeColor = Color.Black
+                Player.EventTimes.ForeColor = Color.Black
+                Player.EventTagline.ForeColor = Color.Black
+                Player.HistoryList.ForeColor = Color.Black
+            End If
+
+            If BackgroundColour.BackColor.ToArgb() < -7105537 Then
+                Player.EditFavorites.LinkColor = Color.White
+                Player.RefreshFavorites.LinkColor = Color.White
+            Else
+                Player.EditFavorites.LinkColor = Color.Blue
+                Player.RefreshFavorites.LinkColor = Color.Blue
+            End If
 
             If Player.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Player.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Player.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
                 Player.RadioString.BackColor = BackgroundColour.BackColor
@@ -2152,13 +2176,6 @@
                     Player.TimerString.ForeColor = Color.Black
                 End If
 
-                If BackgroundColour.BackColor.ToArgb() < -7105537 Then
-                    Player.EditFavorites.LinkColor = Color.White
-                    Player.RefreshFavorites.LinkColor = Color.White
-                Else
-                    Player.EditFavorites.LinkColor = Color.Blue
-                    Player.RefreshFavorites.LinkColor = Color.Blue
-                End If
             End If
 
         Else
@@ -2167,11 +2184,22 @@
             Player.ToolStrip1.BackColor = SystemColors.Control
             Player.StationChooser.BackColor = SystemColors.Control
             Player.Label1.BackColor = SystemColors.Control
+            Player.Label2.BackColor = SystemColors.Control
+            Player.EventDescription.BackColor = SystemColors.Control
+            Player.EventName.ForeColor = SystemColors.ControlText
+            Player.EventDescription.ForeColor = SystemColors.ControlText
+            Player.EventTimes.ForeColor = SystemColors.ControlText
+            Player.EventTagline.ForeColor = SystemColors.ControlText
+            Player.HistoryList.BackColor = SystemColors.Window
+            Player.HistoryList.ForeColor = SystemColors.ControlText
+            Player.EditFavorites.LinkColor = Color.Blue
+            Player.RefreshFavorites.LinkColor = Color.Blue
+            Player.TimerString.BackColor = SystemColors.Control
 
             If Player.RadioString.Text.ToLower.StartsWith("internet connection") = False And Player.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Player.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Player.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
                 Player.RadioString.BackColor = SystemColors.Control
-                Player.RadioString.ForeColor = SystemColors.WindowText
-                Player.TimerString.ForeColor = SystemColors.WindowText
+                Player.RadioString.ForeColor = SystemColors.ControlText
+                Player.TimerString.ForeColor = SystemColors.ControlText
             End If
 
         End If
@@ -2266,9 +2294,6 @@
         End If
     End Sub
 
-
-#End Region
-
     Private Sub AboutWebsite_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutWebsite.LinkClicked
         Process.Start("http://www.tobiass.eu")
     End Sub
@@ -2280,4 +2305,7 @@
     Private Sub AboutLicense_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutLicense.LinkClicked
         Process.Start("http://www.tobiass.eu/files/license.htm")
     End Sub
+
+#End Region
+
 End Class

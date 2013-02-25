@@ -423,7 +423,7 @@ Partial Class Player
         Me.ControlsPanel.Controls.Add(Me.Mute)
         Me.ControlsPanel.Controls.Add(Me.OptionsButton)
         Me.ControlsPanel.Controls.Add(Me.PlayStop)
-        Me.ControlsPanel.Location = New System.Drawing.Point(13, 364)
+        Me.ControlsPanel.Location = New System.Drawing.Point(13, 360)
         Me.ControlsPanel.Name = "ControlsPanel"
         Me.ControlsPanel.Size = New System.Drawing.Size(330, 81)
         Me.ControlsPanel.TabIndex = 2
@@ -488,6 +488,7 @@ Partial Class Player
         Me.ToolStrip1.AutoSize = False
         Me.ToolStrip1.BackColor = System.Drawing.SystemColors.Control
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
+        Me.ToolStrip1.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolStrip1.GripMargin = New System.Windows.Forms.Padding(0)
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StationChooser})
@@ -546,6 +547,8 @@ Partial Class Player
         '
         'EditFavorites
         '
+        Me.EditFavorites.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
+        Me.EditFavorites.Cursor = System.Windows.Forms.Cursors.Hand
         Me.EditFavorites.Location = New System.Drawing.Point(188, 46)
         Me.EditFavorites.Name = "EditFavorites"
         Me.EditFavorites.Size = New System.Drawing.Size(43, 11)
@@ -556,6 +559,7 @@ Partial Class Player
         '
         'RefreshFavorites
         '
+        Me.RefreshFavorites.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
         Me.RefreshFavorites.Location = New System.Drawing.Point(268, 46)
         Me.RefreshFavorites.Name = "RefreshFavorites"
         Me.RefreshFavorites.Size = New System.Drawing.Size(62, 11)
@@ -576,10 +580,11 @@ Partial Class Player
         '
         'HistoryList
         '
+        Me.HistoryList.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
+        Me.HistoryList.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.HistoryList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Title, Me.Length})
         Me.HistoryList.ContextMenuStrip = Me.CopyHistoryMenu
         Me.HistoryList.FullRowSelect = True
-        Me.HistoryList.GridLines = True
         Me.HistoryList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.HistoryList.HideSelection = False
         Me.HistoryList.LabelWrap = False
@@ -587,7 +592,7 @@ Partial Class Player
         Me.HistoryList.MultiSelect = False
         Me.HistoryList.Name = "HistoryList"
         Me.HistoryList.ShowItemToolTips = True
-        Me.HistoryList.Size = New System.Drawing.Size(331, 346)
+        Me.HistoryList.Size = New System.Drawing.Size(331, 342)
         Me.HistoryList.TabIndex = 14
         Me.HistoryList.UseCompatibleStateImageBehavior = False
         Me.HistoryList.View = System.Windows.Forms.View.Details
@@ -644,13 +649,14 @@ Partial Class Player
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.VisualisationBox.Location = New System.Drawing.Point(12, 12)
         Me.VisualisationBox.Name = "VisualisationBox"
-        Me.VisualisationBox.Size = New System.Drawing.Size(331, 346)
+        Me.VisualisationBox.Size = New System.Drawing.Size(331, 342)
         Me.VisualisationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.VisualisationBox.TabIndex = 3
         Me.VisualisationBox.TabStop = False
         '
         'EventsPanel
         '
+        Me.EventsPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
         Me.EventsPanel.Controls.Add(Me.EventDescription)
         Me.EventsPanel.Controls.Add(Me.EventTimes)
         Me.EventsPanel.Controls.Add(Me.EventTagline)
@@ -658,7 +664,7 @@ Partial Class Player
         Me.EventsPanel.Controls.Add(Me.SelectedEvent)
         Me.EventsPanel.Location = New System.Drawing.Point(12, 12)
         Me.EventsPanel.Name = "EventsPanel"
-        Me.EventsPanel.Size = New System.Drawing.Size(331, 346)
+        Me.EventsPanel.Size = New System.Drawing.Size(331, 342)
         Me.EventsPanel.TabIndex = 15
         Me.EventsPanel.Visible = False
         '
@@ -666,44 +672,50 @@ Partial Class Player
         '
         Me.EventDescription.AutoWordSelection = True
         Me.EventDescription.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.EventDescription.Location = New System.Drawing.Point(5, 77)
+        Me.EventDescription.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.EventDescription.Location = New System.Drawing.Point(0, 72)
         Me.EventDescription.Name = "EventDescription"
         Me.EventDescription.ReadOnly = True
-        Me.EventDescription.Size = New System.Drawing.Size(322, 268)
+        Me.EventDescription.Size = New System.Drawing.Size(331, 270)
         Me.EventDescription.TabIndex = 4
         Me.EventDescription.Text = ""
         '
         'EventTimes
         '
+        Me.EventTimes.Dock = System.Windows.Forms.DockStyle.Top
         Me.EventTimes.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventTimes.Location = New System.Drawing.Point(3, 60)
+        Me.EventTimes.Location = New System.Drawing.Point(0, 57)
         Me.EventTimes.Name = "EventTimes"
-        Me.EventTimes.Size = New System.Drawing.Size(325, 15)
+        Me.EventTimes.Size = New System.Drawing.Size(331, 15)
         Me.EventTimes.TabIndex = 3
         Me.EventTimes.UseMnemonic = False
         '
         'EventTagline
         '
         Me.EventTagline.AutoEllipsis = True
+        Me.EventTagline.Dock = System.Windows.Forms.DockStyle.Top
         Me.EventTagline.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventTagline.Location = New System.Drawing.Point(3, 44)
+        Me.EventTagline.Location = New System.Drawing.Point(0, 41)
         Me.EventTagline.Name = "EventTagline"
-        Me.EventTagline.Size = New System.Drawing.Size(325, 16)
+        Me.EventTagline.Size = New System.Drawing.Size(331, 16)
         Me.EventTagline.TabIndex = 2
         Me.EventTagline.UseMnemonic = False
         '
         'EventName
         '
         Me.EventName.AutoEllipsis = True
+        Me.EventName.Dock = System.Windows.Forms.DockStyle.Top
         Me.EventName.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventName.Location = New System.Drawing.Point(3, 25)
+        Me.EventName.Location = New System.Drawing.Point(0, 22)
         Me.EventName.Name = "EventName"
-        Me.EventName.Size = New System.Drawing.Size(325, 19)
+        Me.EventName.Size = New System.Drawing.Size(331, 19)
         Me.EventName.TabIndex = 1
         Me.EventName.UseMnemonic = False
         '
         'SelectedEvent
         '
+        Me.SelectedEvent.BackColor = System.Drawing.SystemColors.Window
+        Me.SelectedEvent.Dock = System.Windows.Forms.DockStyle.Top
         Me.SelectedEvent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.SelectedEvent.FormattingEnabled = True
         Me.SelectedEvent.Location = New System.Drawing.Point(0, 0)
@@ -720,9 +732,9 @@ Partial Class Player
         'Player
         '
         Me.AllowDrop = True
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(356, 453)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(356, 449)
         Me.Controls.Add(Me.EventsPanel)
         Me.Controls.Add(Me.HistoryList)
         Me.Controls.Add(Me.VisualisationBox)
@@ -731,7 +743,7 @@ Partial Class Player
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(362, 482)
+        Me.MaximumSize = New System.Drawing.Size(362, 478)
         Me.MinimumSize = New System.Drawing.Size(362, 125)
         Me.Name = "Player"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

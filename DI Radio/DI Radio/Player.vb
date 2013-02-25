@@ -123,7 +123,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 39    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 40    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -236,14 +236,26 @@ Public Class Player
                 StationChooser.BackColor = Color.FromArgb(BackgroundColour)
                 Label1.BackColor = Color.FromArgb(BackgroundColour)
                 Label2.BackColor = Color.FromArgb(BackgroundColour)
-                RadioString.BackColor = Color.FromArgb(BackgroundColour)
+                EventDescription.BackColor = Color.FromArgb(BackgroundColour)
+                HistoryList.BackColor = Color.FromArgb(BackgroundColour)
+                TimerString.BackColor = Color.FromArgb(BackgroundColour)
 
                 If BackgroundColour < -8323328 Then
                     RadioString.ForeColor = Color.White
                     TimerString.ForeColor = Color.White
+                    EventName.ForeColor = Color.White
+                    EventDescription.ForeColor = Color.White
+                    EventTimes.ForeColor = Color.White
+                    EventTagline.ForeColor = Color.White
+                    HistoryList.ForeColor = Color.White
                 Else
                     RadioString.ForeColor = Color.Black
                     TimerString.ForeColor = Color.Black
+                    EventName.ForeColor = Color.Black
+                    EventDescription.ForeColor = Color.Black
+                    EventTimes.ForeColor = Color.Black
+                    EventTagline.ForeColor = Color.Black
+                    HistoryList.ForeColor = Color.Black
                 End If
 
                 If BackgroundColour < -7105537 Then
@@ -252,6 +264,42 @@ Public Class Player
                 Else
                     EditFavorites.LinkColor = Color.Blue
                     RefreshFavorites.LinkColor = Color.Blue
+                End If
+
+                If RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
+                    RadioString.BackColor = Color.FromArgb(BackgroundColour)
+
+                    If BackgroundColour < -8323328 Then
+                        RadioString.ForeColor = Color.White
+                        TimerString.ForeColor = Color.White
+                    Else
+                        RadioString.ForeColor = Color.Black
+                        TimerString.ForeColor = Color.Black
+                    End If
+
+                End If
+            Else
+
+                BackColor = SystemColors.Control
+                ToolStrip1.BackColor = SystemColors.Control
+                StationChooser.BackColor = SystemColors.Control
+                Label1.BackColor = SystemColors.Control
+                Label2.BackColor = SystemColors.Control
+                EventDescription.BackColor = SystemColors.Control
+                EventName.ForeColor = SystemColors.ControlText
+                EventDescription.ForeColor = SystemColors.ControlText
+                EventTimes.ForeColor = SystemColors.ControlText
+                EventTagline.ForeColor = SystemColors.ControlText
+                HistoryList.BackColor = SystemColors.Window
+                HistoryList.ForeColor = SystemColors.ControlText
+                EditFavorites.LinkColor = Color.Blue
+                RefreshFavorites.LinkColor = Color.Blue
+                TimerString.BackColor = SystemColors.Control
+
+                If RadioString.Text.ToLower.StartsWith("internet connection") = False And RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
+                    RadioString.BackColor = SystemColors.Control
+                    RadioString.ForeColor = SystemColors.ControlText
+                    TimerString.ForeColor = SystemColors.ControlText
                 End If
 
             End If
@@ -606,16 +654,19 @@ Public Class Player
 
             If ChangeWholeBackground = True Then
                 RadioString.BackColor = Color.FromArgb(BackgroundColour)
+
+                If BackgroundColour < -8323328 Then
+                    RadioString.ForeColor = Color.White
+                    TimerString.ForeColor = Color.White
+                Else
+                    RadioString.ForeColor = Color.Black
+                    TimerString.ForeColor = Color.Black
+                End If
             Else
                 RadioString.BackColor = SystemColors.Control
-            End If
 
-            If BackgroundColour < -8323328 Then
-                RadioString.ForeColor = Color.White
-                TimerString.ForeColor = Color.White
-            Else
-                RadioString.ForeColor = Color.Black
-                TimerString.ForeColor = Color.Black
+                RadioString.ForeColor = SystemColors.ControlText
+                TimerString.ForeColor = SystemColors.ControlText
             End If
 
             PlayStop.Enabled = False
@@ -699,12 +750,12 @@ Public Class Player
 
 
             If Visualisation = True Then
-                If Me.Location.Y - 7 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
+                If Me.Location.Y - 9 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
                     Y = Screen.PrimaryScreen.WorkingArea.Size.Height - OptionsButton.Size.Height
-                ElseIf Me.Location.Y - 7 < 0 Then
+                ElseIf Me.Location.Y - 9 < 0 Then
                     Y = 0
                 Else
-                    Y = Me.Location.Y - 7
+                    Y = Me.Location.Y - 9
                 End If
             Else
                 If Me.Location.Y - 190 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
@@ -738,6 +789,7 @@ Public Class Player
 
             Events.ImageAlign = ContentAlignment.BottomCenter
             Events.Image = My.Resources.back
+            SelectedEvent.Enabled = False
 
             If GetEvents.IsBusy = False Then
                 GetEvents.RunWorkerAsync()
@@ -1154,6 +1206,7 @@ Public Class Player
 
             History.ImageAlign = ContentAlignment.BottomCenter
             History.Image = My.Resources.back
+            HistoryList.Enabled = False
             HistoryList.Show()
             HistoryList.Items.Clear()
 
@@ -1181,12 +1234,16 @@ Public Class Player
 
     Private Sub SelectedEvent_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles SelectedEvent.SelectedIndexChanged
 
-        If SelectedEvent.Text.ToLower.StartsWith("please wait,") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False Then
+        If SelectedEvent.Text.ToLower.StartsWith("please wait,") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False And SelectedEvent.Text.ToLower.StartsWith("there are no") = False Then
             EventName.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).Text
             EventTagline.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(1).Text
             EventTimes.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text & " - " & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text
             EventDescription.Text = "Please wait, downloading event details..."
-            GetEventDetails.RunWorkerAsync()
+
+            If GetEventDetails.IsBusy = False Then
+                GetEventDetails.RunWorkerAsync()
+            End If
+
         End If
 
     End Sub
@@ -1247,7 +1304,10 @@ Public Class Player
                 word = "servers"
             End If
 
-            MessageBox.Show("Couldn't download " & word & " list.", "Error getting " & word & " list", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+
+            Me.Invoke(Message, "Couldn't download " & word & " list.", MsgBoxStyle.Exclamation, "Error getting " & word & " list")
+
             Exit Sub
         End Try
 
@@ -1454,7 +1514,7 @@ Public Class Player
                 r3.Dispose()
 
                 SelectedServer.Items.Add(name)
-                ServersArray.Items.Add(streams(RandomNumber(streams.Count - 1, 1)))
+                ServersArray.Items.Add(streams(0))
             Loop
         Else
             Do While (reader.Peek > -1)
@@ -1588,17 +1648,21 @@ again:
 
                 If ChangeWholeBackground = True Then
                     RadioString.BackColor = Color.FromArgb(BackgroundColour)
+
+                    If BackgroundColour < -8323328 And ChangeWholeBackground = True Then
+                        RadioString.ForeColor = Color.White
+                        TimerString.ForeColor = Color.White
+                    Else
+                        RadioString.ForeColor = Color.Black
+                        TimerString.ForeColor = Color.Black
+                    End If
                 Else
                     RadioString.BackColor = SystemColors.Control
+                    RadioString.ForeColor = SystemColors.ControlText
+                    TimerString.ForeColor = SystemColors.ControlText
                 End If
 
-                If BackgroundColour < -8323328 Then
-                    RadioString.ForeColor = Color.White
-                    TimerString.ForeColor = Color.White
-                Else
-                    RadioString.ForeColor = Color.Black
-                    TimerString.ForeColor = Color.Black
-                End If
+                
 
                 _mySync = New SYNCPROC(AddressOf MetaSync)
                 Bass.BASS_ChannelSetSync(stream, BASSSync.BASS_SYNC_META, 0, _mySync, IntPtr.Zero)
@@ -1744,7 +1808,22 @@ again:
     End Sub
 
     Private Sub GetHistory_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetHistory.DoWork
+        Dim channel As String
+
+        HistoryList.ForeColor = SystemColors.ControlText
+
+startover:
+
+        If SelectedChannel.Text = "My Favorites" Then
+            channel = SelectedServer.Text
+        Else
+            channel = SelectedChannel.Text
+        End If
+
         HistoryList.Enabled = False
+        HistoryList.Items.Clear()
+        HistoryList.Items.Add("")
+        HistoryList.Items.Item(0).SubItems.Add("Please wait, downloading history...")
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim HistoryLog As String
         Dim file As String = exeFolder & "\servers\historytemp"
@@ -1763,6 +1842,10 @@ again:
             writer.Write(HistoryLog)
             writer.Close()
             writer.Dispose()
+
+            If channel = SelectedChannel.Text = False And channel = SelectedServer.Text = False Then
+                GoTo startover
+            End If
 
             Dim reader As New IO.StreamReader(file)
 
@@ -1783,6 +1866,7 @@ again:
                 If Use12hs = True Then
                     If time.ToLocalTime.Hour >= 12 Then
                         ampm = "pm"
+
                         If time.ToLocalTime.Hour = 12 Then
                             hour = time.ToLocalTime.Hour
                         Else
@@ -1791,6 +1875,10 @@ again:
                     Else
                         ampm = "am"
                         hour = time.ToLocalTime.Hour
+
+                        If hour = "0" Then
+                            hour = "12"
+                        End If
                     End If
                 Else
                     hour = time.ToLocalTime.Hour
@@ -1798,7 +1886,7 @@ again:
 
                 HistoryList.Items.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
 
-           
+
 
                 HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(splitter(0))
 
@@ -1817,14 +1905,30 @@ again:
 
             Kill(exeFolder & "\servers\historytemp")
             HistoryList.Enabled = True
+
+            If ChangeWholeBackground = True And BackgroundColour < -8323328 Then
+                HistoryList.ForeColor = Color.White
+            End If
         Catch
             HistoryList.Items.Clear()
-            HistoryList.Items.Add("Couldn't download history information.")
-            HistoryList.Items.Add("Please go back and try again.")
+            HistoryList.Items.Add("")
+            HistoryList.Items.Item(0).SubItems.Add("Couldn't download history information.")
+            HistoryList.Items.Add("")
+            HistoryList.Items.Item(1).SubItems.Add("Please go back and try again.")
         End Try
     End Sub
 
     Private Sub GetEvents_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
+        Dim channel As String
+
+startover:
+
+        If SelectedChannel.Text = "My Favorites" Then
+            channel = SelectedServer.Text
+        Else
+            channel = SelectedChannel.Text
+        End If
+
         SelectedEvent.Enabled = False
         SelectedEvent.Items.Clear()
 
@@ -1840,9 +1944,9 @@ again:
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim EventsLog As String
         Dim file As String = exeFolder & "\servers\eventstemp"
+        Dim writer As New IO.StreamWriter(file)
 
         Try
-            Dim writer As New IO.StreamWriter(file)
 
             If SelectedChannel.Text = "My Favorites" Then
                 EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(SelectedServer.Text).Tag)
@@ -1850,98 +1954,108 @@ again:
                 EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
             End If
 
-
-            writer.Write(EventsLog)
-            writer.Close()
-            writer.Dispose()
-            SelectedEvent.Items.RemoveAt(0)
-
-            Dim reader As New IO.StreamReader(file)
-
-            Do While (reader.Peek > -1)
-
-                Dim line As String = reader.ReadLine
-                Dim splitter() As String = Split(line, "|&|")
-
-                Dim firstDay As DateTime = #1/1/1970#
-                Dim time As DateTime = firstDay.AddSeconds(splitter(1))
-                Dim numeral As String
-
-                If time.Day.ToString.EndsWith("1") Then
-                    numeral = "st"
-                ElseIf time.Day.ToString.EndsWith("2") Then
-                    numeral = "nd"
-                ElseIf time.Day.ToString.EndsWith("3") Then
-                    numeral = "rd"
-                Else
-                    numeral = "th"
-                End If
-
-                Dim ampm As String
-                Dim hour As String
-
-                If Use12hs = True Then
-                    If time.ToLocalTime.Hour >= 12 Then
-                        ampm = "pm"
-                        If time.ToLocalTime.Hour = 12 Then
-                            hour = time.ToLocalTime.Hour
-                        Else
-                            hour = time.ToLocalTime.Hour - 12
-                        End If
-                    Else
-                        ampm = "am"
-                        hour = time.ToLocalTime.Hour
-                    End If
-                Else
-                    hour = time.ToLocalTime.Hour
-                End If
-
-
-                SelectedEvent.Items.Add(time.DayOfWeek.ToString.Remove(3) & ". " & time.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & ": " & splitter(3))
-
-                EventsArray.Items.Add(splitter(3))
-                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(4))
-                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
-
-                time = firstDay.AddSeconds(splitter(2))
-
-                If Use12hs = True Then
-                    If time.ToLocalTime.Hour >= 12 Then
-                        ampm = "pm"
-                        If time.ToLocalTime.Hour = 12 Then
-                            hour = time.ToLocalTime.Hour
-                        Else
-                            hour = time.ToLocalTime.Hour - 12
-                        End If
-                    Else
-                        ampm = "am"
-                        hour = time.ToLocalTime.Hour
-                    End If
-                Else
-                    hour = time.ToLocalTime.Hour
-                End If
-
-                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
-                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(0))
-
-                SelectedEvent.SelectedIndex = 0
-
-            Loop
-
-            reader.Close()
-            reader.Dispose()
-
-            If SelectedEvent.Items.Count > 0 Then
-                SelectedEvent.Enabled = True
-            Else
-                SelectedEvent.Items.Add("There are no future events for this channel.")
-                SelectedEvent.SelectedIndex = 0
-            End If
-
         Catch
-            SelectedEvent.Items.Add("Couldn't download events information. Please go back and try again.")
+            SelectedEvent.Items.Clear()
+            SelectedEvent.Items.Add("Couldn't download events. Please go back and try again.")
             SelectedEvent.SelectedIndex = 0
         End Try
+
+
+        writer.Write(EventsLog)
+        writer.Close()
+        writer.Dispose()
+        SelectedEvent.Items.RemoveAt(0)
+
+        If channel = SelectedChannel.Text = False And channel = SelectedServer.Text = False Then
+            GoTo startover
+        End If
+
+        Dim reader As New IO.StreamReader(file)
+
+        Do While (reader.Peek > -1)
+
+            Dim line As String = reader.ReadLine
+            Dim splitter() As String = Split(line, "|&|")
+
+            Dim firstDay As DateTime = #1/1/1970#
+            Dim time As DateTime = firstDay.AddSeconds(splitter(1))
+            Dim numeral As String
+
+            If time.Day.ToString.EndsWith("1") Then
+                numeral = "st"
+            ElseIf time.Day.ToString.EndsWith("2") Then
+                numeral = "nd"
+            ElseIf time.Day.ToString.EndsWith("3") Then
+                numeral = "rd"
+            Else
+                numeral = "th"
+            End If
+
+            Dim ampm As String
+            Dim hour As String
+
+            If Use12hs = True Then
+                If time.ToLocalTime.Hour >= 12 Then
+                    ampm = "pm"
+                    If time.ToLocalTime.Hour = 12 Then
+                        hour = time.ToLocalTime.Hour
+                    Else
+                        hour = time.ToLocalTime.Hour - 12
+                    End If
+                Else
+                    ampm = "am"
+                    hour = time.ToLocalTime.Hour
+
+                    If hour = "0" Then
+                        hour = "12"
+                    End If
+                End If
+            Else
+                hour = time.ToLocalTime.Hour
+            End If
+
+
+            SelectedEvent.Items.Add(time.DayOfWeek.ToString.Remove(3) & ". " & time.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & ": " & splitter(3))
+
+            EventsArray.Items.Add(splitter(3))
+            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(4))
+            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
+
+            time = firstDay.AddSeconds(splitter(2))
+
+            If Use12hs = True Then
+                If time.ToLocalTime.Hour >= 12 Then
+                    ampm = "pm"
+                    If time.ToLocalTime.Hour = 12 Then
+                        hour = time.ToLocalTime.Hour
+                    Else
+                        hour = time.ToLocalTime.Hour - 12
+                    End If
+                Else
+                    ampm = "am"
+                    hour = time.ToLocalTime.Hour
+                End If
+            Else
+                hour = time.ToLocalTime.Hour
+            End If
+
+            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
+            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(0))
+
+            SelectedEvent.SelectedIndex = 0
+
+        Loop
+
+        reader.Close()
+        reader.Dispose()
+
+        If SelectedEvent.Items.Count > 0 Then
+            SelectedEvent.Enabled = True
+        Else
+            SelectedEvent.Items.Add("There are no future events for this channel.")
+            SelectedEvent.SelectedIndex = 0
+        End If
+
     End Sub
 
     Private Sub GetEventDetails_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEventDetails.DoWork
@@ -1949,9 +2063,14 @@ again:
         Dim EventsLog As String
 
         Try
+
             EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/event/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text)
             Dim splitter() As String = Split(EventsLog, "|&|")
-            EventDescription.Text = splitter(5).Replace("**", Nothing).Replace("_", Nothing)
+
+            If SelectedEvent.Text.ToLower.StartsWith("there are no") = False And SelectedEvent.Text.ToLower.StartsWith("please wait") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False Then
+                EventDescription.Text = splitter(5).Replace("**", Nothing).Replace("_", Nothing)
+            End If
+
         Catch
 
         End Try
@@ -1978,9 +2097,12 @@ again:
 
             readerChdb.Close()
             readerChdb.Dispose()
+            DownloadingMessage.Hide()
 
         Catch ex As Exception
-            MessageBox.Show("Couldn't download channels list", "Error downloading channels list", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+            Me.Invoke(Message, "Couldn't download channels list", MsgBoxStyle.Exclamation, "Error getting channels list")
+
             Marquee.Hide()
         End Try
 
@@ -2343,7 +2465,12 @@ again:
 
     Private Sub CopyServerURLToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles CopyServerURLToolStripMenuItem.Click
         Clipboard.Clear()
-        Clipboard.SetDataObject(ServersArray.Items.Item(SelectedServer.SelectedIndex).Text.Replace(ListenKey, "*listen key removed*"))
+
+        If ListenKey = Nothing = False Then
+            Clipboard.SetDataObject(ServersArray.Items.Item(SelectedServer.SelectedIndex).Text.Replace(ListenKey, "*listen key removed*"))
+        Else
+            Clipboard.SetDataObject(ServersArray.Items.Item(SelectedServer.SelectedIndex).Text)
+        End If
     End Sub
 
     Private Sub GoogleSearchToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GoogleSearchToolStripMenuItem.Click
@@ -2550,7 +2677,7 @@ again:
 
                     If ShowSongStart = True Then
                         Time.Width = 50
-                        Title.Width = 222
+                        Title.Width = 209
                     End If
                 ElseIf splitter(0) = Options.PremiumFormats.Name Then
                     PremiumFormats = splitter(1)
@@ -2648,13 +2775,27 @@ again:
                         StationChooser.BackColor = Color.FromArgb(BackgroundColour)
                         Label1.BackColor = Color.FromArgb(BackgroundColour)
                         Label2.BackColor = Color.FromArgb(BackgroundColour)
+                        EventDescription.BackColor = Color.FromArgb(BackgroundColour)
+                        HistoryList.BackColor = Color.FromArgb(BackgroundColour)
+                        RadioString.BackColor = Color.FromArgb(BackgroundColour)
+                        TimerString.BackColor = Color.FromArgb(BackgroundColour)
 
                         If BackgroundColour < -8323328 Then
                             RadioString.ForeColor = Color.White
                             TimerString.ForeColor = Color.White
+                            EventName.ForeColor = Color.White
+                            EventDescription.ForeColor = Color.White
+                            EventTimes.ForeColor = Color.White
+                            EventTagline.ForeColor = Color.White
+                            HistoryList.ForeColor = Color.White
                         Else
                             RadioString.ForeColor = Color.Black
                             TimerString.ForeColor = Color.Black
+                            EventName.ForeColor = Color.Black
+                            EventDescription.ForeColor = Color.Black
+                            EventTimes.ForeColor = Color.Black
+                            EventTagline.ForeColor = Color.Black
+                            HistoryList.ForeColor = Color.Black
                         End If
 
                         If BackgroundColour < -7105537 Then
@@ -2886,24 +3027,6 @@ again:
     End Sub
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
-
-    Public Function RandomNumber(ByVal MaxNumber As Integer, Optional ByVal MinNumber As Integer = 0) As Integer
-
-        'initialize random number generator
-        Dim r As New Random(System.DateTime.Now.Millisecond)
-
-        'if passed incorrect arguments, swap them
-        'can also throw exception or return 0
-
-        If MinNumber > MaxNumber Then
-            Dim t As Integer = MinNumber
-            MinNumber = MaxNumber
-            MaxNumber = t
-        End If
-
-        Return r.Next(MinNumber, MaxNumber)
-
-    End Function
 
     Public Function downloadStreams(ByVal key As String, ByVal quality As String, ByVal serversFolder As String, Optional ByVal premiumadd As String = "")
         Dim pls

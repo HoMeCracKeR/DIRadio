@@ -119,6 +119,14 @@ Partial Class Options
         Me.Band1 = New System.Windows.Forms.TrackBar()
         Me.Band0 = New System.Windows.Forms.TrackBar()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.AboutForums = New System.Windows.Forms.LinkLabel()
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.AboutWebsite = New System.Windows.Forms.LinkLabel()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.AboutLicense = New System.Windows.Forms.LinkLabel()
+        Me.Copyright = New System.Windows.Forms.Label()
+        Me.AboutLabel = New System.Windows.Forms.Label()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.OK = New System.Windows.Forms.Button()
         Me.Cancel = New System.Windows.Forms.Button()
         Me.ColourPicker = New System.Windows.Forms.ColorDialog()
@@ -156,14 +164,6 @@ Partial Class Options
         Me.OpenPresetDialog = New System.Windows.Forms.OpenFileDialog()
         Me.OpenThemeDialog = New System.Windows.Forms.OpenFileDialog()
         Me.SaveThemeDialog = New System.Windows.Forms.SaveFileDialog()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-        Me.AboutLabel = New System.Windows.Forms.Label()
-        Me.Copyright = New System.Windows.Forms.Label()
-        Me.AboutLicense = New System.Windows.Forms.LinkLabel()
-        Me.Label12 = New System.Windows.Forms.Label()
-        Me.AboutWebsite = New System.Windows.Forms.LinkLabel()
-        Me.Label19 = New System.Windows.Forms.Label()
-        Me.AboutForums = New System.Windows.Forms.LinkLabel()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
@@ -187,9 +187,9 @@ Partial Class Options
         CType(Me.Band1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage4.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ThemesMenu.SuspendLayout()
         Me.PresetsMenu.SuspendLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -221,7 +221,7 @@ Partial Class Options
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(2)
         Me.TabPage1.Size = New System.Drawing.Size(287, 397)
         Me.TabPage1.TabIndex = 0
-        Me.TabPage1.Text = "General"
+        Me.TabPage1.Text = "Main"
         Me.TabPage1.UseVisualStyleBackColor = True
         '
         'Use12hs
@@ -295,6 +295,8 @@ Partial Class Options
         '
         'ListenLink
         '
+        Me.ListenLink.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
+        Me.ListenLink.Cursor = System.Windows.Forms.Cursors.Default
         Me.Helper.SetHelpString(Me.ListenLink, resources.GetString("ListenLink.HelpString"))
         Me.ListenLink.Location = New System.Drawing.Point(136, 60)
         Me.ListenLink.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
@@ -1387,6 +1389,94 @@ Partial Class Options
         Me.TabPage4.Text = "About"
         Me.TabPage4.UseVisualStyleBackColor = True
         '
+        'AboutForums
+        '
+        Me.AboutForums.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
+        Me.AboutForums.AutoSize = True
+        Me.AboutForums.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AboutForums.Location = New System.Drawing.Point(223, 324)
+        Me.AboutForums.Name = "AboutForums"
+        Me.AboutForums.Size = New System.Drawing.Size(52, 16)
+        Me.AboutForums.TabIndex = 7
+        Me.AboutForums.TabStop = True
+        Me.AboutForums.Text = "Forums"
+        Me.AboutForums.UseMnemonic = False
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label19.Location = New System.Drawing.Point(206, 324)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(11, 16)
+        Me.Label19.TabIndex = 6
+        Me.Label19.Text = "|"
+        '
+        'AboutWebsite
+        '
+        Me.AboutWebsite.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
+        Me.AboutWebsite.AutoSize = True
+        Me.AboutWebsite.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AboutWebsite.Location = New System.Drawing.Point(144, 324)
+        Me.AboutWebsite.Name = "AboutWebsite"
+        Me.AboutWebsite.Size = New System.Drawing.Size(56, 16)
+        Me.AboutWebsite.TabIndex = 5
+        Me.AboutWebsite.TabStop = True
+        Me.AboutWebsite.Text = "Website"
+        Me.AboutWebsite.UseMnemonic = False
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label12.Location = New System.Drawing.Point(127, 324)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(11, 16)
+        Me.Label12.TabIndex = 4
+        Me.Label12.Text = "|"
+        '
+        'AboutLicense
+        '
+        Me.AboutLicense.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
+        Me.AboutLicense.AutoSize = True
+        Me.AboutLicense.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AboutLicense.Location = New System.Drawing.Point(12, 324)
+        Me.AboutLicense.Name = "AboutLicense"
+        Me.AboutLicense.Size = New System.Drawing.Size(109, 16)
+        Me.AboutLicense.TabIndex = 3
+        Me.AboutLicense.TabStop = True
+        Me.AboutLicense.Text = "License & credits"
+        Me.AboutLicense.UseMnemonic = False
+        '
+        'Copyright
+        '
+        Me.Copyright.Location = New System.Drawing.Point(3, 291)
+        Me.Copyright.Name = "Copyright"
+        Me.Copyright.Size = New System.Drawing.Size(281, 13)
+        Me.Copyright.TabIndex = 2
+        Me.Copyright.Text = "Copyright (C) 2012 - 2013, ViRUS"
+        Me.Copyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'AboutLabel
+        '
+        Me.AboutLabel.Font = New System.Drawing.Font("Arial", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AboutLabel.Location = New System.Drawing.Point(3, 269)
+        Me.AboutLabel.Name = "AboutLabel"
+        Me.AboutLabel.Size = New System.Drawing.Size(281, 22)
+        Me.AboutLabel.TabIndex = 1
+        Me.AboutLabel.Text = "Player name and version"
+        Me.AboutLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
+        Me.PictureBox1.Location = New System.Drawing.Point(38, 32)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(208, 234)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.TabIndex = 0
+        Me.PictureBox1.TabStop = False
+        '
         'OK
         '
         Me.OK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -1619,91 +1709,6 @@ Partial Class Options
         Me.SaveThemeDialog.ShowHelp = True
         Me.SaveThemeDialog.Title = "Save colour theme file"
         '
-        'PictureBox1
-        '
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(38, 32)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(208, 234)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox1.TabIndex = 0
-        Me.PictureBox1.TabStop = False
-        '
-        'AboutLabel
-        '
-        Me.AboutLabel.Font = New System.Drawing.Font("Arial", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.AboutLabel.Location = New System.Drawing.Point(3, 269)
-        Me.AboutLabel.Name = "AboutLabel"
-        Me.AboutLabel.Size = New System.Drawing.Size(281, 22)
-        Me.AboutLabel.TabIndex = 1
-        Me.AboutLabel.Text = "Player name and version"
-        Me.AboutLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'Copyright
-        '
-        Me.Copyright.Location = New System.Drawing.Point(3, 291)
-        Me.Copyright.Name = "Copyright"
-        Me.Copyright.Size = New System.Drawing.Size(281, 13)
-        Me.Copyright.TabIndex = 2
-        Me.Copyright.Text = "Copyright (C) 2012 - 2013, ViRUS"
-        Me.Copyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'AboutLicense
-        '
-        Me.AboutLicense.AutoSize = True
-        Me.AboutLicense.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.AboutLicense.Location = New System.Drawing.Point(12, 324)
-        Me.AboutLicense.Name = "AboutLicense"
-        Me.AboutLicense.Size = New System.Drawing.Size(109, 16)
-        Me.AboutLicense.TabIndex = 3
-        Me.AboutLicense.TabStop = True
-        Me.AboutLicense.Text = "License & credits"
-        Me.AboutLicense.UseMnemonic = False
-        '
-        'Label12
-        '
-        Me.Label12.AutoSize = True
-        Me.Label12.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.Location = New System.Drawing.Point(127, 324)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(11, 16)
-        Me.Label12.TabIndex = 4
-        Me.Label12.Text = "|"
-        '
-        'AboutWebsite
-        '
-        Me.AboutWebsite.AutoSize = True
-        Me.AboutWebsite.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.AboutWebsite.Location = New System.Drawing.Point(144, 324)
-        Me.AboutWebsite.Name = "AboutWebsite"
-        Me.AboutWebsite.Size = New System.Drawing.Size(56, 16)
-        Me.AboutWebsite.TabIndex = 5
-        Me.AboutWebsite.TabStop = True
-        Me.AboutWebsite.Text = "Website"
-        Me.AboutWebsite.UseMnemonic = False
-        '
-        'Label19
-        '
-        Me.Label19.AutoSize = True
-        Me.Label19.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label19.Location = New System.Drawing.Point(206, 324)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(11, 16)
-        Me.Label19.TabIndex = 6
-        Me.Label19.Text = "|"
-        '
-        'AboutForums
-        '
-        Me.AboutForums.AutoSize = True
-        Me.AboutForums.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.AboutForums.Location = New System.Drawing.Point(223, 324)
-        Me.AboutForums.Name = "AboutForums"
-        Me.AboutForums.Size = New System.Drawing.Size(52, 16)
-        Me.AboutForums.TabIndex = 7
-        Me.AboutForums.TabStop = True
-        Me.AboutForums.Text = "Forums"
-        Me.AboutForums.UseMnemonic = False
-        '
         'Options
         '
         Me.AcceptButton = Me.OK
@@ -1756,9 +1761,9 @@ Partial Class Options
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage4.ResumeLayout(False)
         Me.TabPage4.PerformLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ThemesMenu.ResumeLayout(False)
         Me.PresetsMenu.ResumeLayout(False)
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
