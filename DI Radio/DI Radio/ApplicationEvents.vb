@@ -51,7 +51,7 @@
             If e.Exception.Message.ToLower.Contains("un4seen.bass.bass") Then
                 MsgBox("There was an error with the BASS library. Please make sure that the following DLL files are located in the same folder as the main executable:" & vbNewLine & vbNewLine & "Bass.Net.dll" & vbNewLine & "bass.dll" & vbNewLine & "bassaac.dll" & vbNewLine & "basswma.dll", MsgBoxStyle.Critical)
             ElseIf e.Exception.Message.ToLower.Contains("bass.net") Then
-                MsgBox("There was an error loading the BASS.NET library. Please make sure that the Bass.Net.dll file is located in the same folder as the main executable, and that it is version number 2.4.9.1." & vbNewLine & vbNewLine & "You can do this by right-clicking the DLL file, clicking Properties, and finally the Details tab.", MsgBoxStyle.Critical)
+                MsgBox("There was an error loading the BASS.NET library. Please make sure that the Bass.Net.dll file is located in the same folder as the main executable, and that it is version number 2.4.10.1." & vbNewLine & vbNewLine & "You can do this by right-clicking the DLL file, clicking Properties, and finally the Details tab.", MsgBoxStyle.Critical)
             Else
                 MsgBox("An unhandled exception has occured in the application." & vbNewLine & "Please contact the developer with the following information, including what you were doing when this exception happened." & vbNewLine & vbNewLine & e.Exception.InnerException.Message, MsgBoxStyle.Critical)
             End If

@@ -89,6 +89,7 @@ Partial Class Player
         Me.GetHistory = New System.ComponentModel.BackgroundWorker()
         Me.VisualisationBox = New System.Windows.Forms.PictureBox()
         Me.EventsPanel = New System.Windows.Forms.Panel()
+        Me.Export = New System.Windows.Forms.Button()
         Me.EventDescription = New System.Windows.Forms.RichTextBox()
         Me.EventTimes = New System.Windows.Forms.Label()
         Me.EventTagline = New System.Windows.Forms.Label()
@@ -96,6 +97,7 @@ Partial Class Player
         Me.SelectedEvent = New System.Windows.Forms.ComboBox()
         Me.GetEvents = New System.ComponentModel.BackgroundWorker()
         Me.GetEventDetails = New System.ComponentModel.BackgroundWorker()
+        Me.ExportICS = New System.Windows.Forms.SaveFileDialog()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -657,6 +659,7 @@ Partial Class Player
         'EventsPanel
         '
         Me.EventsPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
+        Me.EventsPanel.Controls.Add(Me.Export)
         Me.EventsPanel.Controls.Add(Me.EventDescription)
         Me.EventsPanel.Controls.Add(Me.EventTimes)
         Me.EventsPanel.Controls.Add(Me.EventTagline)
@@ -668,11 +671,20 @@ Partial Class Player
         Me.EventsPanel.TabIndex = 15
         Me.EventsPanel.Visible = False
         '
+        'Export
+        '
+        Me.Export.Enabled = False
+        Me.Export.Location = New System.Drawing.Point(281, 0)
+        Me.Export.Name = "Export"
+        Me.Export.Size = New System.Drawing.Size(50, 22)
+        Me.Export.TabIndex = 16
+        Me.Export.Text = "Export"
+        Me.Export.UseVisualStyleBackColor = True
+        '
         'EventDescription
         '
         Me.EventDescription.AutoWordSelection = True
         Me.EventDescription.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.EventDescription.Dock = System.Windows.Forms.DockStyle.Fill
         Me.EventDescription.Location = New System.Drawing.Point(0, 72)
         Me.EventDescription.Name = "EventDescription"
         Me.EventDescription.ReadOnly = True
@@ -682,7 +694,6 @@ Partial Class Player
         '
         'EventTimes
         '
-        Me.EventTimes.Dock = System.Windows.Forms.DockStyle.Top
         Me.EventTimes.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.EventTimes.Location = New System.Drawing.Point(0, 57)
         Me.EventTimes.Name = "EventTimes"
@@ -693,7 +704,6 @@ Partial Class Player
         'EventTagline
         '
         Me.EventTagline.AutoEllipsis = True
-        Me.EventTagline.Dock = System.Windows.Forms.DockStyle.Top
         Me.EventTagline.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.EventTagline.Location = New System.Drawing.Point(0, 41)
         Me.EventTagline.Name = "EventTagline"
@@ -704,7 +714,6 @@ Partial Class Player
         'EventName
         '
         Me.EventName.AutoEllipsis = True
-        Me.EventName.Dock = System.Windows.Forms.DockStyle.Top
         Me.EventName.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.EventName.Location = New System.Drawing.Point(0, 22)
         Me.EventName.Name = "EventName"
@@ -715,12 +724,12 @@ Partial Class Player
         'SelectedEvent
         '
         Me.SelectedEvent.BackColor = System.Drawing.SystemColors.Window
-        Me.SelectedEvent.Dock = System.Windows.Forms.DockStyle.Top
         Me.SelectedEvent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.SelectedEvent.DropDownWidth = 330
         Me.SelectedEvent.FormattingEnabled = True
         Me.SelectedEvent.Location = New System.Drawing.Point(0, 0)
         Me.SelectedEvent.Name = "SelectedEvent"
-        Me.SelectedEvent.Size = New System.Drawing.Size(331, 22)
+        Me.SelectedEvent.Size = New System.Drawing.Size(275, 22)
         Me.SelectedEvent.TabIndex = 0
         '
         'GetEvents
@@ -728,6 +737,12 @@ Partial Class Player
         '
         'GetEventDetails
         '
+        '
+        'ExportICS
+        '
+        Me.ExportICS.Filter = "iCalendar|*.ics"
+        Me.ExportICS.ShowHelp = True
+        Me.ExportICS.Title = "Export event to .ics file"
         '
         'Player
         '
@@ -833,5 +848,7 @@ Partial Class Player
     Friend WithEvents SelectedEvent As System.Windows.Forms.ComboBox
     Friend WithEvents GetEvents As System.ComponentModel.BackgroundWorker
     Friend WithEvents GetEventDetails As System.ComponentModel.BackgroundWorker
+    Friend WithEvents Export As System.Windows.Forms.Button
+    Friend WithEvents ExportICS As System.Windows.Forms.SaveFileDialog
 
 End Class

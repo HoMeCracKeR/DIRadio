@@ -123,7 +123,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 40    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 41    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -483,7 +483,6 @@ Public Class Player
                 writer.WriteLine(Options.NoTaskbarButton.Name & "=" & NoTaskbarButton)
                 writer.WriteLine(Options.GoogleSearch.Name & "=" & GoogleSearch)
                 writer.WriteLine(Options.ShowSongStart.Name & "=" & ShowSongStart)
-                writer.WriteLine(Options.Use12hs.Name & "=" & Use12hs)
                 writer.WriteLine(Options.PremiumFormats.Name & "=" & PremiumFormats)
                 writer.WriteLine("DIFormat=" & DIFormat)
                 writer.WriteLine("SKYFormat=" & SKYFormat)
@@ -740,28 +739,27 @@ Public Class Player
 
         If Me.Visible = True Then
 
-            If Me.Location.X + 21 > Screen.PrimaryScreen.WorkingArea.Size.Width Then
-                X = Screen.PrimaryScreen.WorkingArea.Size.Width - OptionsButton.Size.Width
-            ElseIf Me.Location.X + 21 < 0 Then
-                X = 0
+            If Me.Location.X + 21 > SystemInformation.VirtualScreen.Width Then
+                X = Me.Location.X - Options.Size.Width
+            ElseIf Me.Location.X + 21 < Screen.GetBounds(Me).X Then
+                X = Screen.GetBounds(Me).X
             Else
                 X = Me.Location.X + 21
             End If
 
-
             If Visualisation = True Then
-                If Me.Location.Y - 9 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
-                    Y = Screen.PrimaryScreen.WorkingArea.Size.Height - OptionsButton.Size.Height
-                ElseIf Me.Location.Y - 9 < 0 Then
-                    Y = 0
+                If (Me.Location.Y - 9) + Options.Size.Height > SystemInformation.VirtualScreen.Height Then
+                    Y = SystemInformation.VirtualScreen.Height - Options.Size.Height
+                ElseIf Me.Location.Y - 9 < Screen.GetBounds(Me).Y Then
+                    Y = Screen.GetBounds(Me).Y
                 Else
                     Y = Me.Location.Y - 9
                 End If
             Else
-                If Me.Location.Y - 190 > Screen.PrimaryScreen.WorkingArea.Size.Height Then
-                    Y = Screen.PrimaryScreen.WorkingArea.Size.Height - OptionsButton.Size.Height
-                ElseIf Me.Location.Y - 190 < 0 Then
-                    Y = 0
+                If (Me.Location.Y - 9) + Options.Size.Height > SystemInformation.VirtualScreen.Height Then
+                    Y = SystemInformation.VirtualScreen.Height - Options.Size.Height
+                ElseIf Me.Location.Y - 190 < Screen.GetBounds(Me).Y Then
+                    Y = Screen.GetBounds(Me).Y
                 Else
                     Y = Me.Location.Y - 190
                 End If
@@ -1237,7 +1235,59 @@ Public Class Player
         If SelectedEvent.Text.ToLower.StartsWith("please wait,") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False And SelectedEvent.Text.ToLower.StartsWith("there are no") = False Then
             EventName.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).Text
             EventTagline.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(1).Text
-            EventTimes.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text & " - " & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text
+
+            Dim firstDay As DateTime = #1/1/1970#
+            Dim time As DateTime = firstDay.AddSeconds(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text)
+
+            Dim ampm As String
+            Dim hour As String
+
+            If Use12hs = True Then
+                If time.ToLocalTime.Hour >= 12 Then
+                    ampm = "pm"
+                    If time.ToLocalTime.Hour = 12 Then
+                        hour = time.ToLocalTime.Hour
+                    Else
+                        hour = time.ToLocalTime.Hour - 12
+                    End If
+                Else
+                    ampm = "am"
+                    hour = time.ToLocalTime.Hour
+
+                    If hour = "0" Then
+                        hour = "12"
+                    End If
+                End If
+            Else
+                hour = time.ToLocalTime.Hour
+            End If
+
+            EventTimes.Text = String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & " - "
+
+            time = firstDay.AddSeconds(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text)
+
+            If Use12hs = True Then
+                If time.ToLocalTime.Hour >= 12 Then
+                    ampm = "pm"
+                    If time.ToLocalTime.Hour = 12 Then
+                        hour = time.ToLocalTime.Hour
+                    Else
+                        hour = time.ToLocalTime.Hour - 12
+                    End If
+                Else
+                    ampm = "am"
+                    hour = time.ToLocalTime.Hour
+
+                    If hour = "0" Then
+                        hour = "12"
+                    End If
+                End If
+            Else
+                hour = time.ToLocalTime.Hour
+            End If
+
+            EventTimes.Text += String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute)
+
             EventDescription.Text = "Please wait, downloading event details..."
 
             If GetEventDetails.IsBusy = False Then
@@ -1250,6 +1300,46 @@ Public Class Player
 
     Private Sub EventDescription_LinkClicked(sender As Object, e As System.Windows.Forms.LinkClickedEventArgs) Handles EventDescription.LinkClicked
         Process.Start(e.LinkText)
+    End Sub
+
+    Private Sub Export_Click(sender As System.Object, e As System.EventArgs) Handles Export.Click
+        If Export.Text = "Export" Then
+            If ExportICS.ShowDialog = Windows.Forms.DialogResult.OK Then
+                Dim firstDay As DateTime = #1/1/1970#
+
+                Dim time As DateTime = firstDay.AddSeconds(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text)
+
+                Dim starttime As String = String.Format("{0:00}{1:00}{2:00}T{3:00}{4:00}{5:00}Z", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second)
+
+                time = firstDay.AddSeconds(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text)
+
+                Dim endtime As String = String.Format("{0:00}{1:00}{2:00}T{3:00}{4:00}{5:00}Z", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second)
+
+                Dim writer As New IO.StreamWriter(ExportICS.FileName)
+
+                writer.WriteLine("BEGIN:VCALENDAR")
+                writer.WriteLine("VERSION:2.0")
+                writer.WriteLine("PRODID:-//" & Me.Text)
+                writer.WriteLine("BEGIN:VEVENT")
+                writer.WriteLine("UID:" & starttime & "@Digitally Imported")
+                writer.WriteLine("DTSTAMP:" & starttime)
+                writer.WriteLine("ORGANIZER;CN=Digitally Imported Radio")
+                writer.WriteLine("DTSTART:" & starttime)
+                writer.WriteLine("DTEND:" & endtime)
+                writer.WriteLine("SUMMARY:" & EventName.Text & " - " & EventTagline.Text)
+                writer.WriteLine("DESCRIPTION:" & EventDescription.Text.Replace(";", "\;").Replace(",", "\,").Replace("\", "\\").Replace(Chr(10), "\n"))
+                writer.WriteLine("END:VEVENT")
+                writer.Write("END:VCALENDAR")
+
+                writer.Close()
+                writer.Dispose()
+
+            End If
+        Else
+            Export.Text = "Export"
+            GetEvents.RunWorkerAsync()
+        End If
+
     End Sub
 
 #End Region
@@ -1920,7 +2010,7 @@ startover:
 
     Private Sub GetEvents_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
         Dim channel As String
-
+        Export.Enabled = False
 startover:
 
         If SelectedChannel.Text = "My Favorites" Then
@@ -1956,8 +2046,14 @@ startover:
 
         Catch
             SelectedEvent.Items.Clear()
-            SelectedEvent.Items.Add("Couldn't download events. Please go back and try again.")
+            SelectedEvent.Items.Add("Couldn't download events. Please retry.")
             SelectedEvent.SelectedIndex = 0
+            Export.Text = "Retry"
+            writer.Close()
+            writer.Dispose()
+            Kill(file)
+            Export.Enabled = True
+            Exit Sub
         End Try
 
 
@@ -1981,11 +2077,11 @@ startover:
             Dim time As DateTime = firstDay.AddSeconds(splitter(1))
             Dim numeral As String
 
-            If time.Day.ToString.EndsWith("1") Then
+            If time.ToLocalTime.Day.ToString.EndsWith("1") Then
                 numeral = "st"
-            ElseIf time.Day.ToString.EndsWith("2") Then
+            ElseIf time.ToLocalTime.Day.ToString.EndsWith("2") Then
                 numeral = "nd"
-            ElseIf time.Day.ToString.EndsWith("3") Then
+            ElseIf time.ToLocalTime.Day.ToString.EndsWith("3") Then
                 numeral = "rd"
             Else
                 numeral = "th"
@@ -2015,31 +2111,12 @@ startover:
             End If
 
 
-            SelectedEvent.Items.Add(time.DayOfWeek.ToString.Remove(3) & ". " & time.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & ": " & splitter(3))
+            SelectedEvent.Items.Add(time.ToLocalTime.DayOfWeek.ToString.Remove(3) & ". " & time.ToLocalTime.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & ": " & splitter(3))
 
             EventsArray.Items.Add(splitter(3))
             EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(4))
-            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
-
-            time = firstDay.AddSeconds(splitter(2))
-
-            If Use12hs = True Then
-                If time.ToLocalTime.Hour >= 12 Then
-                    ampm = "pm"
-                    If time.ToLocalTime.Hour = 12 Then
-                        hour = time.ToLocalTime.Hour
-                    Else
-                        hour = time.ToLocalTime.Hour - 12
-                    End If
-                Else
-                    ampm = "am"
-                    hour = time.ToLocalTime.Hour
-                End If
-            Else
-                hour = time.ToLocalTime.Hour
-            End If
-
-            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
+            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(1))
+            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(2))
             EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(0))
 
             SelectedEvent.SelectedIndex = 0
@@ -2048,6 +2125,8 @@ startover:
 
         reader.Close()
         reader.Dispose()
+
+        Kill(file)
 
         If SelectedEvent.Items.Count > 0 Then
             SelectedEvent.Enabled = True
@@ -2061,6 +2140,11 @@ startover:
     Private Sub GetEventDetails_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEventDetails.DoWork
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim EventsLog As String
+        Export.Enabled = False
+        Dim channel As String
+startover:
+
+        channel = SelectedEvent.Text
 
         Try
 
@@ -2068,7 +2152,14 @@ startover:
             Dim splitter() As String = Split(EventsLog, "|&|")
 
             If SelectedEvent.Text.ToLower.StartsWith("there are no") = False And SelectedEvent.Text.ToLower.StartsWith("please wait") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False Then
-                EventDescription.Text = splitter(5).Replace("**", Nothing).Replace("_", Nothing)
+
+                If channel = SelectedEvent.Text = False Then
+                    GoTo startover
+                Else
+                    EventDescription.Text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(splitter(5).Replace("**", Nothing).Replace("_", Nothing)))
+                    Export.Enabled = True
+                End If
+
             End If
 
         Catch
@@ -2517,6 +2608,10 @@ startover:
         Me.Text = Me.Text.Replace("DI", "RockRadio")
     End Sub
 
+    Private Sub ExportICS_HelpRequest(sender As System.Object, e As System.EventArgs) Handles ExportICS.HelpRequest
+        MessageBox.Show("Exporting this event to an iCalendar file means that you will be able to load it using almost any calendar application (such as Outlook or Thunderbird with Lightning) or website (such as Google Calendar or Live Calendar) to automatically create en event in the date and time the radio show starts until it finishes.", "Event exporting", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
 #End Region
 
 #Region "Other functions"
@@ -2596,7 +2691,6 @@ startover:
             writer.WriteLine(Options.NoTaskbarButton.Name & "=False")
             writer.WriteLine(Options.GoogleSearch.Name & "=True")
             writer.WriteLine(Options.ShowSongStart.Name & "=False")
-            writer.WriteLine(Options.Use12hs.Name & "=False")
             writer.WriteLine(Options.ListenKey.Name & "=")
             writer.WriteLine(Options.PremiumFormats.Name & "=False")
             writer.WriteLine("DIFormat=1")
@@ -2671,13 +2765,6 @@ startover:
                     If ShowSongStart = False Then
                         Time.Width = 0
                         Title.Width = 255
-                    End If
-                ElseIf splitter(0) = Options.Use12hs.Name Then
-                    Use12hs = splitter(1)
-
-                    If ShowSongStart = True Then
-                        Time.Width = 50
-                        Title.Width = 209
                     End If
                 ElseIf splitter(0) = Options.PremiumFormats.Name Then
                     PremiumFormats = splitter(1)
@@ -2977,6 +3064,17 @@ startover:
                     drawing.ScaleFactorSqrBoost = 0
                 End If
 
+            End If
+
+            If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
+                Use12hs = False
+            Else
+                Use12hs = True
+
+                If ShowSongStart = True Then
+                    Time.Width = 50
+                    Title.Width = 209
+                End If
             End If
 
         Catch ex As Exception

@@ -65,7 +65,6 @@
         MultimediaKeys.Checked = Player.MultimediaKeys
         GoogleSearch.Checked = Player.GoogleSearch
         ShowSongStart.Checked = Player.ShowSongStart
-        Use12hs.Checked = Player.Use12hs
         ListenKey.Text = Player.ListenKey
 
         If ListenKey.Text = Nothing = False Then
@@ -268,12 +267,6 @@
     End Sub
 
     Private Sub ShowSongStart_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles ShowSongStart.CheckedChanged
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-    End Sub
-
-    Private Sub Use12hs_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles Use12hs.CheckedChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -1469,7 +1462,7 @@
     End Sub
 
     Private Sub SaveThemeDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles SaveThemeDialog.HelpRequest
-        MessageBox.Show("Saving your current theme will allow you to share it with other people by sending the .cth file.", "Saving theme file", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Saving your current theme will allow you to share it with other people by sending the .cth file or by uploading it to the online gallery.", "Saving theme file", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
     Private Sub OpenThemeDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles OpenThemeDialog.HelpRequest
@@ -1747,28 +1740,13 @@
         If Player.ShowSongStart = False Then
             Player.Time.Width = 0
             Player.Title.Width = 255
-        Else
+        ElseIf Player.ShowSongStart = True And Player.Use12hs = False Then
             Player.Time.Width = 40
             Player.Title.Width = 215
+        Else
+            Player.Time.Width = 50
+            Player.Title.Width = 209
         End If
-
-        If Use12hs.Checked = True Then
-            If Player.ShowSongStart = True Then
-                Player.Time.Width = 50
-                Player.Title.Width = 209
-            End If
-        End If
-
-        If Player.HistoryList.Visible = True And Player.GetHistory.IsBusy = False And Player.Use12hs = Use12hs.Checked = False Then
-            Player.HistoryList.Items.Clear()
-            Player.GetHistory.RunWorkerAsync()
-        End If
-
-        If Player.EventsPanel.Visible = True And Player.GetEvents.IsBusy = False And Player.Use12hs = Use12hs.Checked = False Then
-            Player.GetEvents.RunWorkerAsync()
-        End If
-
-        Player.Use12hs = Use12hs.Checked
 
         If ListenKey.Text.Length < 14 Then
 

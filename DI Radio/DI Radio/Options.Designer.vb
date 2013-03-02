@@ -26,7 +26,6 @@ Partial Class Options
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Options))
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.Use12hs = New System.Windows.Forms.CheckBox()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.StationSelector = New System.Windows.Forms.ComboBox()
         Me.ValidateKey = New System.Windows.Forms.Button()
@@ -211,7 +210,7 @@ Partial Class Options
         '
         'TabPage1
         '
-        Me.TabPage1.Controls.Add(Me.Use12hs)
+        Me.TabPage1.BackColor = System.Drawing.SystemColors.Window
         Me.TabPage1.Controls.Add(Me.GroupBox5)
         Me.TabPage1.Controls.Add(Me.GroupBox1)
         Me.TabPage1.Controls.Add(Me.GroupBox2)
@@ -222,19 +221,6 @@ Partial Class Options
         Me.TabPage1.Size = New System.Drawing.Size(287, 397)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Main"
-        Me.TabPage1.UseVisualStyleBackColor = True
-        '
-        'Use12hs
-        '
-        Me.Helper.SetHelpString(Me.Use12hs, "Selecting this box will make the application use the am/pm time format in the eve" & _
-        "nts panel and the history list.")
-        Me.Use12hs.Location = New System.Drawing.Point(7, 125)
-        Me.Use12hs.Name = "Use12hs"
-        Me.Helper.SetShowHelp(Me.Use12hs, True)
-        Me.Use12hs.Size = New System.Drawing.Size(273, 17)
-        Me.Use12hs.TabIndex = 9
-        Me.Use12hs.Text = "Use 12hs time format"
-        Me.Use12hs.UseVisualStyleBackColor = True
         '
         'GroupBox5
         '
@@ -372,7 +358,7 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.ShowSongStart, "Selecting this box will make the application show the start time of a song on the" & _
         " left of the History list.")
-        Me.ShowSongStart.Location = New System.Drawing.Point(5, 105)
+        Me.ShowSongStart.Location = New System.Drawing.Point(5, 122)
         Me.ShowSongStart.Name = "ShowSongStart"
         Me.Helper.SetShowHelp(Me.ShowSongStart, True)
         Me.ShowSongStart.Size = New System.Drawing.Size(273, 17)
@@ -386,7 +372,7 @@ Partial Class Options
         Me.GoogleSearch.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Helper.SetHelpString(Me.GoogleSearch, "Selecting this check box will make the application perform a Google search when y" & _
         "ou click the current song's title.")
-        Me.GoogleSearch.Location = New System.Drawing.Point(5, 87)
+        Me.GoogleSearch.Location = New System.Drawing.Point(5, 101)
         Me.GoogleSearch.Name = "GoogleSearch"
         Me.Helper.SetShowHelp(Me.GoogleSearch, True)
         Me.GoogleSearch.Size = New System.Drawing.Size(273, 17)
@@ -399,7 +385,7 @@ Partial Class Options
         Me.Helper.SetHelpString(Me.NoTaskbarButton, "Selecting this check box will prevent the application from showing its taskbar bu" & _
         "tton and will always show the notification area icon, allowing you to use it as " & _
         "a taskbar button.")
-        Me.NoTaskbarButton.Location = New System.Drawing.Point(5, 69)
+        Me.NoTaskbarButton.Location = New System.Drawing.Point(5, 80)
         Me.NoTaskbarButton.Name = "NoTaskbarButton"
         Me.Helper.SetShowHelp(Me.NoTaskbarButton, True)
         Me.NoTaskbarButton.Size = New System.Drawing.Size(273, 17)
@@ -411,7 +397,7 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.PlayNewOnChannelChange, "Selecting this check box will make the application restart playback when you chan" & _
         "ge channels.")
-        Me.PlayNewOnChannelChange.Location = New System.Drawing.Point(5, 33)
+        Me.PlayNewOnChannelChange.Location = New System.Drawing.Point(5, 37)
         Me.PlayNewOnChannelChange.Margin = New System.Windows.Forms.Padding(2)
         Me.PlayNewOnChannelChange.Name = "PlayNewOnChannelChange"
         Me.Helper.SetShowHelp(Me.PlayNewOnChannelChange, True)
@@ -426,7 +412,7 @@ Partial Class Options
         Me.NotificationIcon.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Helper.SetHelpString(Me.NotificationIcon, "Selecting this check box will make the application hide its taskbar button and cr" & _
         "eate an icon on the notification area when you minimise it.")
-        Me.NotificationIcon.Location = New System.Drawing.Point(5, 51)
+        Me.NotificationIcon.Location = New System.Drawing.Point(5, 58)
         Me.NotificationIcon.Margin = New System.Windows.Forms.Padding(2)
         Me.NotificationIcon.Name = "NotificationIcon"
         Me.Helper.SetShowHelp(Me.NotificationIcon, True)
@@ -575,6 +561,7 @@ Partial Class Options
         '
         'TabPage2
         '
+        Me.TabPage2.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.TabPage2.Controls.Add(Me.GroupBox4)
         Me.TabPage2.Controls.Add(Me.GroupBox3)
         Me.TabPage2.Location = New System.Drawing.Point(4, 23)
@@ -584,7 +571,6 @@ Partial Class Options
         Me.TabPage2.Size = New System.Drawing.Size(287, 397)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Visualisation"
-        Me.TabPage2.UseVisualStyleBackColor = True
         '
         'GroupBox4
         '
@@ -935,6 +921,7 @@ Partial Class Options
         '
         'TabPage3
         '
+        Me.TabPage3.BackColor = System.Drawing.SystemColors.Window
         Me.TabPage3.Controls.Add(Me.MultimediaKeys)
         Me.TabPage3.Controls.Add(Me.GroupBox7)
         Me.TabPage3.Location = New System.Drawing.Point(4, 23)
@@ -943,7 +930,6 @@ Partial Class Options
         Me.TabPage3.Size = New System.Drawing.Size(287, 397)
         Me.TabPage3.TabIndex = 2
         Me.TabPage3.Text = "Hotkeys"
-        Me.TabPage3.UseVisualStyleBackColor = True
         '
         'MultimediaKeys
         '
@@ -1104,6 +1090,7 @@ Partial Class Options
         '
         'TabPage5
         '
+        Me.TabPage5.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.TabPage5.Controls.Add(Me.Presets)
         Me.TabPage5.Controls.Add(Me.AutoEq)
         Me.TabPage5.Controls.Add(Me.RestoreEq)
@@ -1131,7 +1118,6 @@ Partial Class Options
         Me.TabPage5.Size = New System.Drawing.Size(287, 397)
         Me.TabPage5.TabIndex = 4
         Me.TabPage5.Text = "Equalizer"
-        Me.TabPage5.UseVisualStyleBackColor = True
         '
         'Presets
         '
@@ -1373,6 +1359,7 @@ Partial Class Options
         '
         'TabPage4
         '
+        Me.TabPage4.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.TabPage4.Controls.Add(Me.AboutForums)
         Me.TabPage4.Controls.Add(Me.Label19)
         Me.TabPage4.Controls.Add(Me.AboutWebsite)
@@ -1387,7 +1374,6 @@ Partial Class Options
         Me.TabPage4.Size = New System.Drawing.Size(287, 397)
         Me.TabPage4.TabIndex = 3
         Me.TabPage4.Text = "About"
-        Me.TabPage4.UseVisualStyleBackColor = True
         '
         'AboutForums
         '
@@ -1896,7 +1882,6 @@ Partial Class Options
     Friend WithEvents OpenThemeDialog As System.Windows.Forms.OpenFileDialog
     Friend WithEvents SaveThemeDialog As System.Windows.Forms.SaveFileDialog
     Friend WithEvents ShowSongStart As System.Windows.Forms.CheckBox
-    Friend WithEvents Use12hs As System.Windows.Forms.CheckBox
     Friend WithEvents ToolStripSeparator3 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents GetMoreThemesToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
