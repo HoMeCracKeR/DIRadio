@@ -123,7 +123,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 41    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 42    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -1302,41 +1302,13 @@ Public Class Player
         Process.Start(e.LinkText)
     End Sub
 
-    Private Sub Export_Click(sender As System.Object, e As System.EventArgs) Handles Export.Click
-        If Export.Text = "Export" Then
-            If ExportICS.ShowDialog = Windows.Forms.DialogResult.OK Then
-                Dim firstDay As DateTime = #1/1/1970#
-
-                Dim time As DateTime = firstDay.AddSeconds(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text)
-
-                Dim starttime As String = String.Format("{0:00}{1:00}{2:00}T{3:00}{4:00}{5:00}Z", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second)
-
-                time = firstDay.AddSeconds(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text)
-
-                Dim endtime As String = String.Format("{0:00}{1:00}{2:00}T{3:00}{4:00}{5:00}Z", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second)
-
-                Dim writer As New IO.StreamWriter(ExportICS.FileName)
-
-                writer.WriteLine("BEGIN:VCALENDAR")
-                writer.WriteLine("VERSION:2.0")
-                writer.WriteLine("PRODID:-//" & Me.Text)
-                writer.WriteLine("BEGIN:VEVENT")
-                writer.WriteLine("UID:" & starttime & "@Digitally Imported")
-                writer.WriteLine("DTSTAMP:" & starttime)
-                writer.WriteLine("ORGANIZER;CN=Digitally Imported Radio")
-                writer.WriteLine("DTSTART:" & starttime)
-                writer.WriteLine("DTEND:" & endtime)
-                writer.WriteLine("SUMMARY:" & EventName.Text & " - " & EventTagline.Text)
-                writer.WriteLine("DESCRIPTION:" & EventDescription.Text.Replace(";", "\;").Replace(",", "\,").Replace("\", "\\").Replace(Chr(10), "\n"))
-                writer.WriteLine("END:VEVENT")
-                writer.Write("END:VCALENDAR")
-
-                writer.Close()
-                writer.Dispose()
-
-            End If
+    Private Sub Export_Click(sender As System.Object, e As System.EventArgs) Handles ExportButton.Click
+        If ExportButton.Text = "Export" Then
+            Export.Location = New Point(Me.Location.X, Me.Location.Y)
+            Export.Show()
+            Export.BringToFront()
         Else
-            Export.Text = "Export"
+            ExportButton.Text = "Export"
             GetEvents.RunWorkerAsync()
         End If
 
@@ -1402,7 +1374,7 @@ Public Class Player
         End Try
 
 
-  
+
 
         Dim file = serversFolder & "\" & channel & ".db"
 
@@ -1752,7 +1724,7 @@ again:
                     TimerString.ForeColor = SystemColors.ControlText
                 End If
 
-                
+
 
                 _mySync = New SYNCPROC(AddressOf MetaSync)
                 Bass.BASS_ChannelSetSync(stream, BASSSync.BASS_SYNC_META, 0, _mySync, IntPtr.Zero)
@@ -1999,6 +1971,7 @@ startover:
             If ChangeWholeBackground = True And BackgroundColour < -8323328 Then
                 HistoryList.ForeColor = Color.White
             End If
+
         Catch
             HistoryList.Items.Clear()
             HistoryList.Items.Add("")
@@ -2010,7 +1983,7 @@ startover:
 
     Private Sub GetEvents_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
         Dim channel As String
-        Export.Enabled = False
+        ExportButton.Enabled = False
 startover:
 
         If SelectedChannel.Text = "My Favorites" Then
@@ -2048,11 +2021,11 @@ startover:
             SelectedEvent.Items.Clear()
             SelectedEvent.Items.Add("Couldn't download events. Please retry.")
             SelectedEvent.SelectedIndex = 0
-            Export.Text = "Retry"
+            ExportButton.Text = "Retry"
             writer.Close()
             writer.Dispose()
             Kill(file)
-            Export.Enabled = True
+            ExportButton.Enabled = True
             Exit Sub
         End Try
 
@@ -2077,11 +2050,11 @@ startover:
             Dim time As DateTime = firstDay.AddSeconds(splitter(1))
             Dim numeral As String
 
-            If time.ToLocalTime.Day.ToString.EndsWith("1") Then
+            If time.ToLocalTime.Day.ToString.EndsWith("1") And time.ToLocalTime.Day < 11 Then
                 numeral = "st"
-            ElseIf time.ToLocalTime.Day.ToString.EndsWith("2") Then
+            ElseIf time.ToLocalTime.Day.ToString.EndsWith("2") And time.ToLocalTime.Day < 12 Then
                 numeral = "nd"
-            ElseIf time.ToLocalTime.Day.ToString.EndsWith("3") Then
+            ElseIf time.ToLocalTime.Day.ToString.EndsWith("3") And time.ToLocalTime.Day < 13 Then
                 numeral = "rd"
             Else
                 numeral = "th"
@@ -2130,6 +2103,7 @@ startover:
 
         If SelectedEvent.Items.Count > 0 Then
             SelectedEvent.Enabled = True
+            ExportButton.Enabled = True
         Else
             SelectedEvent.Items.Add("There are no future events for this channel.")
             SelectedEvent.SelectedIndex = 0
@@ -2140,7 +2114,6 @@ startover:
     Private Sub GetEventDetails_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEventDetails.DoWork
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim EventsLog As String
-        Export.Enabled = False
         Dim channel As String
 startover:
 
@@ -2157,7 +2130,6 @@ startover:
                     GoTo startover
                 Else
                     EventDescription.Text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(splitter(5).Replace("**", Nothing).Replace("_", Nothing)))
-                    Export.Enabled = True
                 End If
 
             End If
@@ -2171,7 +2143,7 @@ startover:
 
     Private Sub DownloadDb_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadDb.DoWork
 
-         Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
+        Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
 
         Try
 
@@ -2246,7 +2218,7 @@ startover:
         Else
             RetryChannels.Show()
         End If
-        
+
 
     End Sub
 
@@ -2608,7 +2580,7 @@ startover:
         Me.Text = Me.Text.Replace("DI", "RockRadio")
     End Sub
 
-    Private Sub ExportICS_HelpRequest(sender As System.Object, e As System.EventArgs) Handles ExportICS.HelpRequest
+    Private Sub ExportICS_HelpRequest(sender As System.Object, e As System.EventArgs)
         MessageBox.Show("Exporting this event to an iCalendar file means that you will be able to load it using almost any calendar application (such as Outlook or Thunderbird with Lightning) or website (such as Google Calendar or Live Calendar) to automatically create en event in the date and time the radio show starts until it finishes.", "Event exporting", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
@@ -3143,7 +3115,7 @@ startover:
             Else
                 Return False
             End If
-            
+
 
         End If
         Return Audioaddict.ParsePlaylistAudioaddict(pls)
@@ -3167,7 +3139,7 @@ startover:
             Else
                 Return False
             End If
-            
+
 
         End If
         Return Split(data, vbNewLine)

@@ -101,6 +101,12 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Audioaddict.vb" />
+    <Compile Include="Export.Designer.vb">
+      <DependentUpon>Export.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Export.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Player.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -137,6 +143,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Export.resx">
+      <DependentUpon>Export.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Player.resx">
       <DependentUpon>Player.vb</DependentUpon>
       <SubType>Designer</SubType>

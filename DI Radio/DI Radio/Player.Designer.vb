@@ -89,7 +89,7 @@ Partial Class Player
         Me.GetHistory = New System.ComponentModel.BackgroundWorker()
         Me.VisualisationBox = New System.Windows.Forms.PictureBox()
         Me.EventsPanel = New System.Windows.Forms.Panel()
-        Me.Export = New System.Windows.Forms.Button()
+        Me.ExportButton = New System.Windows.Forms.Button()
         Me.EventDescription = New System.Windows.Forms.RichTextBox()
         Me.EventTimes = New System.Windows.Forms.Label()
         Me.EventTagline = New System.Windows.Forms.Label()
@@ -97,7 +97,6 @@ Partial Class Player
         Me.SelectedEvent = New System.Windows.Forms.ComboBox()
         Me.GetEvents = New System.ComponentModel.BackgroundWorker()
         Me.GetEventDetails = New System.ComponentModel.BackgroundWorker()
-        Me.ExportICS = New System.Windows.Forms.SaveFileDialog()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -659,7 +658,7 @@ Partial Class Player
         'EventsPanel
         '
         Me.EventsPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
-        Me.EventsPanel.Controls.Add(Me.Export)
+        Me.EventsPanel.Controls.Add(Me.ExportButton)
         Me.EventsPanel.Controls.Add(Me.EventDescription)
         Me.EventsPanel.Controls.Add(Me.EventTimes)
         Me.EventsPanel.Controls.Add(Me.EventTagline)
@@ -671,15 +670,15 @@ Partial Class Player
         Me.EventsPanel.TabIndex = 15
         Me.EventsPanel.Visible = False
         '
-        'Export
+        'ExportButton
         '
-        Me.Export.Enabled = False
-        Me.Export.Location = New System.Drawing.Point(281, 0)
-        Me.Export.Name = "Export"
-        Me.Export.Size = New System.Drawing.Size(50, 22)
-        Me.Export.TabIndex = 16
-        Me.Export.Text = "Export"
-        Me.Export.UseVisualStyleBackColor = True
+        Me.ExportButton.Enabled = False
+        Me.ExportButton.Location = New System.Drawing.Point(281, 0)
+        Me.ExportButton.Name = "ExportButton"
+        Me.ExportButton.Size = New System.Drawing.Size(50, 22)
+        Me.ExportButton.TabIndex = 16
+        Me.ExportButton.Text = "Export"
+        Me.ExportButton.UseVisualStyleBackColor = True
         '
         'EventDescription
         '
@@ -737,12 +736,6 @@ Partial Class Player
         '
         'GetEventDetails
         '
-        '
-        'ExportICS
-        '
-        Me.ExportICS.Filter = "iCalendar|*.ics"
-        Me.ExportICS.ShowHelp = True
-        Me.ExportICS.Title = "Export event to .ics file"
         '
         'Player
         '
@@ -848,7 +841,6 @@ Partial Class Player
     Friend WithEvents SelectedEvent As System.Windows.Forms.ComboBox
     Friend WithEvents GetEvents As System.ComponentModel.BackgroundWorker
     Friend WithEvents GetEventDetails As System.ComponentModel.BackgroundWorker
-    Friend WithEvents Export As System.Windows.Forms.Button
-    Friend WithEvents ExportICS As System.Windows.Forms.SaveFileDialog
+    Friend WithEvents ExportButton As System.Windows.Forms.Button
 
 End Class
