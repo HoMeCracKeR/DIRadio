@@ -1674,28 +1674,6 @@
 
 #End Region
 
-#Region "Logos"
-
-    ' All of these open the homepage of their respective stations
-
-    Private Sub DILogo_Click(sender As System.Object, e As System.EventArgs)
-        Process.Start("http://www.di.fm")
-    End Sub
-
-    Private Sub JazzLogo_Click(sender As System.Object, e As System.EventArgs)
-        Process.Start("http://www.jazzradio.com")
-    End Sub
-
-    Private Sub RockLogo_Click(sender As System.Object, e As System.EventArgs)
-        Process.Start("http://www.rockradio.com")
-    End Sub
-
-    Private Sub SkyLogo_Click(sender As System.Object, e As System.EventArgs)
-        Process.Start("http://www.sky.fm")
-    End Sub
-
-#End Region
-
 #Region "Others"
 
     Public Enum HotKeyModifiers As Integer
@@ -1740,7 +1718,7 @@
         If Player.ShowSongStart = False Then
             Player.Time.Width = 0
             Player.Title.Width = 255
-        ElseIf Player.ShowSongStart = True And Player.Use12hs = False Then
+        ElseIf Player.ShowSongStart = True And New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
             Player.Time.Width = 40
             Player.Title.Width = 215
         Else
@@ -1759,29 +1737,44 @@
             Player.EditFavorites.Hide()
 
         Else
+            Dim item As String
 
             If Player.StationChooser.Text = Player.DIFM.Text And Player.SelectedChannel.Items.Count > 1 Then
 
-                If Player.SelectedChannel.Items.Item(37).ToString() = "My Favorites" = False Then
-                    Player.SelectedChannel.Items.Add("My Favorites")
-                End If
+                For Each item In Player.SelectedChannel.Items
+                    If item = "My Favorites" Then
+                        GoTo nofavs
+                    End If
+                Next
+
+                Player.SelectedChannel.Items.Add("My Favorites")
 
             ElseIf Player.StationChooser.Text = Player.SKYFM.Text And Player.SelectedChannel.Items.Count > 1 Then
 
-                If Player.SelectedChannel.Items.Item(32).ToString() = "My Favorites" = False Then
-                    Player.SelectedChannel.Items.Add("My Favorites")
-                End If
+                For Each item In Player.SelectedChannel.Items
+                    If item = "My Favorites" Then
+                        GoTo nofavs
+                    End If
+                Next
+
+                Player.SelectedChannel.Items.Add("My Favorites")
 
             ElseIf Player.StationChooser.Text = Player.JazzRadio.Text And Player.SelectedChannel.Items.Count > 1 Then
 
-                If Player.SelectedChannel.Items.Item(15).ToString() = "My Favorites" = False Then
-                    Player.SelectedChannel.Items.Add("My Favorites")
-                End If
+                For Each item In Player.SelectedChannel.Items
+                    If item = "My Favorites" Then
+                        GoTo nofavs
+                    End If
+                Next
+
+                Player.SelectedChannel.Items.Add("My Favorites")
 
             End If
 
 
         End If
+
+nofavs:
 
         If PremiumFormats.Checked = Player.PremiumFormats = False OrElse ListenKey.Text = Player.ListenKey = False Then
 

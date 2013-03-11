@@ -39,7 +39,6 @@ Public Class Player
     Public NoTaskbarButton As Boolean
     Public GoogleSearch As Boolean
     Public ShowSongStart As Boolean = False
-    Public Use12hs As Boolean = False
 
     Public PremiumFormats As Boolean
     Public DIFormat As Integer = 0
@@ -73,10 +72,10 @@ Public Class Player
 
     ' These are not on the Options dialog but are saved anyway.
 
-    Public DIChannel As Integer = 0     ' -> Last used Digitally Imported channel
-    Public SKYChannel As Integer = 0    ' -> Last used SKY.FM channel
-    Public JazzChannel As Integer = 0   ' -> Last used JazzRadio channel
-    Public RockChannel As Integer = 0   ' -> Last used RockRadio channel
+    Public DIChannel As String = "Ambient"     ' -> Last used Digitally Imported channel
+    Public SKYChannel As String = "80's Rock Hits"    ' -> Last used SKY.FM channel
+    Public JazzChannel As String = "Avant-Garde"   ' -> Last used JazzRadio channel
+    Public RockChannel As String = "80's Alternative"   ' -> Last used RockRadio channel
 
     Public RadioStation As String = "Digitally Imported"    ' -> Last used radio station
 
@@ -123,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 42    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 43    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -1067,13 +1066,13 @@ Public Class Player
         End If
 
         If StationChooser.Text = DIFM.Text Then
-            DIChannel = SelectedChannel.SelectedIndex
+            DIChannel = SelectedChannel.Text
         ElseIf StationChooser.Text = SKYFM.Text Then
-            SKYChannel = SelectedChannel.SelectedIndex
+            SKYChannel = SelectedChannel.Text
         ElseIf StationChooser.Text = JazzRadio.Text Then
-            JazzChannel = SelectedChannel.SelectedIndex
+            JazzChannel = SelectedChannel.Text
         ElseIf StationChooser.Text = RockRadio.Text Then
-            RockChannel = SelectedChannel.SelectedIndex
+            RockChannel = SelectedChannel.Text
         End If
 
         If HistoryList.Visible = True And GetHistory.IsBusy = False Then
@@ -1234,59 +1233,11 @@ Public Class Player
 
         If SelectedEvent.Text.ToLower.StartsWith("please wait,") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False And SelectedEvent.Text.ToLower.StartsWith("there are no") = False Then
             EventName.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).Text
-            EventTagline.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(1).Text
+            EventTagline.Text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(1).Text))
 
-            Dim firstDay As DateTime = #1/1/1970#
-            Dim time As DateTime = firstDay.AddSeconds(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text)
+            EventTimes.Text = ReturnDate(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text, "hourmin") & " - "
 
-            Dim ampm As String
-            Dim hour As String
-
-            If Use12hs = True Then
-                If time.ToLocalTime.Hour >= 12 Then
-                    ampm = "pm"
-                    If time.ToLocalTime.Hour = 12 Then
-                        hour = time.ToLocalTime.Hour
-                    Else
-                        hour = time.ToLocalTime.Hour - 12
-                    End If
-                Else
-                    ampm = "am"
-                    hour = time.ToLocalTime.Hour
-
-                    If hour = "0" Then
-                        hour = "12"
-                    End If
-                End If
-            Else
-                hour = time.ToLocalTime.Hour
-            End If
-
-            EventTimes.Text = String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & " - "
-
-            time = firstDay.AddSeconds(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text)
-
-            If Use12hs = True Then
-                If time.ToLocalTime.Hour >= 12 Then
-                    ampm = "pm"
-                    If time.ToLocalTime.Hour = 12 Then
-                        hour = time.ToLocalTime.Hour
-                    Else
-                        hour = time.ToLocalTime.Hour - 12
-                    End If
-                Else
-                    ampm = "am"
-                    hour = time.ToLocalTime.Hour
-
-                    If hour = "0" Then
-                        hour = "12"
-                    End If
-                End If
-            Else
-                hour = time.ToLocalTime.Hour
-            End If
-
-            EventTimes.Text += String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute)
+            EventTimes.Text += ReturnDate(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text, "hourmin")
 
             EventDescription.Text = "Please wait, downloading event details..."
 
@@ -1918,40 +1869,13 @@ startover:
                 Dim line As String = reader.ReadLine
                 Dim splitter() As String = Split(line, "|")
 
-                Dim span As TimeSpan
-                span = TimeSpan.FromSeconds(splitter(2))
-
-                Dim time As DateTime = DateTime.Parse(String.Format("{0:00}:{1:00}", span.Hours, span.Minutes))
-                Dim ampm As String
-                Dim hour As String
-
-                If Use12hs = True Then
-                    If time.ToLocalTime.Hour >= 12 Then
-                        ampm = "pm"
-
-                        If time.ToLocalTime.Hour = 12 Then
-                            hour = time.ToLocalTime.Hour
-                        Else
-                            hour = time.ToLocalTime.Hour - 12
-                        End If
-                    Else
-                        ampm = "am"
-                        hour = time.ToLocalTime.Hour
-
-                        If hour = "0" Then
-                            hour = "12"
-                        End If
-                    End If
-                Else
-                    hour = time.ToLocalTime.Hour
-                End If
-
-                HistoryList.Items.Add(String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute))
 
 
+                HistoryList.Items.Add(ReturnDate(splitter(2), "hourmin"))
 
                 HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(splitter(0))
 
+                Dim span As TimeSpan
                 span = TimeSpan.FromSeconds(splitter(1))
 
                 If span.Hours < 1 Then
@@ -1984,6 +1908,8 @@ startover:
     Private Sub GetEvents_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
         Dim channel As String
         ExportButton.Enabled = False
+        ExportButton.Text = "Export"
+
 startover:
 
         If SelectedChannel.Text = "My Favorites" Then
@@ -2046,46 +1972,7 @@ startover:
             Dim line As String = reader.ReadLine
             Dim splitter() As String = Split(line, "|&|")
 
-            Dim firstDay As DateTime = #1/1/1970#
-            Dim time As DateTime = firstDay.AddSeconds(splitter(1))
-            Dim numeral As String
-
-            If time.ToLocalTime.Day.ToString.EndsWith("1") And time.ToLocalTime.Day < 11 Then
-                numeral = "st"
-            ElseIf time.ToLocalTime.Day.ToString.EndsWith("2") And time.ToLocalTime.Day < 12 Then
-                numeral = "nd"
-            ElseIf time.ToLocalTime.Day.ToString.EndsWith("3") And time.ToLocalTime.Day < 13 Then
-                numeral = "rd"
-            Else
-                numeral = "th"
-            End If
-
-            Dim ampm As String
-            Dim hour As String
-
-            If Use12hs = True Then
-                If time.ToLocalTime.Hour >= 12 Then
-                    ampm = "pm"
-                    If time.ToLocalTime.Hour = 12 Then
-                        hour = time.ToLocalTime.Hour
-                    Else
-                        hour = time.ToLocalTime.Hour - 12
-                    End If
-                Else
-                    ampm = "am"
-                    hour = time.ToLocalTime.Hour
-
-                    If hour = "0" Then
-                        hour = "12"
-                    End If
-                End If
-            Else
-                hour = time.ToLocalTime.Hour
-            End If
-
-
-            SelectedEvent.Items.Add(time.ToLocalTime.DayOfWeek.ToString.Remove(3) & ". " & time.ToLocalTime.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & ": " & splitter(3))
-
+            SelectedEvent.Items.Add(ReturnDate(splitter(1), "fulldate") & ": " & splitter(3))
             EventsArray.Items.Add(splitter(3))
             EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(4))
             EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(1))
@@ -2129,7 +2016,7 @@ startover:
                 If channel = SelectedEvent.Text = False Then
                     GoTo startover
                 Else
-                    EventDescription.Text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(splitter(5).Replace("**", Nothing).Replace("_", Nothing)))
+                    EventDescription.Text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(splitter(5).Replace("**", Nothing).Replace("_", Nothing))).ToString
                 End If
 
             End If
@@ -2175,13 +2062,13 @@ startover:
         If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & StationChooser.Text & "\channels.db") And SelectedChannel.Items.Count > 1 Then
             If StationChooser.Text = DIFM.Text Then
 
-                SelectedChannel.SelectedIndex = DIChannel
+                SelectedChannel.SelectedItem = DIChannel
                 Events.Enabled = True
                 History.Enabled = True
 
             ElseIf StationChooser.Text = SKYFM.Text Then
 
-                SelectedChannel.SelectedIndex = SKYChannel
+                SelectedChannel.SelectedItem = SKYChannel
                 Events.Enabled = False
                 Events.ImageAlign = ContentAlignment.MiddleCenter
                 Events.Image = My.Resources.events
@@ -2190,7 +2077,7 @@ startover:
 
             ElseIf StationChooser.Text = JazzRadio.Text Then
 
-                SelectedChannel.SelectedIndex = JazzChannel
+                SelectedChannel.SelectedItem = JazzChannel
                 Events.Enabled = False
                 Events.ImageAlign = ContentAlignment.MiddleCenter
                 Events.Image = My.Resources.events
@@ -2203,7 +2090,7 @@ startover:
 
             ElseIf StationChooser.Text = RockRadio.Text Then
 
-                SelectedChannel.SelectedIndex = RockChannel
+                SelectedChannel.SelectedItem = RockChannel
                 Events.Enabled = False
                 Events.ImageAlign = ContentAlignment.MiddleCenter
                 Events.Image = My.Resources.events
@@ -2251,33 +2138,30 @@ startover:
                     VisualisationBox.Image.Dispose()
                 End If
 
-                If VisualisationType = 0 Then
-                    drawing.CreateSpectrumBean(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
-                    VisualisationBox.Image = SpectrumImage
-                ElseIf VisualisationType = 1 Then
-                    drawing.CreateSpectrumDot(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
-                    VisualisationBox.Image = SpectrumImage
-                ElseIf VisualisationType = 2 Then
-                    drawing.CreateSpectrum(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), LinealRepresentation, FullSoundRange, False)
-                    VisualisationBox.Image = SpectrumImage
-                ElseIf VisualisationType = 3 Then
-                    drawing.CreateSpectrumEllipse(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 3, 1, LinealRepresentation, FullSoundRange, HighQualityVis)
-                    VisualisationBox.Image = SpectrumImage
-                ElseIf VisualisationType = 4 Then
-                    drawing.CreateSpectrumLine(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
-                    VisualisationBox.Image = SpectrumImage
-                ElseIf VisualisationType = 5 Then
-                    drawing.CreateSpectrumLinePeak(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(PeakColour), Color.FromArgb(BackgroundColour), 5, 5, 1, 100, LinealRepresentation, FullSoundRange, False)
-                    VisualisationBox.Image = SpectrumImage
-                ElseIf VisualisationType = 6 Then
-                    drawing.CreateSpectrumWave(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
-                    VisualisationBox.Image = SpectrumImage
-                ElseIf VisualisationType = 7 Then
-                    drawing.CreateWaveForm(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), Color.FromArgb(BackgroundColour), 5, FullSoundRange, False, HighQualityVis)
-                    VisualisationBox.Image = SpectrumImage
-                End If
+
+                Select Case VisualisationType
+
+                    Case 0
+                        drawing.CreateSpectrumBean(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
+                    Case 1
+                        drawing.CreateSpectrumDot(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
+                    Case 2
+                        drawing.CreateSpectrum(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), LinealRepresentation, FullSoundRange, False)
+                    Case 3
+                        drawing.CreateSpectrumEllipse(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 3, 1, LinealRepresentation, FullSoundRange, HighQualityVis)
+                    Case 4
+                        drawing.CreateSpectrumLine(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
+                    Case 5
+                        drawing.CreateSpectrumLinePeak(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(PeakColour), Color.FromArgb(BackgroundColour), 5, 5, 1, 100, LinealRepresentation, FullSoundRange, False)
+                    Case 6
+                        drawing.CreateSpectrumWave(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
+                    Case 7
+                        drawing.CreateWaveForm(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), Color.FromArgb(BackgroundColour), 5, FullSoundRange, False, HighQualityVis)
+                End Select
+
             End Using
 
+            VisualisationBox.Image = SpectrumImage
         Else
             VisTimer.Stop()
         End If
@@ -2580,10 +2464,6 @@ startover:
         Me.Text = Me.Text.Replace("DI", "RockRadio")
     End Sub
 
-    Private Sub ExportICS_HelpRequest(sender As System.Object, e As System.EventArgs)
-        MessageBox.Show("Exporting this event to an iCalendar file means that you will be able to load it using almost any calendar application (such as Outlook or Thunderbird with Lightning) or website (such as Google Calendar or Live Calendar) to automatically create en event in the date and time the radio show starts until it finishes.", "Event exporting", MessageBoxButtons.OK, MessageBoxIcon.Information)
-    End Sub
-
 #End Region
 
 #Region "Other functions"
@@ -2693,10 +2573,10 @@ startover:
             writer.WriteLine(Options.Band3.Name & "=0")
             writer.WriteLine(Options.Band4.Name & "=0")
             writer.WriteLine(Options.Band5.Name & "=0")
-            writer.WriteLine("DIChannel=0")
-            writer.WriteLine("SkyChannel=0")
-            writer.WriteLine("JazzChannel=0")
-            writer.WriteLine("RockChannel=0")
+            writer.WriteLine("DIChannel=Ambient")
+            writer.WriteLine("SkyChannel=80's Rock Hits")
+            writer.WriteLine("JazzChannel=Avant-Garde")
+            writer.WriteLine("RockChannel=80's Alternative")
             writer.WriteLine(Volume.Name & "=50")
             writer.WriteLine(SelectedServer.Name & "=0")
             writer.Close()
@@ -2906,19 +2786,35 @@ startover:
 
                 ElseIf splitter(0) = "DIChannel" Then
 
-                    DIChannel = splitter(1)
+                    If IsNumeric(splitter(1)) Then
+                        DIChannel = "Ambient"
+                    Else
+                        DIChannel = splitter(1)
+                    End If
 
                 ElseIf splitter(0) = "SkyChannel" Then
 
-                    SKYChannel = splitter(1)
+                    If IsNumeric(splitter(1)) Then
+                        SKYChannel = "80's Rock Hits"
+                    Else
+                        SKYChannel = splitter(1)
+                    End If
 
                 ElseIf splitter(0) = "JazzChannel" Then
 
-                    JazzChannel = splitter(1)
+                    If IsNumeric(splitter(1)) Then
+                        JazzChannel = "Avant-Garde"
+                    Else
+                        JazzChannel = splitter(1)
+                    End If
 
                 ElseIf splitter(0) = "RockChannel" Then
 
-                    RockChannel = splitter(1)
+                    If IsNumeric(splitter(1)) Then
+                        RockChannel = "80's Alternative"
+                    Else
+                        RockChannel = splitter(1)
+                    End If
 
                 ElseIf splitter(0) = Volume.Name Then
                     Volume.Value = splitter(1)
@@ -3039,10 +2935,6 @@ startover:
             End If
 
             If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
-                Use12hs = False
-            Else
-                Use12hs = True
-
                 If ShowSongStart = True Then
                     Time.Width = 50
                     Title.Width = 209
@@ -3095,6 +2987,57 @@ startover:
             Bass.BASS_FXSetParameters(EqBands(band), Eq)
         End If
     End Sub
+
+    Public Function ReturnDate(ByVal seconds As String, ByVal datetype As String)
+        Dim firstDay As DateTime = #1/1/1970#
+        Dim time As DateTime = firstDay.AddSeconds(seconds)
+        Dim numeral As String
+        Dim datestring As String
+
+        If time.ToLocalTime.Day.ToString.EndsWith("1") And time.ToLocalTime.Day < 11 Then
+            numeral = "st"
+        ElseIf time.ToLocalTime.Day.ToString.EndsWith("2") And time.ToLocalTime.Day < 12 Then
+            numeral = "nd"
+        ElseIf time.ToLocalTime.Day.ToString.EndsWith("3") And time.ToLocalTime.Day < 13 Then
+            numeral = "rd"
+        Else
+            numeral = "th"
+        End If
+
+        Dim ampm As String
+        Dim hour As String
+
+
+
+
+        If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") = False Then
+            If time.ToLocalTime.Hour >= 12 Then
+                ampm = "pm"
+                If time.ToLocalTime.Hour = 12 Then
+                    hour = time.ToLocalTime.Hour
+                Else
+                    hour = time.ToLocalTime.Hour - 12
+                End If
+            Else
+                ampm = "am"
+                hour = time.ToLocalTime.Hour
+
+                If hour = "0" Then
+                    hour = "12"
+                End If
+            End If
+        Else
+            hour = time.ToLocalTime.Hour
+        End If
+
+        If datetype = "fulldate" Then
+            datestring = time.ToLocalTime.DayOfWeek.ToString.Remove(3) & ". " & time.ToLocalTime.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute)
+        ElseIf datetype = "hourmin" Then
+            datestring = String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute)
+        End If
+
+        Return datestring
+    End Function
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
 

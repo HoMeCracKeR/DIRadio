@@ -45,6 +45,7 @@ Partial Class Export
         Me.ExportICS = New System.Windows.Forms.SaveFileDialog()
         Me.ExportLabel = New System.Windows.Forms.Label()
         Me.Exporter = New System.ComponentModel.BackgroundWorker()
+        Me.Retry = New System.Windows.Forms.Button()
         Me.OptionsBox.SuspendLayout()
         CType(Me.ReminderMinutes, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -237,19 +238,29 @@ Partial Class Export
         Me.ExportLabel.Name = "ExportLabel"
         Me.ExportLabel.Size = New System.Drawing.Size(251, 13)
         Me.ExportLabel.TabIndex = 11
-        Me.ExportLabel.Text = "Exporting (?/?)"
+        Me.ExportLabel.Text = "Status: Idle"
         Me.ExportLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.ExportLabel.Visible = False
         '
         'Exporter
         '
         Me.Exporter.WorkerSupportsCancellation = True
+        '
+        'Retry
+        '
+        Me.Retry.Location = New System.Drawing.Point(178, 25)
+        Me.Retry.Name = "Retry"
+        Me.Retry.Size = New System.Drawing.Size(75, 23)
+        Me.Retry.TabIndex = 12
+        Me.Retry.Text = "Retry"
+        Me.Retry.UseVisualStyleBackColor = True
+        Me.Retry.Visible = False
         '
         'Export
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(356, 449)
+        Me.Controls.Add(Me.Retry)
         Me.Controls.Add(Me.ExportLabel)
         Me.Controls.Add(Me.ToUp)
         Me.Controls.Add(Me.ToDown)
@@ -300,4 +311,5 @@ Partial Class Export
     Friend WithEvents ExportICS As System.Windows.Forms.SaveFileDialog
     Friend WithEvents ExportLabel As System.Windows.Forms.Label
     Friend WithEvents Exporter As System.ComponentModel.BackgroundWorker
+    Friend WithEvents Retry As System.Windows.Forms.Button
 End Class

@@ -723,9 +723,11 @@ Partial Class Player
         'SelectedEvent
         '
         Me.SelectedEvent.BackColor = System.Drawing.SystemColors.Window
+        Me.SelectedEvent.DropDownHeight = 338
         Me.SelectedEvent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.SelectedEvent.DropDownWidth = 330
         Me.SelectedEvent.FormattingEnabled = True
+        Me.SelectedEvent.IntegralHeight = False
         Me.SelectedEvent.Location = New System.Drawing.Point(0, 0)
         Me.SelectedEvent.Name = "SelectedEvent"
         Me.SelectedEvent.Size = New System.Drawing.Size(275, 22)

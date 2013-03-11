@@ -35,30 +35,38 @@
         readerChdb.Close()
         readerChdb.Dispose()
 
-        If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
-            use12hs = False
-        End If
+    
     End Sub
 
     Private Sub ChannelsList_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ChannelsList.SelectedIndexChanged
         AvailableBox.Items.Clear()
         AvailableBox.Enabled = False
         ToDown.Enabled = False
-
+        AvailableBox.Items.Add("Please wait...")
+        ExportLabel.Text = "Status: Downloading events..."
         If GetEvents.IsBusy = False Then
             GetEvents.RunWorkerAsync()
         End If
     End Sub
 
     Private Sub GetEvents_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
-        AvailableBox.Items.Add("Please wait...")
-
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim eventsfile As String
         Dim file As String = Player.exeFolder & "\servers\exporttemp"
         Dim writer As New IO.StreamWriter(file)
+        Dim channel As String
 
-        eventsfile = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(ChannelsList.Text).Tag)
+startover:
+        channel = ChannelsList.Text
+        AvailableBox.Enabled = False
+
+        Try
+            eventsfile = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(ChannelsList.Text).Tag)
+        Catch ex As Exception
+            AvailableBox.Items.Clear()
+            AvailableBox.Items.Add("Couldn't download events. Please try again.")
+            Retry.Show()
+        End Try
 
         writer.Write(eventsfile)
         writer.Close()
@@ -68,50 +76,19 @@
 
         AvailableBox.Items.Clear()
 
+        ExportLabel.Text = "Status: Reading events file..."
+
         Do While (reader.Peek > -1)
+
+            If channel = ChannelsList.Text = False Then
+                GoTo startover
+            End If
 
             Dim line As String = reader.ReadLine
             Dim splitter() As String = Split(line, "|&|")
 
-            Dim firstDay As DateTime = #1/1/1970#
-            Dim time As DateTime = firstDay.AddSeconds(splitter(1))
-            Dim numeral As String
+            AvailableBox.Items.Add(Player.ReturnDate(splitter(1), "fulldate") & ": " & splitter(3))
 
-            If time.ToLocalTime.Day.ToString.EndsWith("1") And time.ToLocalTime.Day < 11 Then
-                numeral = "st"
-            ElseIf time.ToLocalTime.Day.ToString.EndsWith("2") And time.ToLocalTime.Day < 12 Then
-                numeral = "nd"
-            ElseIf time.ToLocalTime.Day.ToString.EndsWith("3") And time.ToLocalTime.Day < 13 Then
-                numeral = "rd"
-            Else
-                numeral = "th"
-            End If
-
-            Dim ampm As String
-            Dim hour As String
-
-            If use12hs Then
-
-                If time.ToLocalTime.Hour >= 12 Then
-                    ampm = "pm"
-                    If time.ToLocalTime.Hour = 12 Then
-                        hour = time.ToLocalTime.Hour
-                    Else
-                        hour = time.ToLocalTime.Hour - 12
-                    End If
-                Else
-                    ampm = "am"
-                    hour = time.ToLocalTime.Hour
-
-                    If hour = "0" Then
-                        hour = "12"
-                    End If
-                End If
-            Else
-                hour = time.ToLocalTime.Hour
-            End If
-
-            AvailableBox.Items.Add(time.ToLocalTime.Day & numeral & ", " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute) & ": " & splitter(3))
             AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag = ChannelsList.Text
             AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(0)
             AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(1)
@@ -119,18 +96,19 @@
             AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(3)
             AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(4)
 
-            Try
-
-            Catch
-
-            End Try
         Loop
 
         reader.Close()
         reader.Dispose()
         Kill(file)
 
-        AvailableBox.Enabled = True
+        If AvailableBox.Items.Count > 0 Then
+            AvailableBox.Enabled = True
+        Else
+            AvailableBox.Items.Add("There are no future events for this channel")
+        End If
+
+        ExportLabel.Text = "Status: Idle"
     End Sub
 
     Private Sub ToDown_Click(sender As System.Object, e As System.EventArgs) Handles ToDown.Click
@@ -142,11 +120,7 @@
             AvailableBox.Items.Remove(item)
         Next
 
-        If SaveBox.Items.Count > 0 Then
-            SaveFile.Enabled = True
-        Else
-            SaveFile.Enabled = False
-        End If
+        SaveFile.Enabled = True
     End Sub
 
     Private Sub AvailableBox_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles AvailableBox.SelectedIndexChanged
@@ -169,7 +143,7 @@
         If SaveFile.Text = "Save to file" Then
             If ExportICS.ShowDialog = Windows.Forms.DialogResult.OK Then
                 Exporter.RunWorkerAsync()
-                ExportLabel.Text = "Exporting (0/" & SaveBox.Items.Count & ")"
+                ExportLabel.Text = "Status: Exporting (0/" & SaveBox.Items.Count & ")"
                 ExportLabel.Show()
                 OptionsBox.Enabled = False
                 ChannelsList.Enabled = False
@@ -198,6 +172,11 @@
 
             SaveBox.Items.Remove(item)
         Next
+
+        If SaveBox.Items.Count = 0 Then
+            ToUp.Enabled = False
+            SaveFile.Enabled = False
+        End If
     End Sub
 
     Private Sub ReminderMinutes_ValueChanged(sender As System.Object, e As System.EventArgs) Handles ReminderMinutes.ValueChanged
@@ -250,7 +229,7 @@
                     Dim downloadDescription As Net.WebClient = New Net.WebClient()
                     description = downloadDescription.DownloadString("http://a.pi1.nl/calendar/di/filter/event/" & splitter(1))
                     Dim splitterDesc() As String = Split(description, "|&|")
-                    description = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(splitterDesc(5).Replace("**", Nothing).Replace("_", Nothing).Replace(Chr(10), vbNewLine)))
+                    description = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(splitterDesc(5).Replace("**", Nothing).Replace("_", Nothing).Replace(Chr(10), "\n")))
                 Catch
 
                 End Try
@@ -275,7 +254,7 @@
 
             writer.WriteLine("END:VEVENT")
 
-            ExportLabel.Text = "Exporting (" & item.Index + 1 & "/" & SaveBox.Items.Count & ")"
+            ExportLabel.Text = "Status: Exporting (" & item.Index + 1 & "/" & SaveBox.Items.Count & ")"
 
         Next
 
@@ -291,5 +270,15 @@
         ToDown.Enabled = True
         SaveFile.Text = "Save to file"
         SaveFile.Enabled = True
+        ExportLabel.Text = "Status: Finished"
+    End Sub
+
+    Private Sub Retry_Click(sender As System.Object, e As System.EventArgs) Handles Retry.Click
+        GetEvents.RunWorkerAsync()
+        Retry.Hide()
+    End Sub
+
+    Private Sub ExportICS_HelpRequest(sender As System.Object, e As System.EventArgs) Handles ExportICS.HelpRequest
+        MessageBox.Show("Exporting events to an iCalendar file means that you will be able to load it using almost any calendar application (such as Outlook or Thunderbird with Lightning) or website (such as Google Calendar or Live Calendar) to automatically create events in the date and time the radio shows start until they end.", "Event exporting", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 End Class
