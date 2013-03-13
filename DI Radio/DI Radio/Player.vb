@@ -122,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 43    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 44    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -1990,11 +1990,12 @@ startover:
 
         If SelectedEvent.Items.Count > 0 Then
             SelectedEvent.Enabled = True
-            ExportButton.Enabled = True
         Else
             SelectedEvent.Items.Add("There are no future events for this channel.")
             SelectedEvent.SelectedIndex = 0
         End If
+
+        ExportButton.Enabled = True
 
     End Sub
 
@@ -2934,11 +2935,9 @@ startover:
 
             End If
 
-            If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
-                If ShowSongStart = True Then
-                    Time.Width = 50
-                    Title.Width = 209
-                End If
+            If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") = False And ShowSongStart = True Then
+                Time.Width = 50
+                Title.Width = 209
             End If
 
         Catch ex As Exception
@@ -3006,9 +3005,6 @@ startover:
 
         Dim ampm As String
         Dim hour As String
-
-
-
 
         If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") = False Then
             If time.ToLocalTime.Hour >= 12 Then

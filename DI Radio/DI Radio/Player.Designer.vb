@@ -91,12 +91,12 @@ Partial Class Player
         Me.EventsPanel = New System.Windows.Forms.Panel()
         Me.ExportButton = New System.Windows.Forms.Button()
         Me.EventDescription = New System.Windows.Forms.RichTextBox()
-        Me.EventTimes = New System.Windows.Forms.Label()
-        Me.EventTagline = New System.Windows.Forms.Label()
-        Me.EventName = New System.Windows.Forms.Label()
         Me.SelectedEvent = New System.Windows.Forms.ComboBox()
         Me.GetEvents = New System.ComponentModel.BackgroundWorker()
         Me.GetEventDetails = New System.ComponentModel.BackgroundWorker()
+        Me.EventTimes = New System.Windows.Forms.Label()
+        Me.EventTagline = New System.Windows.Forms.Label()
+        Me.EventName = New System.Windows.Forms.Label()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -658,11 +658,11 @@ Partial Class Player
         'EventsPanel
         '
         Me.EventsPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
+        Me.EventsPanel.Controls.Add(Me.EventName)
+        Me.EventsPanel.Controls.Add(Me.EventTagline)
+        Me.EventsPanel.Controls.Add(Me.EventTimes)
         Me.EventsPanel.Controls.Add(Me.ExportButton)
         Me.EventsPanel.Controls.Add(Me.EventDescription)
-        Me.EventsPanel.Controls.Add(Me.EventTimes)
-        Me.EventsPanel.Controls.Add(Me.EventTagline)
-        Me.EventsPanel.Controls.Add(Me.EventName)
         Me.EventsPanel.Controls.Add(Me.SelectedEvent)
         Me.EventsPanel.Location = New System.Drawing.Point(12, 12)
         Me.EventsPanel.Name = "EventsPanel"
@@ -684,41 +684,13 @@ Partial Class Player
         '
         Me.EventDescription.AutoWordSelection = True
         Me.EventDescription.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.EventDescription.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.EventDescription.Location = New System.Drawing.Point(0, 72)
         Me.EventDescription.Name = "EventDescription"
         Me.EventDescription.ReadOnly = True
         Me.EventDescription.Size = New System.Drawing.Size(331, 270)
         Me.EventDescription.TabIndex = 4
         Me.EventDescription.Text = ""
-        '
-        'EventTimes
-        '
-        Me.EventTimes.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventTimes.Location = New System.Drawing.Point(0, 57)
-        Me.EventTimes.Name = "EventTimes"
-        Me.EventTimes.Size = New System.Drawing.Size(331, 15)
-        Me.EventTimes.TabIndex = 3
-        Me.EventTimes.UseMnemonic = False
-        '
-        'EventTagline
-        '
-        Me.EventTagline.AutoEllipsis = True
-        Me.EventTagline.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventTagline.Location = New System.Drawing.Point(0, 41)
-        Me.EventTagline.Name = "EventTagline"
-        Me.EventTagline.Size = New System.Drawing.Size(331, 16)
-        Me.EventTagline.TabIndex = 2
-        Me.EventTagline.UseMnemonic = False
-        '
-        'EventName
-        '
-        Me.EventName.AutoEllipsis = True
-        Me.EventName.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventName.Location = New System.Drawing.Point(0, 22)
-        Me.EventName.Name = "EventName"
-        Me.EventName.Size = New System.Drawing.Size(331, 19)
-        Me.EventName.TabIndex = 1
-        Me.EventName.UseMnemonic = False
         '
         'SelectedEvent
         '
@@ -738,6 +710,38 @@ Partial Class Player
         '
         'GetEventDetails
         '
+        '
+        'EventTimes
+        '
+        Me.EventTimes.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.EventTimes.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventTimes.Location = New System.Drawing.Point(0, 57)
+        Me.EventTimes.Name = "EventTimes"
+        Me.EventTimes.Size = New System.Drawing.Size(331, 15)
+        Me.EventTimes.TabIndex = 17
+        Me.EventTimes.UseMnemonic = False
+        '
+        'EventTagline
+        '
+        Me.EventTagline.AutoEllipsis = True
+        Me.EventTagline.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.EventTagline.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventTagline.Location = New System.Drawing.Point(0, 41)
+        Me.EventTagline.Name = "EventTagline"
+        Me.EventTagline.Size = New System.Drawing.Size(331, 16)
+        Me.EventTagline.TabIndex = 18
+        Me.EventTagline.UseMnemonic = False
+        '
+        'EventName
+        '
+        Me.EventName.AutoEllipsis = True
+        Me.EventName.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.EventName.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventName.Location = New System.Drawing.Point(0, 22)
+        Me.EventName.Name = "EventName"
+        Me.EventName.Size = New System.Drawing.Size(331, 19)
+        Me.EventName.TabIndex = 19
+        Me.EventName.UseMnemonic = False
         '
         'Player
         '
@@ -837,12 +841,12 @@ Partial Class Player
     Friend WithEvents Time As System.Windows.Forms.ColumnHeader
     Friend WithEvents EventsPanel As System.Windows.Forms.Panel
     Friend WithEvents EventDescription As System.Windows.Forms.RichTextBox
-    Friend WithEvents EventTimes As System.Windows.Forms.Label
-    Friend WithEvents EventTagline As System.Windows.Forms.Label
-    Friend WithEvents EventName As System.Windows.Forms.Label
     Friend WithEvents SelectedEvent As System.Windows.Forms.ComboBox
     Friend WithEvents GetEvents As System.ComponentModel.BackgroundWorker
     Friend WithEvents GetEventDetails As System.ComponentModel.BackgroundWorker
     Friend WithEvents ExportButton As System.Windows.Forms.Button
+    Friend WithEvents EventName As System.Windows.Forms.Label
+    Friend WithEvents EventTagline As System.Windows.Forms.Label
+    Friend WithEvents EventTimes As System.Windows.Forms.Label
 
 End Class
