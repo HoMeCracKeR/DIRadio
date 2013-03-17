@@ -88,7 +88,7 @@ Partial Class Export
         Me.AvailableBox.HideSelection = False
         Me.AvailableBox.Location = New System.Drawing.Point(12, 68)
         Me.AvailableBox.Name = "AvailableBox"
-        Me.AvailableBox.Size = New System.Drawing.Size(332, 103)
+        Me.AvailableBox.Size = New System.Drawing.Size(332, 108)
         Me.AvailableBox.TabIndex = 3
         Me.AvailableBox.UseCompatibleStateImageBehavior = False
         Me.AvailableBox.View = System.Windows.Forms.View.Details
@@ -100,7 +100,7 @@ Partial Class Export
         'SaveFile
         '
         Me.SaveFile.Enabled = False
-        Me.SaveFile.Location = New System.Drawing.Point(269, 419)
+        Me.SaveFile.Location = New System.Drawing.Point(269, 424)
         Me.SaveFile.Name = "SaveFile"
         Me.SaveFile.Size = New System.Drawing.Size(75, 23)
         Me.SaveFile.TabIndex = 4
@@ -116,7 +116,7 @@ Partial Class Export
         Me.SaveBox.HideSelection = False
         Me.SaveBox.Location = New System.Drawing.Point(12, 207)
         Me.SaveBox.Name = "SaveBox"
-        Me.SaveBox.Size = New System.Drawing.Size(332, 101)
+        Me.SaveBox.Size = New System.Drawing.Size(332, 108)
         Me.SaveBox.TabIndex = 5
         Me.SaveBox.UseCompatibleStateImageBehavior = False
         Me.SaveBox.View = System.Windows.Forms.View.Details
@@ -142,7 +142,7 @@ Partial Class Export
         Me.OptionsBox.Controls.Add(Me.ScheduleAsBusy)
         Me.OptionsBox.Controls.Add(Me.IncludeLink)
         Me.OptionsBox.Controls.Add(Me.IncludeDescription)
-        Me.OptionsBox.Location = New System.Drawing.Point(12, 308)
+        Me.OptionsBox.Location = New System.Drawing.Point(12, 317)
         Me.OptionsBox.Name = "OptionsBox"
         Me.OptionsBox.Size = New System.Drawing.Size(332, 105)
         Me.OptionsBox.TabIndex = 7
@@ -207,7 +207,7 @@ Partial Class Export
         'ToDown
         '
         Me.ToDown.Image = CType(resources.GetObject("ToDown.Image"), System.Drawing.Image)
-        Me.ToDown.Location = New System.Drawing.Point(188, 177)
+        Me.ToDown.Location = New System.Drawing.Point(188, 180)
         Me.ToDown.Name = "ToDown"
         Me.ToDown.Size = New System.Drawing.Size(75, 24)
         Me.ToDown.TabIndex = 8
@@ -217,7 +217,7 @@ Partial Class Export
         '
         Me.ToUp.Enabled = False
         Me.ToUp.Image = CType(resources.GetObject("ToUp.Image"), System.Drawing.Image)
-        Me.ToUp.Location = New System.Drawing.Point(269, 177)
+        Me.ToUp.Location = New System.Drawing.Point(269, 180)
         Me.ToUp.Name = "ToUp"
         Me.ToUp.Size = New System.Drawing.Size(75, 24)
         Me.ToUp.TabIndex = 9
@@ -234,7 +234,7 @@ Partial Class Export
         '
         'ExportLabel
         '
-        Me.ExportLabel.Location = New System.Drawing.Point(12, 423)
+        Me.ExportLabel.Location = New System.Drawing.Point(9, 430)
         Me.ExportLabel.Name = "ExportLabel"
         Me.ExportLabel.Size = New System.Drawing.Size(251, 13)
         Me.ExportLabel.TabIndex = 11

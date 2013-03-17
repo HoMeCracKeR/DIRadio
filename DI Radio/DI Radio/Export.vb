@@ -240,17 +240,16 @@ startover:
             Dim endtime As String = String.Format("{0:00}{1:00}{2:00}T{3:00}{4:00}{5:00}Z", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second)
 
             writer.WriteLine("BEGIN:VEVENT")
-            writer.WriteLine("UID:" & starttime & "@Digitally Imported")
+            writer.WriteLine("UID:" & starttime & "_" & splitter(1) & "@Digitally Imported")
+
+            If IncludeLink.Checked = True Then
+                writer.WriteLine("URL:http://www.di.fm/calendar/event/" & splitter(1))
+            End If
+
             writer.WriteLine("DTSTAMP:" & starttime)
             writer.WriteLine("DTSTART:" & starttime)
             writer.WriteLine("DTEND:" & endtime)
             writer.WriteLine("SUMMARY:" & splitter(4))
-
-            Dim link As String = ""
-
-            If IncludeLink.Checked = True Then
-                link = "\n http://www.di.fm/calendar/event/" & splitter(1)
-            End If
 
             Dim description As String = ""
 
@@ -267,7 +266,7 @@ startover:
                 End Try
 
             End If
-            writer.WriteLine("DESCRIPTION:" & description & link)
+            writer.WriteLine("DESCRIPTION:" & description)
 
             Dim transparency As String = "TRANSP"
 
@@ -280,7 +279,7 @@ startover:
             If SetReminder.Checked = True And ReminderMinutes.Value > 0 Then
                 writer.WriteLine("BEGIN:VALARM")
                 writer.WriteLine("ACTION:DISPLAY")
-                writer.WriteLine("TRIGGER;VALUE=DURATION:-PT" & ReminderMinutes.Value & "M")
+                writer.WriteLine("TRIGGER:-PT" & ReminderMinutes.Value & "M")
                 writer.WriteLine("END:VALARM")
             End If
 
