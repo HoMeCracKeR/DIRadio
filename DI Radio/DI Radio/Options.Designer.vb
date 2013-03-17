@@ -206,7 +206,7 @@ Partial Class Options
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
         Me.TabControl1.Size = New System.Drawing.Size(295, 424)
-        Me.TabControl1.TabIndex = 7
+        Me.TabControl1.TabIndex = 0
         '
         'TabPage1
         '
@@ -262,7 +262,7 @@ Partial Class Options
         Me.ValidateKey.Name = "ValidateKey"
         Me.Helper.SetShowHelp(Me.ValidateKey, True)
         Me.ValidateKey.Size = New System.Drawing.Size(58, 22)
-        Me.ValidateKey.TabIndex = 6
+        Me.ValidateKey.TabIndex = 12
         Me.ValidateKey.Text = "Validate"
         Me.ValidateKey.UseVisualStyleBackColor = True
         '
@@ -275,7 +275,7 @@ Partial Class Options
         Me.PremiumFormats.Name = "PremiumFormats"
         Me.Helper.SetShowHelp(Me.PremiumFormats, True)
         Me.PremiumFormats.Size = New System.Drawing.Size(142, 17)
-        Me.PremiumFormats.TabIndex = 6
+        Me.PremiumFormats.TabIndex = 7
         Me.PremiumFormats.Text = "Enable Premium formats"
         Me.PremiumFormats.UseVisualStyleBackColor = True
         '
@@ -289,7 +289,7 @@ Partial Class Options
         Me.ListenLink.Name = "ListenLink"
         Me.Helper.SetShowHelp(Me.ListenLink, True)
         Me.ListenLink.Size = New System.Drawing.Size(145, 14)
-        Me.ListenLink.TabIndex = 4
+        Me.ListenLink.TabIndex = 10
         Me.ListenLink.TabStop = True
         Me.ListenLink.Text = "Get or reset your Listen Key"
         Me.ListenLink.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -303,7 +303,7 @@ Partial Class Options
         Me.ListenKey.Name = "ListenKey"
         Me.Helper.SetShowHelp(Me.ListenKey, True)
         Me.ListenKey.Size = New System.Drawing.Size(210, 20)
-        Me.ListenKey.TabIndex = 7
+        Me.ListenKey.TabIndex = 11
         '
         'Label10
         '
@@ -325,7 +325,7 @@ Partial Class Options
         Me.FileFormat.Name = "FileFormat"
         Me.Helper.SetShowHelp(Me.FileFormat, True)
         Me.FileFormat.Size = New System.Drawing.Size(139, 22)
-        Me.FileFormat.TabIndex = 1
+        Me.FileFormat.TabIndex = 9
         '
         'Label9
         '
@@ -362,7 +362,7 @@ Partial Class Options
         Me.ShowSongStart.Name = "ShowSongStart"
         Me.Helper.SetShowHelp(Me.ShowSongStart, True)
         Me.ShowSongStart.Size = New System.Drawing.Size(273, 17)
-        Me.ShowSongStart.TabIndex = 7
+        Me.ShowSongStart.TabIndex = 6
         Me.ShowSongStart.Text = "Show song start time on History list"
         Me.ShowSongStart.UseVisualStyleBackColor = True
         '
@@ -376,7 +376,7 @@ Partial Class Options
         Me.GoogleSearch.Name = "GoogleSearch"
         Me.Helper.SetShowHelp(Me.GoogleSearch, True)
         Me.GoogleSearch.Size = New System.Drawing.Size(273, 17)
-        Me.GoogleSearch.TabIndex = 6
+        Me.GoogleSearch.TabIndex = 5
         Me.GoogleSearch.Text = "Open Google when clicking the song title"
         Me.GoogleSearch.UseVisualStyleBackColor = True
         '
@@ -389,7 +389,7 @@ Partial Class Options
         Me.NoTaskbarButton.Name = "NoTaskbarButton"
         Me.Helper.SetShowHelp(Me.NoTaskbarButton, True)
         Me.NoTaskbarButton.Size = New System.Drawing.Size(273, 17)
-        Me.NoTaskbarButton.TabIndex = 5
+        Me.NoTaskbarButton.TabIndex = 4
         Me.NoTaskbarButton.Text = "Use the tray icon as a taskbar button"
         Me.NoTaskbarButton.UseVisualStyleBackColor = True
         '
@@ -402,7 +402,7 @@ Partial Class Options
         Me.PlayNewOnChannelChange.Name = "PlayNewOnChannelChange"
         Me.Helper.SetShowHelp(Me.PlayNewOnChannelChange, True)
         Me.PlayNewOnChannelChange.Size = New System.Drawing.Size(273, 17)
-        Me.PlayNewOnChannelChange.TabIndex = 4
+        Me.PlayNewOnChannelChange.TabIndex = 2
         Me.PlayNewOnChannelChange.Text = "Automatically play new channel when changing"
         Me.PlayNewOnChannelChange.UseVisualStyleBackColor = True
         '
@@ -432,7 +432,7 @@ Partial Class Options
         Me.NotificationTitle.Name = "NotificationTitle"
         Me.Helper.SetShowHelp(Me.NotificationTitle, True)
         Me.NotificationTitle.Size = New System.Drawing.Size(273, 18)
-        Me.NotificationTitle.TabIndex = 0
+        Me.NotificationTitle.TabIndex = 1
         Me.NotificationTitle.Text = "Show title on song change"
         Me.NotificationTitle.UseVisualStyleBackColor = True
         '
@@ -465,7 +465,7 @@ Partial Class Options
         Me.BetaVersions.Name = "BetaVersions"
         Me.Helper.SetShowHelp(Me.BetaVersions, True)
         Me.BetaVersions.Size = New System.Drawing.Size(273, 17)
-        Me.BetaVersions.TabIndex = 7
+        Me.BetaVersions.TabIndex = 14
         Me.BetaVersions.Text = "Display notification for beta versions"
         Me.BetaVersions.UseVisualStyleBackColor = True
         '
@@ -478,7 +478,7 @@ Partial Class Options
         Me.ViewChangelog.Name = "ViewChangelog"
         Me.Helper.SetShowHelp(Me.ViewChangelog, True)
         Me.ViewChangelog.Size = New System.Drawing.Size(131, 23)
-        Me.ViewChangelog.TabIndex = 8
+        Me.ViewChangelog.TabIndex = 16
         Me.ViewChangelog.Text = "Read changelog"
         Me.ViewChangelog.UseVisualStyleBackColor = True
         '
@@ -540,7 +540,7 @@ Partial Class Options
         Me.LookNow.Name = "LookNow"
         Me.Helper.SetShowHelp(Me.LookNow, True)
         Me.LookNow.Size = New System.Drawing.Size(138, 23)
-        Me.LookNow.TabIndex = 1
+        Me.LookNow.TabIndex = 15
         Me.LookNow.Text = "Look for updates now"
         Me.LookNow.UseVisualStyleBackColor = True
         '
@@ -555,7 +555,7 @@ Partial Class Options
         Me.UpdatesAtStart.Name = "UpdatesAtStart"
         Me.Helper.SetShowHelp(Me.UpdatesAtStart, True)
         Me.UpdatesAtStart.Size = New System.Drawing.Size(273, 17)
-        Me.UpdatesAtStart.TabIndex = 0
+        Me.UpdatesAtStart.TabIndex = 13
         Me.UpdatesAtStart.Text = "Look for updates at start"
         Me.UpdatesAtStart.UseVisualStyleBackColor = True
         '
@@ -607,7 +607,7 @@ Partial Class Options
         Me.RestoreColours.Name = "RestoreColours"
         Me.Helper.SetShowHelp(Me.RestoreColours, True)
         Me.RestoreColours.Size = New System.Drawing.Size(105, 23)
-        Me.RestoreColours.TabIndex = 16
+        Me.RestoreColours.TabIndex = 27
         Me.RestoreColours.Text = "Restore colours"
         Me.RestoreColours.UseVisualStyleBackColor = True
         '
@@ -619,7 +619,7 @@ Partial Class Options
         Me.ChangeWholeBackground.Name = "ChangeWholeBackground"
         Me.Helper.SetShowHelp(Me.ChangeWholeBackground, True)
         Me.ChangeWholeBackground.Size = New System.Drawing.Size(274, 17)
-        Me.ChangeWholeBackground.TabIndex = 15
+        Me.ChangeWholeBackground.TabIndex = 32
         Me.ChangeWholeBackground.Text = "Change the whole background"
         Me.ChangeWholeBackground.UseVisualStyleBackColor = True
         '
@@ -631,7 +631,7 @@ Partial Class Options
         Me.Themes.Name = "Themes"
         Me.Helper.SetShowHelp(Me.Themes, True)
         Me.Themes.Size = New System.Drawing.Size(74, 23)
-        Me.Themes.TabIndex = 8
+        Me.Themes.TabIndex = 26
         Me.Themes.Text = "Themes"
         Me.Themes.UseVisualStyleBackColor = True
         '
@@ -696,7 +696,7 @@ Partial Class Options
         Me.MainButton.Name = "MainButton"
         Me.Helper.SetShowHelp(Me.MainButton, True)
         Me.MainButton.Size = New System.Drawing.Size(25, 20)
-        Me.MainButton.TabIndex = 2
+        Me.MainButton.TabIndex = 28
         Me.MainButton.Text = "..."
         Me.ToolTip.SetToolTip(Me.MainButton, "Select colour")
         Me.MainButton.UseVisualStyleBackColor = True
@@ -709,7 +709,7 @@ Partial Class Options
         Me.BackgroundButton.Name = "BackgroundButton"
         Me.Helper.SetShowHelp(Me.BackgroundButton, True)
         Me.BackgroundButton.Size = New System.Drawing.Size(25, 20)
-        Me.BackgroundButton.TabIndex = 11
+        Me.BackgroundButton.TabIndex = 31
         Me.BackgroundButton.Text = "..."
         Me.ToolTip.SetToolTip(Me.BackgroundButton, "Select colour")
         Me.BackgroundButton.UseVisualStyleBackColor = True
@@ -731,7 +731,7 @@ Partial Class Options
         Me.PeakButton.Name = "PeakButton"
         Me.Helper.SetShowHelp(Me.PeakButton, True)
         Me.PeakButton.Size = New System.Drawing.Size(25, 20)
-        Me.PeakButton.TabIndex = 8
+        Me.PeakButton.TabIndex = 30
         Me.PeakButton.Text = "..."
         Me.ToolTip.SetToolTip(Me.PeakButton, "Select colour")
         Me.PeakButton.UseVisualStyleBackColor = True
@@ -753,7 +753,7 @@ Partial Class Options
         Me.SecondaryButton.Name = "SecondaryButton"
         Me.Helper.SetShowHelp(Me.SecondaryButton, True)
         Me.SecondaryButton.Size = New System.Drawing.Size(25, 20)
-        Me.SecondaryButton.TabIndex = 5
+        Me.SecondaryButton.TabIndex = 29
         Me.SecondaryButton.Text = "..."
         Me.ToolTip.SetToolTip(Me.SecondaryButton, "Select colour")
         Me.SecondaryButton.UseVisualStyleBackColor = True
@@ -806,7 +806,7 @@ Partial Class Options
         Me.HighQualityVis.Name = "HighQualityVis"
         Me.Helper.SetShowHelp(Me.HighQualityVis, True)
         Me.HighQualityVis.Size = New System.Drawing.Size(149, 22)
-        Me.HighQualityVis.TabIndex = 7
+        Me.HighQualityVis.TabIndex = 22
         Me.HighQualityVis.Text = "High quality"
         Me.HighQualityVis.UseVisualStyleBackColor = True
         '
@@ -841,7 +841,7 @@ Partial Class Options
         Me.Visualisation.Name = "Visualisation"
         Me.Helper.SetShowHelp(Me.Visualisation, True)
         Me.Visualisation.Size = New System.Drawing.Size(274, 18)
-        Me.Visualisation.TabIndex = 1
+        Me.Visualisation.TabIndex = 20
         Me.Visualisation.Text = "Show visualisation"
         Me.Visualisation.UseVisualStyleBackColor = True
         '
@@ -858,7 +858,7 @@ Partial Class Options
         Me.Smoothness.Name = "Smoothness"
         Me.Helper.SetShowHelp(Me.Smoothness, True)
         Me.Smoothness.Size = New System.Drawing.Size(274, 23)
-        Me.Smoothness.TabIndex = 4
+        Me.Smoothness.TabIndex = 25
         Me.Smoothness.TickStyle = System.Windows.Forms.TickStyle.None
         Me.Smoothness.Value = 27
         '
@@ -880,7 +880,7 @@ Partial Class Options
         Me.FullSoundRange.Name = "FullSoundRange"
         Me.Helper.SetShowHelp(Me.FullSoundRange, True)
         Me.FullSoundRange.Size = New System.Drawing.Size(274, 18)
-        Me.FullSoundRange.TabIndex = 2
+        Me.FullSoundRange.TabIndex = 24
         Me.FullSoundRange.Text = "Use full sound range"
         Me.FullSoundRange.UseVisualStyleBackColor = True
         '
@@ -893,7 +893,7 @@ Partial Class Options
         Me.LinealRepresentation.Name = "LinealRepresentation"
         Me.Helper.SetShowHelp(Me.LinealRepresentation, True)
         Me.LinealRepresentation.Size = New System.Drawing.Size(274, 18)
-        Me.LinealRepresentation.TabIndex = 1
+        Me.LinealRepresentation.TabIndex = 23
         Me.LinealRepresentation.Text = "Use lineal representation"
         Me.LinealRepresentation.UseVisualStyleBackColor = True
         '
@@ -908,7 +908,7 @@ Partial Class Options
         Me.VisualisationType.Name = "VisualisationType"
         Me.Helper.SetShowHelp(Me.VisualisationType, True)
         Me.VisualisationType.Size = New System.Drawing.Size(121, 22)
-        Me.VisualisationType.TabIndex = 1
+        Me.VisualisationType.TabIndex = 21
         '
         'Label1
         '
@@ -943,7 +943,7 @@ Partial Class Options
         Me.MultimediaKeys.Name = "MultimediaKeys"
         Me.Helper.SetShowHelp(Me.MultimediaKeys, True)
         Me.MultimediaKeys.Size = New System.Drawing.Size(277, 20)
-        Me.MultimediaKeys.TabIndex = 5
+        Me.MultimediaKeys.TabIndex = 33
         Me.MultimediaKeys.Text = "Use hotkeys when minimised to tray"
         Me.MultimediaKeys.UseVisualStyleBackColor = True
         '
@@ -985,7 +985,7 @@ Partial Class Options
         Me.HotkeyPlayStop.Name = "HotkeyPlayStop"
         Me.Helper.SetShowHelp(Me.HotkeyPlayStop, True)
         Me.HotkeyPlayStop.Size = New System.Drawing.Size(272, 22)
-        Me.HotkeyPlayStop.TabIndex = 1
+        Me.HotkeyPlayStop.TabIndex = 34
         Me.HotkeyPlayStop.Text = "Use a custom hotkey for Play/Stop"
         Me.HotkeyPlayStop.UseVisualStyleBackColor = True
         '
@@ -996,7 +996,7 @@ Partial Class Options
         Me.CustomShowHide.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomShowHide.Name = "CustomShowHide"
         Me.CustomShowHide.Size = New System.Drawing.Size(146, 20)
-        Me.CustomShowHide.TabIndex = 20
+        Me.CustomShowHide.TabIndex = 43
         Me.CustomShowHide.Text = "Ctrl+Shift+Home"
         '
         'CustomPlayStop
@@ -1006,7 +1006,7 @@ Partial Class Options
         Me.CustomPlayStop.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomPlayStop.Name = "CustomPlayStop"
         Me.CustomPlayStop.Size = New System.Drawing.Size(146, 20)
-        Me.CustomPlayStop.TabIndex = 3
+        Me.CustomPlayStop.TabIndex = 35
         Me.CustomPlayStop.Text = "Multimedia Play/Pause/Stop"
         '
         'HotkeyShowHide
@@ -1018,7 +1018,7 @@ Partial Class Options
         Me.HotkeyShowHide.Name = "HotkeyShowHide"
         Me.Helper.SetShowHelp(Me.HotkeyShowHide, True)
         Me.HotkeyShowHide.Size = New System.Drawing.Size(272, 22)
-        Me.HotkeyShowHide.TabIndex = 19
+        Me.HotkeyShowHide.TabIndex = 42
         Me.HotkeyShowHide.Text = "Use a custom hotkey to show the player"
         Me.HotkeyShowHide.UseVisualStyleBackColor = True
         '
@@ -1030,7 +1030,7 @@ Partial Class Options
         Me.HotkeyVolumeUp.Name = "HotkeyVolumeUp"
         Me.Helper.SetShowHelp(Me.HotkeyVolumeUp, True)
         Me.HotkeyVolumeUp.Size = New System.Drawing.Size(274, 22)
-        Me.HotkeyVolumeUp.TabIndex = 6
+        Me.HotkeyVolumeUp.TabIndex = 36
         Me.HotkeyVolumeUp.Text = "Use a custom hotkey for Volume Up"
         Me.HotkeyVolumeUp.UseVisualStyleBackColor = True
         '
@@ -1041,7 +1041,7 @@ Partial Class Options
         Me.CustomMuteUnmute.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomMuteUnmute.Name = "CustomMuteUnmute"
         Me.CustomMuteUnmute.Size = New System.Drawing.Size(146, 20)
-        Me.CustomMuteUnmute.TabIndex = 18
+        Me.CustomMuteUnmute.TabIndex = 41
         Me.CustomMuteUnmute.Text = "Multimedia Mute/Unmute"
         '
         'CustomVolumeUp
@@ -1051,7 +1051,7 @@ Partial Class Options
         Me.CustomVolumeUp.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomVolumeUp.Name = "CustomVolumeUp"
         Me.CustomVolumeUp.Size = New System.Drawing.Size(146, 20)
-        Me.CustomVolumeUp.TabIndex = 8
+        Me.CustomVolumeUp.TabIndex = 37
         Me.CustomVolumeUp.Text = "Multimedia Volume Up"
         '
         'HotkeyMuteUnmute
@@ -1062,7 +1062,7 @@ Partial Class Options
         Me.HotkeyMuteUnmute.Name = "HotkeyMuteUnmute"
         Me.Helper.SetShowHelp(Me.HotkeyMuteUnmute, True)
         Me.HotkeyMuteUnmute.Size = New System.Drawing.Size(272, 22)
-        Me.HotkeyMuteUnmute.TabIndex = 16
+        Me.HotkeyMuteUnmute.TabIndex = 40
         Me.HotkeyMuteUnmute.Text = "Use a custom hotkey for Mute/Unmute"
         Me.HotkeyMuteUnmute.UseVisualStyleBackColor = True
         '
@@ -1074,7 +1074,7 @@ Partial Class Options
         Me.HotkeyVolumeDown.Name = "HotkeyVolumeDown"
         Me.Helper.SetShowHelp(Me.HotkeyVolumeDown, True)
         Me.HotkeyVolumeDown.Size = New System.Drawing.Size(272, 22)
-        Me.HotkeyVolumeDown.TabIndex = 11
+        Me.HotkeyVolumeDown.TabIndex = 38
         Me.HotkeyVolumeDown.Text = "Use a custom hotkey for Volume Down"
         Me.HotkeyVolumeDown.UseVisualStyleBackColor = True
         '
@@ -1085,7 +1085,7 @@ Partial Class Options
         Me.CustomVolumeDown.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomVolumeDown.Name = "CustomVolumeDown"
         Me.CustomVolumeDown.Size = New System.Drawing.Size(146, 20)
-        Me.CustomVolumeDown.TabIndex = 13
+        Me.CustomVolumeDown.TabIndex = 39
         Me.CustomVolumeDown.Text = "Multimedia Volume Down"
         '
         'TabPage5
@@ -1127,7 +1127,7 @@ Partial Class Options
         Me.Presets.Name = "Presets"
         Me.Helper.SetShowHelp(Me.Presets, True)
         Me.Presets.Size = New System.Drawing.Size(64, 23)
-        Me.Presets.TabIndex = 42
+        Me.Presets.TabIndex = 50
         Me.Presets.Text = "Presets"
         Me.Presets.UseVisualStyleBackColor = True
         '
@@ -1138,7 +1138,7 @@ Partial Class Options
         Me.AutoEq.Name = "AutoEq"
         Me.Helper.SetShowHelp(Me.AutoEq, True)
         Me.AutoEq.Size = New System.Drawing.Size(64, 23)
-        Me.AutoEq.TabIndex = 41
+        Me.AutoEq.TabIndex = 52
         Me.AutoEq.Text = "Auto level"
         Me.AutoEq.UseVisualStyleBackColor = True
         '
@@ -1149,7 +1149,7 @@ Partial Class Options
         Me.RestoreEq.Name = "RestoreEq"
         Me.Helper.SetShowHelp(Me.RestoreEq, True)
         Me.RestoreEq.Size = New System.Drawing.Size(64, 23)
-        Me.RestoreEq.TabIndex = 40
+        Me.RestoreEq.TabIndex = 51
         Me.RestoreEq.Text = "Restore"
         Me.RestoreEq.UseVisualStyleBackColor = True
         '
@@ -1161,7 +1161,7 @@ Partial Class Options
         Me.Zero.Name = "Zero"
         Me.Helper.SetShowHelp(Me.Zero, True)
         Me.Zero.Size = New System.Drawing.Size(64, 23)
-        Me.Zero.TabIndex = 39
+        Me.Zero.TabIndex = 53
         Me.Zero.Text = "Zero all"
         Me.Zero.UseVisualStyleBackColor = True
         '
@@ -1284,7 +1284,7 @@ Partial Class Options
         Me.Band5.Name = "Band5"
         Me.Band5.Orientation = System.Windows.Forms.Orientation.Vertical
         Me.Band5.Size = New System.Drawing.Size(42, 327)
-        Me.Band5.TabIndex = 26
+        Me.Band5.TabIndex = 49
         Me.Band5.TickStyle = System.Windows.Forms.TickStyle.Both
         '
         'Band4
@@ -1298,7 +1298,7 @@ Partial Class Options
         Me.Band4.Name = "Band4"
         Me.Band4.Orientation = System.Windows.Forms.Orientation.Vertical
         Me.Band4.Size = New System.Drawing.Size(42, 327)
-        Me.Band4.TabIndex = 25
+        Me.Band4.TabIndex = 48
         Me.Band4.TickStyle = System.Windows.Forms.TickStyle.Both
         '
         'Band3
@@ -1312,7 +1312,7 @@ Partial Class Options
         Me.Band3.Name = "Band3"
         Me.Band3.Orientation = System.Windows.Forms.Orientation.Vertical
         Me.Band3.Size = New System.Drawing.Size(42, 327)
-        Me.Band3.TabIndex = 24
+        Me.Band3.TabIndex = 47
         Me.Band3.TickStyle = System.Windows.Forms.TickStyle.Both
         '
         'Band2
@@ -1326,7 +1326,7 @@ Partial Class Options
         Me.Band2.Name = "Band2"
         Me.Band2.Orientation = System.Windows.Forms.Orientation.Vertical
         Me.Band2.Size = New System.Drawing.Size(42, 327)
-        Me.Band2.TabIndex = 23
+        Me.Band2.TabIndex = 46
         Me.Band2.TickStyle = System.Windows.Forms.TickStyle.Both
         '
         'Band1
@@ -1340,7 +1340,7 @@ Partial Class Options
         Me.Band1.Name = "Band1"
         Me.Band1.Orientation = System.Windows.Forms.Orientation.Vertical
         Me.Band1.Size = New System.Drawing.Size(42, 327)
-        Me.Band1.TabIndex = 22
+        Me.Band1.TabIndex = 45
         Me.Band1.TickStyle = System.Windows.Forms.TickStyle.Both
         '
         'Band0
@@ -1354,7 +1354,7 @@ Partial Class Options
         Me.Band0.Name = "Band0"
         Me.Band0.Orientation = System.Windows.Forms.Orientation.Vertical
         Me.Band0.Size = New System.Drawing.Size(42, 327)
-        Me.Band0.TabIndex = 21
+        Me.Band0.TabIndex = 44
         Me.Band0.TickStyle = System.Windows.Forms.TickStyle.Both
         '
         'TabPage4
@@ -1383,7 +1383,7 @@ Partial Class Options
         Me.AboutForums.Location = New System.Drawing.Point(223, 324)
         Me.AboutForums.Name = "AboutForums"
         Me.AboutForums.Size = New System.Drawing.Size(52, 16)
-        Me.AboutForums.TabIndex = 7
+        Me.AboutForums.TabIndex = 56
         Me.AboutForums.TabStop = True
         Me.AboutForums.Text = "Forums"
         Me.AboutForums.UseMnemonic = False
@@ -1406,7 +1406,7 @@ Partial Class Options
         Me.AboutWebsite.Location = New System.Drawing.Point(144, 324)
         Me.AboutWebsite.Name = "AboutWebsite"
         Me.AboutWebsite.Size = New System.Drawing.Size(56, 16)
-        Me.AboutWebsite.TabIndex = 5
+        Me.AboutWebsite.TabIndex = 55
         Me.AboutWebsite.TabStop = True
         Me.AboutWebsite.Text = "Website"
         Me.AboutWebsite.UseMnemonic = False
@@ -1429,7 +1429,7 @@ Partial Class Options
         Me.AboutLicense.Location = New System.Drawing.Point(12, 324)
         Me.AboutLicense.Name = "AboutLicense"
         Me.AboutLicense.Size = New System.Drawing.Size(109, 16)
-        Me.AboutLicense.TabIndex = 3
+        Me.AboutLicense.TabIndex = 54
         Me.AboutLicense.TabStop = True
         Me.AboutLicense.Text = "License & credits"
         Me.AboutLicense.UseMnemonic = False
@@ -1474,7 +1474,7 @@ Partial Class Options
         Me.OK.Name = "OK"
         Me.Helper.SetShowHelp(Me.OK, True)
         Me.OK.Size = New System.Drawing.Size(75, 23)
-        Me.OK.TabIndex = 9
+        Me.OK.TabIndex = 17
         Me.OK.Text = "OK"
         Me.OK.UseVisualStyleBackColor = True
         '
@@ -1488,7 +1488,7 @@ Partial Class Options
         Me.Cancel.Name = "Cancel"
         Me.Helper.SetShowHelp(Me.Cancel, True)
         Me.Cancel.Size = New System.Drawing.Size(75, 23)
-        Me.Cancel.TabIndex = 8
+        Me.Cancel.TabIndex = 18
         Me.Cancel.Text = "Close"
         Me.Cancel.UseVisualStyleBackColor = True
         '
@@ -1510,7 +1510,7 @@ Partial Class Options
         Me.Apply.Name = "Apply"
         Me.Helper.SetShowHelp(Me.Apply, True)
         Me.Apply.Size = New System.Drawing.Size(75, 23)
-        Me.Apply.TabIndex = 10
+        Me.Apply.TabIndex = 19
         Me.Apply.Text = "Apply"
         Me.Apply.UseVisualStyleBackColor = True
         '

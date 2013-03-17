@@ -89,14 +89,14 @@ Partial Class Player
         Me.GetHistory = New System.ComponentModel.BackgroundWorker()
         Me.VisualisationBox = New System.Windows.Forms.PictureBox()
         Me.EventsPanel = New System.Windows.Forms.Panel()
+        Me.EventName = New System.Windows.Forms.Label()
+        Me.EventTagline = New System.Windows.Forms.Label()
+        Me.EventTimes = New System.Windows.Forms.Label()
         Me.ExportButton = New System.Windows.Forms.Button()
         Me.EventDescription = New System.Windows.Forms.RichTextBox()
         Me.SelectedEvent = New System.Windows.Forms.ComboBox()
         Me.GetEvents = New System.ComponentModel.BackgroundWorker()
         Me.GetEventDetails = New System.ComponentModel.BackgroundWorker()
-        Me.EventTimes = New System.Windows.Forms.Label()
-        Me.EventTagline = New System.Windows.Forms.Label()
-        Me.EventName = New System.Windows.Forms.Label()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -310,7 +310,7 @@ Partial Class Player
         Me.History.Location = New System.Drawing.Point(98, 20)
         Me.History.Name = "History"
         Me.History.Size = New System.Drawing.Size(25, 25)
-        Me.History.TabIndex = 15
+        Me.History.TabIndex = 4
         Me.ToolTip.SetToolTip(Me.History, "Show track history")
         Me.History.UseVisualStyleBackColor = True
         '
@@ -345,7 +345,7 @@ Partial Class Player
         Me.RadioString.Location = New System.Drawing.Point(-3, 0)
         Me.RadioString.Name = "RadioString"
         Me.RadioString.Size = New System.Drawing.Size(300, 14)
-        Me.RadioString.TabIndex = 10
+        Me.RadioString.TabIndex = 15
         Me.RadioString.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.RadioString.UseMnemonic = False
         '
@@ -434,7 +434,7 @@ Partial Class Player
         Me.RetryServers.Location = New System.Drawing.Point(191, 59)
         Me.RetryServers.Name = "RetryServers"
         Me.RetryServers.Size = New System.Drawing.Size(139, 22)
-        Me.RetryServers.TabIndex = 16
+        Me.RetryServers.TabIndex = 18
         Me.RetryServers.Text = "Retry download"
         Me.RetryServers.UseVisualStyleBackColor = True
         Me.RetryServers.Visible = False
@@ -444,7 +444,7 @@ Partial Class Player
         Me.RetryChannels.Location = New System.Drawing.Point(36, 59)
         Me.RetryChannels.Name = "RetryChannels"
         Me.RetryChannels.Size = New System.Drawing.Size(149, 22)
-        Me.RetryChannels.TabIndex = 15
+        Me.RetryChannels.TabIndex = 17
         Me.RetryChannels.Text = "Retry download"
         Me.RetryChannels.UseVisualStyleBackColor = True
         Me.RetryChannels.Visible = False
@@ -553,7 +553,7 @@ Partial Class Player
         Me.EditFavorites.Location = New System.Drawing.Point(188, 46)
         Me.EditFavorites.Name = "EditFavorites"
         Me.EditFavorites.Size = New System.Drawing.Size(43, 11)
-        Me.EditFavorites.TabIndex = 12
+        Me.EditFavorites.TabIndex = 10
         Me.EditFavorites.TabStop = True
         Me.EditFavorites.Text = "Edit list"
         Me.EditFavorites.Visible = False
@@ -564,7 +564,7 @@ Partial Class Player
         Me.RefreshFavorites.Location = New System.Drawing.Point(268, 46)
         Me.RefreshFavorites.Name = "RefreshFavorites"
         Me.RefreshFavorites.Size = New System.Drawing.Size(62, 11)
-        Me.RefreshFavorites.TabIndex = 6
+        Me.RefreshFavorites.TabIndex = 11
         Me.RefreshFavorites.TabStop = True
         Me.RefreshFavorites.Text = "Refresh list"
         Me.RefreshFavorites.Visible = False
@@ -594,7 +594,7 @@ Partial Class Player
         Me.HistoryList.Name = "HistoryList"
         Me.HistoryList.ShowItemToolTips = True
         Me.HistoryList.Size = New System.Drawing.Size(331, 342)
-        Me.HistoryList.TabIndex = 14
+        Me.HistoryList.TabIndex = 16
         Me.HistoryList.UseCompatibleStateImageBehavior = False
         Me.HistoryList.View = System.Windows.Forms.View.Details
         Me.HistoryList.Visible = False
@@ -670,13 +670,45 @@ Partial Class Player
         Me.EventsPanel.TabIndex = 15
         Me.EventsPanel.Visible = False
         '
+        'EventName
+        '
+        Me.EventName.AutoEllipsis = True
+        Me.EventName.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.EventName.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventName.Location = New System.Drawing.Point(0, 22)
+        Me.EventName.Name = "EventName"
+        Me.EventName.Size = New System.Drawing.Size(331, 19)
+        Me.EventName.TabIndex = 19
+        Me.EventName.UseMnemonic = False
+        '
+        'EventTagline
+        '
+        Me.EventTagline.AutoEllipsis = True
+        Me.EventTagline.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.EventTagline.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventTagline.Location = New System.Drawing.Point(0, 41)
+        Me.EventTagline.Name = "EventTagline"
+        Me.EventTagline.Size = New System.Drawing.Size(331, 16)
+        Me.EventTagline.TabIndex = 18
+        Me.EventTagline.UseMnemonic = False
+        '
+        'EventTimes
+        '
+        Me.EventTimes.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.EventTimes.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EventTimes.Location = New System.Drawing.Point(0, 57)
+        Me.EventTimes.Name = "EventTimes"
+        Me.EventTimes.Size = New System.Drawing.Size(331, 15)
+        Me.EventTimes.TabIndex = 17
+        Me.EventTimes.UseMnemonic = False
+        '
         'ExportButton
         '
         Me.ExportButton.Enabled = False
         Me.ExportButton.Location = New System.Drawing.Point(281, 0)
         Me.ExportButton.Name = "ExportButton"
         Me.ExportButton.Size = New System.Drawing.Size(50, 22)
-        Me.ExportButton.TabIndex = 16
+        Me.ExportButton.TabIndex = 13
         Me.ExportButton.Text = "Export"
         Me.ExportButton.UseVisualStyleBackColor = True
         '
@@ -689,7 +721,7 @@ Partial Class Player
         Me.EventDescription.Name = "EventDescription"
         Me.EventDescription.ReadOnly = True
         Me.EventDescription.Size = New System.Drawing.Size(331, 270)
-        Me.EventDescription.TabIndex = 4
+        Me.EventDescription.TabIndex = 14
         Me.EventDescription.Text = ""
         '
         'SelectedEvent
@@ -703,45 +735,13 @@ Partial Class Player
         Me.SelectedEvent.Location = New System.Drawing.Point(0, 0)
         Me.SelectedEvent.Name = "SelectedEvent"
         Me.SelectedEvent.Size = New System.Drawing.Size(275, 22)
-        Me.SelectedEvent.TabIndex = 0
+        Me.SelectedEvent.TabIndex = 12
         '
         'GetEvents
         '
         '
         'GetEventDetails
         '
-        '
-        'EventTimes
-        '
-        Me.EventTimes.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.EventTimes.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventTimes.Location = New System.Drawing.Point(0, 57)
-        Me.EventTimes.Name = "EventTimes"
-        Me.EventTimes.Size = New System.Drawing.Size(331, 15)
-        Me.EventTimes.TabIndex = 17
-        Me.EventTimes.UseMnemonic = False
-        '
-        'EventTagline
-        '
-        Me.EventTagline.AutoEllipsis = True
-        Me.EventTagline.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.EventTagline.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventTagline.Location = New System.Drawing.Point(0, 41)
-        Me.EventTagline.Name = "EventTagline"
-        Me.EventTagline.Size = New System.Drawing.Size(331, 16)
-        Me.EventTagline.TabIndex = 18
-        Me.EventTagline.UseMnemonic = False
-        '
-        'EventName
-        '
-        Me.EventName.AutoEllipsis = True
-        Me.EventName.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.EventName.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EventName.Location = New System.Drawing.Point(0, 22)
-        Me.EventName.Name = "EventName"
-        Me.EventName.Size = New System.Drawing.Size(331, 19)
-        Me.EventName.TabIndex = 19
-        Me.EventName.UseMnemonic = False
         '
         'Player
         '

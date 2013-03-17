@@ -1239,6 +1239,13 @@ Public Class Player
 
             EventTimes.Text += ReturnDate(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text, "hourmin")
 
+            Dim thistime As Integer
+            thistime = (DateTime.UtcNow - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
+
+            If thistime > EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text And thistime < EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text Then
+                EventTimes.Text += " ♫ Now playing ♫"
+            End If
+
             EventDescription.Text = "Please wait, downloading event details..."
 
             If GetEventDetails.IsBusy = False Then
