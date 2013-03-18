@@ -30,38 +30,38 @@ Public Class Player
 #Region "Options"
 
     ' Most of these get a value once the LoadOptions function is called.
-    ' If there's no need for a default value, then it simply doesn't have one.
+    ' They all have default values in case something goes wrong loading the options.ini file.
     ' They are ordered in the same way as they appear in the Options dialog.
 
-    Public NotificationTitle As Boolean
-    Public PlayNewOnChannelChange As Boolean
-    Public NotificationIcon As Boolean
-    Public NoTaskbarButton As Boolean
-    Public GoogleSearch As Boolean
+    Public NotificationTitle As Boolean = True
+    Public PlayNewOnChannelChange As Boolean = False
+    Public NotificationIcon As Boolean = True
+    Public NoTaskbarButton As Boolean = False
+    Public GoogleSearch As Boolean = True
     Public ShowSongStart As Boolean = False
 
-    Public PremiumFormats As Boolean
+    Public PremiumFormats As Boolean = False
     Public DIFormat As Integer = 0
     Public SKYFormat As Integer = 0
     Public JazzFormat As Integer = 0
     Public ListenKey As String
 
-    Public UpdatesAtStart As Boolean
-    Public BetaVersions As Boolean
+    Public UpdatesAtStart As Boolean = True
+    Public BetaVersions As Boolean = False
 
-    Public Visualisation As Boolean
-    Public VisualisationType As Integer
-    Public HighQualityVis As Boolean
-    Public LinealRepresentation As Boolean
-    Public FullSoundRange As Boolean
-    Public Smoothness As Integer
-    Public MainColour As Integer
-    Public SecondaryColour As Integer
-    Public PeakColour As Integer
-    Public BackgroundColour As Integer
-    Public ChangeWholeBackground As Boolean
+    Public Visualisation As Boolean = True
+    Public VisualisationType As Integer = 5
+    Public HighQualityVis As Boolean = False
+    Public LinealRepresentation As Boolean = False
+    Public FullSoundRange As Boolean = False
+    Public Smoothness As Integer = 27
+    Public MainColour As Integer = -986896
+    Public SecondaryColour As Integer = -16777216
+    Public PeakColour As Integer = -4144960
+    Public BackgroundColour As Integer = -986896
+    Public ChangeWholeBackground As Boolean = False
 
-    Public MultimediaKeys As Boolean
+    Public MultimediaKeys As Boolean = True
 
     Public Band0 As Integer = 0
     Public Band1 As Integer = 0
@@ -72,10 +72,10 @@ Public Class Player
 
     ' These are not on the Options dialog but are saved anyway.
 
-    Public DIChannel As String = "Ambient"     ' -> Last used Digitally Imported channel
-    Public SKYChannel As String = "80's Rock Hits"    ' -> Last used SKY.FM channel
-    Public JazzChannel As String = "Avant-Garde"   ' -> Last used JazzRadio channel
-    Public RockChannel As String = "80's Alternative"   ' -> Last used RockRadio channel
+    Public DIChannel As String = "Ambient"                  ' -> Last used Digitally Imported channel
+    Public SKYChannel As String = "80's Rock Hits"          ' -> Last used SKY.FM channel
+    Public JazzChannel As String = "Avant-Garde"            ' -> Last used JazzRadio channel
+    Public RockChannel As String = "80's Alternative"       ' -> Last used RockRadio channel
 
     Public RadioStation As String = "Digitally Imported"    ' -> Last used radio station
 
@@ -138,9 +138,6 @@ Public Class Player
     ' v  This list of channels may be outdated. It's only used as a fallback in case CheckForums fails to download the (maybe updated?) list of channels that don't have a forum link
     Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel;UMF Radio;UMF Stage 1;Big Room House;EcLectronica;Russian Club Hits;Mainstage;Best of the 60s; Classic Motown;Russian Pop;Russian Dance Hits;Israeli Hits"
     Private _mySync As SYNCPROC                     ' -> Sync so BASS says when the stream title has changed
-    ' v Used to get command line arguments
-    Dim CommandLineArgs As System.Collections.ObjectModel.ReadOnlyCollection(Of String) = My.Application.CommandLineArgs
-    Dim TotalCommandLine As String = ""
 
     Dim channelKey As Integer
     Dim KeysArray As New ListView
@@ -393,17 +390,6 @@ Public Class Player
         ' Load the options.ini file
         LoadOptions()
 
-        ' Check on the command line arguments if playback should start right at startup (i.e. we just got an update!)
-        Dim commandline As String = CommandLineArgs.ToString
-
-        For Each commandline In CommandLineArgs
-            TotalCommandLine += commandline
-        Next
-
-        If TotalCommandLine.Contains("*StartPlaying*") Then
-            RestartPlayback = True
-        End If
-
     End Sub
 
     Private Sub Player_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
@@ -537,10 +523,11 @@ Public Class Player
 
             Catch ex As Exception
 
-                ' If the options file couldn't be written, display an error message and cancel closing so the user tries again
-                MsgBox("Your options couldn't be saved due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try closing the application again.", MsgBoxStyle.Exclamation)
-                e.Cancel = True
-                Exit Sub
+                ' If the options file couldn't be written, display an error message and ask the user if the player should be closed anyway
+                If MessageBox.Show("Your options couldn't be saved due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Would you like to close the player anyway (your options won't be saved)?", "Error saving options", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = MsgBoxResult.No Then
+                    e.Cancel = True
+                    Exit Sub
+                End If
 
             End Try
         End If
@@ -1782,13 +1769,13 @@ again:
                 If AtStartup = True Then
 
                     If Splitter(2) > 0 And BetaVersions = True Then
-                        If MsgBox("There's a new beta version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
+                        If MessageBox.Show("There's a new beta version available!" & vbNewLine & "Download now?", "Update available", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                             Options.LookNow_Click(Me, Nothing)
                             OptionsButton_Click(Me, Nothing)
                             updating = True
                         End If
                     ElseIf Splitter(2) = 0 Then
-                        If MsgBox("There's a new version available!" & vbNewLine & "Download now?", MsgBoxStyle.YesNo, "Update available") = MsgBoxResult.Yes Then
+                        If MessageBox.Show("There's a new version available!" & vbNewLine & "Download now?", "Update available", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                             Options.LookNow_Click(Me, Nothing)
                             OptionsButton_Click(Me, Nothing)
                             updating = True
@@ -1977,6 +1964,10 @@ startover:
 
         Dim reader As New IO.StreamReader(file)
 
+        Dim thistime As Integer
+        thistime = (DateTime.UtcNow - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
+
+
         Do While (reader.Peek > -1)
 
             Dim line As String = reader.ReadLine
@@ -1989,7 +1980,9 @@ startover:
             EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(2))
             EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(0))
 
-            SelectedEvent.SelectedIndex = 0
+            If thistime > splitter(1) And thistime < splitter(2) Then
+                SelectedEvent.SelectedIndex = SelectedEvent.Items.Count - 1
+            End If
 
         Loop
 
@@ -2000,6 +1993,10 @@ startover:
 
         If SelectedEvent.Items.Count > 0 Then
             SelectedEvent.Enabled = True
+
+            If SelectedEvent.Text = "" Then
+                SelectedEvent.SelectedIndex = 0
+            End If
         Else
             SelectedEvent.Items.Add("There are no future events for this channel.")
             SelectedEvent.SelectedIndex = 0
@@ -2033,7 +2030,7 @@ startover:
             End If
 
         Catch
-
+            EventDescription.Text = "Couldn't download event description. Please check http://www.di.fm/calendar/event/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text & " for more information about this event."
         End Try
     End Sub
 
@@ -2537,8 +2534,10 @@ startover:
             writer.Dispose()
         End If
 
+        Dim reader As New IO.StreamReader(file)
+
         Try
-            Dim reader As New IO.StreamReader(file)
+
 
             Do While (reader.Peek > -1)
                 Dim whole As String = reader.ReadLine
@@ -2734,7 +2733,7 @@ startover:
                     Band4 = splitter(1)
                 ElseIf splitter(0) = Options.Band5.Name Then
                     Band5 = splitter(1)
-                ElseIf splitter(0) = StationChooser.Name Then
+                ElseIf splitter(0) = StationChooser.Name And splitter(1) = "" = False Then
 
                     RadioStation = splitter(1)
 
@@ -2778,9 +2777,6 @@ startover:
 
 
             Loop
-
-            reader.Close()
-            reader.Dispose()
 
             If RadioStation = DIFM.Text Then
                 DIFM_Click(Me, Nothing)
@@ -2895,9 +2891,12 @@ startover:
 
         Catch ex As Exception
 
-            MsgBox("There was an error loading your options.ini file:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please close the application and open it again.", MsgBoxStyle.Exclamation, "Invalid options.ini file")
+            MessageBox.Show("Some of the options in the .ini file weren't valid and haven't been loaded.", "Error loading options", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
         End Try
+
+        reader.Close()
+        reader.Dispose()
 
         Me.CenterToScreen()
     End Sub
@@ -3062,6 +3061,5 @@ startover:
     End Function
 
 #End Region
-
 
 End Class
