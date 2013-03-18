@@ -117,6 +117,8 @@
     Private Sub SaveFile_Click(sender As System.Object, e As System.EventArgs) Handles SaveFile.Click
 
         If SaveFile.Text = "Save to file" Then
+            ExportICS.FileName = ""
+
             If ExportICS.ShowDialog = Windows.Forms.DialogResult.OK Then
                 Exporter.RunWorkerAsync()
                 ExportLabel.Text = "Status: Exporting (0/" & SaveBox.Items.Count & ")"
@@ -241,11 +243,6 @@ startover:
 
             writer.WriteLine("BEGIN:VEVENT")
             writer.WriteLine("UID:" & starttime & "_" & splitter(1) & "@Digitally Imported")
-
-            If IncludeLink.Checked = True Then
-                writer.WriteLine("URL:http://www.di.fm/calendar/event/" & splitter(1))
-            End If
-
             writer.WriteLine("DTSTAMP:" & starttime)
             writer.WriteLine("DTSTART:" & starttime)
             writer.WriteLine("DTEND:" & endtime)
@@ -256,7 +253,6 @@ startover:
             If IncludeDescription.Checked = True Then
 
                 Try
-
                     Dim downloadDescription As Net.WebClient = New Net.WebClient()
                     description = downloadDescription.DownloadString("http://a.pi1.nl/calendar/di/filter/event/" & splitter(1))
                     Dim splitterDesc() As String = Split(description, "|&|")
@@ -266,7 +262,13 @@ startover:
                 End Try
 
             End If
-            writer.WriteLine("DESCRIPTION:" & description)
+
+            Dim URL As String
+
+            If IncludeLink.Checked = True Then
+                URL = "\n" & splitter(1)
+            End If
+            writer.WriteLine("DESCRIPTION:" & description & URL)
 
             Dim transparency As String = "TRANSP"
 
@@ -313,5 +315,6 @@ startover:
     End Sub
 
 #End Region
+
 
 End Class

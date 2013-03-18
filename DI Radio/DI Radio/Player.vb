@@ -135,8 +135,8 @@ Public Class Player
     Public oldvol As Integer                        ' -> This stores the volume when the user clicks the Mute button; to know which volume level should be used when the user clicks the Unmute button
     Dim ServersArray As New ListView                ' -> Used to store a list of available servers for a particular channel
     Dim EventsArray As New ListView                 ' -> Used to store some info when obtaining events
-    ' v  The following list of channels don't have a forum board and should disable the Forums button when selected
-    Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel"
+    ' v  This list of channels may be outdated. It's only used as a fallback in case CheckForums fails to download the (maybe updated?) list of channels that don't have a forum link
+    Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel;UMF Radio;UMF Stage 1;Big Room House;EcLectronica;Russian Club Hits;Mainstage;Best of the 60s; Classic Motown;Russian Pop;Russian Dance Hits;Israeli Hits"
     Private _mySync As SYNCPROC                     ' -> Sync so BASS says when the stream title has changed
     ' v Used to get command line arguments
     Dim CommandLineArgs As System.Collections.ObjectModel.ReadOnlyCollection(Of String) = My.Application.CommandLineArgs
@@ -325,6 +325,8 @@ Public Class Player
             End
 
         End If
+
+        CheckForums.RunWorkerAsync()
 
         ' Get the actual EXE path, create the servers folder and a folder for each station. Then - in case the user has just upgraded from a version
         ' prior to 1.10, erase everything in all servers folders.
@@ -538,6 +540,7 @@ Public Class Player
                 ' If the options file couldn't be written, display an error message and cancel closing so the user tries again
                 MsgBox("Your options couldn't be saved due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try closing the application again.", MsgBoxStyle.Exclamation)
                 e.Cancel = True
+                Exit Sub
 
             End Try
         End If
@@ -797,7 +800,7 @@ Public Class Player
             VisTimer.Stop()
             Me.Size = Me.MaximumSize
 
-            ToolTip.SetToolTip(Events, "Hide events panel")
+            ToolTip.SetToolTip(Events, "Hide events list")
         Else
 
             Events.ImageAlign = ContentAlignment.MiddleCenter
@@ -810,7 +813,7 @@ Public Class Player
                 Me.Size = Me.MinimumSize
             End If
 
-            ToolTip.SetToolTip(Events, "Show events panel")
+            ToolTip.SetToolTip(Events, "Show events list")
         End If
     End Sub
 
@@ -2034,6 +2037,16 @@ startover:
         End Try
     End Sub
 
+    Private Sub CheckForums_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles CheckForums.DoWork
+        Dim WebClient As Net.WebClient = New Net.WebClient()
+
+        Try
+            NoForumsChannel = WebClient.DownloadString("http://tobiass.eu/files/noforums.txt")
+            SelectedChannel_TextChanged(Me, Nothing)
+        Catch
+        End Try
+    End Sub
+
     ' The following code thanks to _Tobias from the Digitally Imported forums.
 
     Private Sub DownloadDb_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadDb.DoWork
@@ -2279,96 +2292,29 @@ startover:
     End Sub
 
     Private Sub TrackHistoryTray_Click(sender As System.Object, e As System.EventArgs) Handles TrackHistoryTray.Click
-        ' Get the current channel, remove spaces and convert names to their URL counterparts if necessary. Then open the URL
-        ' of the currently-chosen radio station
-
-
-        Dim channel As String
-
-        If SelectedChannel.Text = "My Favorites" Then
-            channel = SelectedServer.Text.ToLower.Replace(" ", Nothing)
+        If Me.WindowState = FormWindowState.Minimized And TrayIcon.Visible = True Then
+            TrayIcon_MouseDoubleClick(Me, Nothing)
         Else
-            channel = SelectedChannel.Text.ToLower.Replace(" ", Nothing)
+            Me.WindowState = FormWindowState.Normal
         End If
 
-        If StationChooser.Text = DIFM.Text Then
-
-            If channel = "classicelectronica" Then
-                channel = "classictechno"
-            ElseIf channel = "clubsounds" Then
-                channel = "club"
-            ElseIf channel = "deepnu-disco" Then
-                channel = "deepnudisco"
-            ElseIf channel = "drum'nbass" Then
-                channel = "drumandbass"
-            ElseIf channel = "electrohouse" Then
-                channel = "electro"
-            ElseIf channel = "goa-psytrance" Then
-                channel = "goapsy"
-            ElseIf channel = "spacedreams" Then
-                channel = "spacemusic"
-            End If
-
-        ElseIf StationChooser.Text = SKYFM.Text Then
-
-            If channel = "bestofthe80's" Then
-                channel = "the80s"
-            ElseIf channel = "80'srockhits" Then
-                channel = "80srock"
-            ElseIf channel = "smoothjazz24'7" Then
-                channel = "smoothjazz247"
-            ElseIf channel = "moviesoundtracks" Then
-                channel = "soundtracks"
-            ElseIf channel = "hit70's" Then
-                channel = "hit70s"
-            ElseIf channel = "mostlyclassical" Then
-                channel = "classical"
-            ElseIf channel = "classicalguitar" Then
-                channel = "guitar"
-            ElseIf channel = "alternativerock" Then
-                channel = "altrock"
-            ElseIf channel = "bebopjazz" Then
-                channel = "bebop"
-            ElseIf channel = "abeatlestribute" Then
-                channel = "beatles"
-            ElseIf channel = "contemporarychristian" Then
-                channel = "christian"
-            End If
-
+        If HistoryList.Visible = False Then
+            History_Click(Me, Nothing)
         End If
-
-
-        Process.Start("http://www." & StationChooser.Tag & "/" & channel)
     End Sub
 
     Private Sub CalendarTray_Click(sender As System.Object, e As System.EventArgs) Handles CalendarTray.Click
-        ' Get the current channel, remove spaces and convert names to their URL counterparts if necessary. Then open DI's calendar
 
-        Dim channel As String
-
-        If SelectedChannel.Text = "My Favorites" Then
-            channel = SelectedServer.Text.ToLower.Replace(" ", Nothing)
+        If Me.WindowState = FormWindowState.Minimized And TrayIcon.Visible = True Then
+            TrayIcon_MouseDoubleClick(Me, Nothing)
         Else
-            channel = SelectedChannel.Text.ToLower.Replace(" ", Nothing)
+            Me.WindowState = FormWindowState.Normal
         End If
 
-        If channel = "classicelectronica" Then
-            channel = "classictechno"
-        ElseIf channel = "clubsounds" Then
-            channel = "club"
-        ElseIf channel = "deepnu-disco" Then
-            channel = "deepnudisco"
-        ElseIf channel = "drum'nbass" Then
-            channel = "drumandbass"
-        ElseIf channel = "electrohouse" Then
-            channel = "electro"
-        ElseIf channel = "goa-psytrance" Then
-            channel = "goapsy"
-        ElseIf channel = "spacedreams" Then
-            channel = "spacemusic"
+        If EventsPanel.Visible = False Then
+            Events_Click(Me, Nothing)
         End If
 
-        Process.Start("http://www.di.fm/calendar/week/" & channel)
     End Sub
 
     Private Sub CopyHistoryMenu_Opening(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles CopyHistoryMenu.Opening
@@ -3116,5 +3062,6 @@ startover:
     End Function
 
 #End Region
+
 
 End Class

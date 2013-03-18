@@ -97,6 +97,7 @@ Partial Class Player
         Me.SelectedEvent = New System.Windows.Forms.ComboBox()
         Me.GetEvents = New System.ComponentModel.BackgroundWorker()
         Me.GetEventDetails = New System.ComponentModel.BackgroundWorker()
+        Me.CheckForums = New System.ComponentModel.BackgroundWorker()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -163,7 +164,7 @@ Partial Class Player
         Me.TrayMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TrayMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OptionsTray, Me.ToolStripSeparator3, Me.GoogleSearchTray, Me.ForumsTray, Me.CalendarTray, Me.TrackHistoryTray, Me.CopyTitleTray, Me.ToolStripSeparator1, Me.MuteTray, Me.PlayStopTray, Me.ToolStripSeparator2, Me.ExitTray})
         Me.TrayMenu.Name = "TrayIconMenu"
-        Me.TrayMenu.Size = New System.Drawing.Size(173, 220)
+        Me.TrayMenu.Size = New System.Drawing.Size(174, 220)
         '
         'OptionsTray
         '
@@ -196,15 +197,15 @@ Partial Class Player
         '
         Me.CalendarTray.Image = CType(resources.GetObject("CalendarTray.Image"), System.Drawing.Image)
         Me.CalendarTray.Name = "CalendarTray"
-        Me.CalendarTray.Size = New System.Drawing.Size(172, 22)
-        Me.CalendarTray.Text = "Open calendar"
+        Me.CalendarTray.Size = New System.Drawing.Size(173, 22)
+        Me.CalendarTray.Text = "Show events list"
         '
         'TrackHistoryTray
         '
         Me.TrackHistoryTray.Image = CType(resources.GetObject("TrackHistoryTray.Image"), System.Drawing.Image)
         Me.TrackHistoryTray.Name = "TrackHistoryTray"
-        Me.TrackHistoryTray.Size = New System.Drawing.Size(172, 22)
-        Me.TrackHistoryTray.Text = "Open track history"
+        Me.TrackHistoryTray.Size = New System.Drawing.Size(173, 22)
+        Me.TrackHistoryTray.Text = "Show track history"
         '
         'CopyTitleTray
         '
@@ -264,7 +265,7 @@ Partial Class Player
         Me.Events.Name = "Events"
         Me.Events.Size = New System.Drawing.Size(25, 25)
         Me.Events.TabIndex = 3
-        Me.ToolTip.SetToolTip(Me.Events, "Open channel's calendar")
+        Me.ToolTip.SetToolTip(Me.Events, "Show events list")
         Me.Events.UseVisualStyleBackColor = True
         '
         'Mute
@@ -743,6 +744,9 @@ Partial Class Player
         'GetEventDetails
         '
         '
+        'CheckForums
+        '
+        '
         'Player
         '
         Me.AllowDrop = True
@@ -848,5 +852,6 @@ Partial Class Player
     Friend WithEvents EventName As System.Windows.Forms.Label
     Friend WithEvents EventTagline As System.Windows.Forms.Label
     Friend WithEvents EventTimes As System.Windows.Forms.Label
+    Friend WithEvents CheckForums As System.ComponentModel.BackgroundWorker
 
 End Class
