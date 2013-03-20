@@ -171,26 +171,26 @@ Partial Class Player
         Me.OptionsTray.Image = CType(resources.GetObject("OptionsTray.Image"), System.Drawing.Image)
         Me.OptionsTray.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.OptionsTray.Name = "OptionsTray"
-        Me.OptionsTray.Size = New System.Drawing.Size(172, 22)
+        Me.OptionsTray.Size = New System.Drawing.Size(173, 22)
         Me.OptionsTray.Text = "Options"
         '
         'ToolStripSeparator3
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        Me.ToolStripSeparator3.Size = New System.Drawing.Size(169, 6)
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(170, 6)
         '
         'GoogleSearchTray
         '
         Me.GoogleSearchTray.Image = CType(resources.GetObject("GoogleSearchTray.Image"), System.Drawing.Image)
         Me.GoogleSearchTray.Name = "GoogleSearchTray"
-        Me.GoogleSearchTray.Size = New System.Drawing.Size(172, 22)
+        Me.GoogleSearchTray.Size = New System.Drawing.Size(173, 22)
         Me.GoogleSearchTray.Text = "Google search"
         '
         'ForumsTray
         '
         Me.ForumsTray.Image = CType(resources.GetObject("ForumsTray.Image"), System.Drawing.Image)
         Me.ForumsTray.Name = "ForumsTray"
-        Me.ForumsTray.Size = New System.Drawing.Size(172, 22)
+        Me.ForumsTray.Size = New System.Drawing.Size(173, 22)
         Me.ForumsTray.Text = "Open forums"
         '
         'CalendarTray
@@ -211,38 +211,38 @@ Partial Class Player
         '
         Me.CopyTitleTray.Image = CType(resources.GetObject("CopyTitleTray.Image"), System.Drawing.Image)
         Me.CopyTitleTray.Name = "CopyTitleTray"
-        Me.CopyTitleTray.Size = New System.Drawing.Size(172, 22)
+        Me.CopyTitleTray.Size = New System.Drawing.Size(173, 22)
         Me.CopyTitleTray.Text = "Copy song title"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(169, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(170, 6)
         '
         'MuteTray
         '
         Me.MuteTray.Image = CType(resources.GetObject("MuteTray.Image"), System.Drawing.Image)
         Me.MuteTray.Name = "MuteTray"
-        Me.MuteTray.Size = New System.Drawing.Size(172, 22)
+        Me.MuteTray.Size = New System.Drawing.Size(173, 22)
         Me.MuteTray.Text = "Mute"
         '
         'PlayStopTray
         '
         Me.PlayStopTray.Image = CType(resources.GetObject("PlayStopTray.Image"), System.Drawing.Image)
         Me.PlayStopTray.Name = "PlayStopTray"
-        Me.PlayStopTray.Size = New System.Drawing.Size(172, 22)
+        Me.PlayStopTray.Size = New System.Drawing.Size(173, 22)
         Me.PlayStopTray.Text = "Play"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(169, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(170, 6)
         '
         'ExitTray
         '
         Me.ExitTray.Image = CType(resources.GetObject("ExitTray.Image"), System.Drawing.Image)
         Me.ExitTray.Name = "ExitTray"
-        Me.ExitTray.Size = New System.Drawing.Size(172, 22)
+        Me.ExitTray.Size = New System.Drawing.Size(173, 22)
         Me.ExitTray.Text = "Exit"
         '
         'Forums
@@ -353,7 +353,7 @@ Partial Class Player
         'SelectedChannel
         '
         Me.SelectedChannel.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.SelectedChannel.DropDownHeight = 394
+        Me.SelectedChannel.DropDownHeight = 408
         Me.SelectedChannel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.SelectedChannel.DropDownWidth = 149
         Me.SelectedChannel.FormattingEnabled = True
@@ -371,8 +371,10 @@ Partial Class Player
         '
         Me.SelectedServer.Anchor = System.Windows.Forms.AnchorStyles.Top
         Me.SelectedServer.ContextMenuStrip = Me.ServerMenu
+        Me.SelectedServer.DropDownHeight = 408
         Me.SelectedServer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.SelectedServer.FormattingEnabled = True
+        Me.SelectedServer.IntegralHeight = False
         Me.SelectedServer.Location = New System.Drawing.Point(191, 59)
         Me.SelectedServer.Name = "SelectedServer"
         Me.SelectedServer.Size = New System.Drawing.Size(139, 22)
