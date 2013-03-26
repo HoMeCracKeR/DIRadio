@@ -36,6 +36,8 @@
     Public SKYSettingPremium As Integer = -1
     Public JazzSettingPremium As Integer = -1
 
+    Public EnableButtons As Boolean = True
+
     Delegate Sub MsgBoxSafe(ByVal text As String, ByVal style As MsgBoxStyle, ByVal title As String)
 
 #End Region
@@ -215,6 +217,7 @@
         End If
 
         TabControl1.SelectedIndex = 0
+        EnableButtons = True
 
         OK.Enabled = False
         Cancel.Text = "Close"
@@ -448,6 +451,7 @@
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
                 FileFormat.Items.Add("Windows Media 64k")
+                EnableButtons = False
 
                 If DISettingPremium > -1 Then
                     FileFormat.SelectedIndex = DISettingPremium
@@ -460,6 +464,7 @@
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
+                EnableButtons = False
 
                 If DISetting > -1 Then
                     FileFormat.SelectedIndex = DISetting
@@ -480,6 +485,7 @@
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
                 FileFormat.Items.Add("Windows Media 64k")
+                EnableButtons = False
 
                 If SKYSettingPremium > -1 Then
                     FileFormat.SelectedIndex = SKYSettingPremium
@@ -492,6 +498,7 @@
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
+                EnableButtons = False
 
                 If SKYSetting > -1 Then
                     FileFormat.SelectedIndex = SKYSetting
@@ -511,6 +518,7 @@
                 FileFormat.Items.Add("MP3 256k")
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
+                EnableButtons = False
 
                 If JazzSettingPremium > -1 Then
                     FileFormat.SelectedIndex = JazzSettingPremium
@@ -523,6 +531,7 @@
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
+                EnableButtons = False
 
                 If JazzSetting > -1 Then
                     FileFormat.SelectedIndex = JazzSetting
@@ -533,10 +542,12 @@
             End If
         ElseIf StationSelector.Text = "RockRadio" Then
             FileFormat.Items.Clear()
-            FileFormat.Items.Add("MP3 96k")
+            FileFormat.Items.Add("MP3")
+            EnableButtons = False
             FileFormat.SelectedIndex = 0
             FileFormat.Enabled = False
         End If
+
     End Sub
 
     Private Sub FileFormat_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles FileFormat.SelectedIndexChanged
@@ -559,9 +570,13 @@
             End If
         End If
 
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
+        If EnableButtons = False Then
+            EnableButtons = True
+        Else
+            OK.Enabled = True
+            Cancel.Text = "Cancel"
+            Apply.Enabled = True
+        End If
 
     End Sub
 

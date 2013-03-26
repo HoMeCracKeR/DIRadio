@@ -2128,6 +2128,7 @@ startover:
             End If
         Else
             RetryChannels.Show()
+            StationChooser.Enabled = True
         End If
 
 
@@ -2549,14 +2550,16 @@ startover:
                 Dim whole As String = reader.ReadLine
                 Dim splitter() As String = Split(whole, "=")
 
-                If splitter(0) = Options.NotificationTitle.Name Then
+                If splitter(0) = Options.NotificationTitle.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     NotificationTitle = splitter(1)
-                ElseIf splitter(0) = Options.PlayNewOnChannelChange.Name Then
+                ElseIf splitter(0) = Options.PlayNewOnChannelChange.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     PlayNewOnChannelChange = splitter(1)
-                ElseIf splitter(0) = Options.NotificationIcon.Name Then
+                ElseIf splitter(0) = Options.NotificationIcon.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     NotificationIcon = splitter(1)
                 ElseIf splitter(0) = Options.NoTaskbarButton.Name Then
-                    NoTaskbarButton = splitter(1)
+                    If Boolean.TryParse(splitter(1), Nothing) Then
+                        NoTaskbarButton = splitter(1)
+                    End If
 
                     If NoTaskbarButton = False Then
                         Me.ShowInTaskbar = True
@@ -2568,18 +2571,22 @@ startover:
                         Me.ShowInTaskbar = False
                         TrayIcon.Visible = True
                     End If
-                ElseIf splitter(0) = Options.GoogleSearch.Name Then
+                ElseIf splitter(0) = Options.GoogleSearch.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     GoogleSearch = splitter(1)
                 ElseIf splitter(0) = Options.ShowSongStart.Name Then
-                    ShowSongStart = splitter(1)
+                    If Boolean.TryParse(splitter(1), Nothing) Then
+                        ShowSongStart = splitter(1)
+                    End If
 
                     If ShowSongStart = False Then
                         Time.Width = 0
                         Title.Width = 255
                     End If
-                ElseIf splitter(0) = Options.PremiumFormats.Name Then
+                ElseIf splitter(0) = Options.PremiumFormats.Name And Boolean.TryParse(splitter(1), Nothing) Then
+
                     PremiumFormats = splitter(1)
-                ElseIf splitter(0) = "DIFormat" Then
+
+                ElseIf splitter(0) = "DIFormat" And Integer.TryParse(splitter(1), Nothing) Then
 
                     If splitter(1) > 2 And PremiumFormats = True Then
                         DIFormat = splitter(1)
@@ -2590,7 +2597,7 @@ startover:
                     End If
 
 
-                ElseIf splitter(0) = "SKYFormat" Then
+                ElseIf splitter(0) = "SKYFormat" And Integer.TryParse(splitter(1), Nothing) Then
 
                     If splitter(1) > 2 And PremiumFormats = True Then
                         SKYFormat = splitter(1)
@@ -2601,7 +2608,7 @@ startover:
                     End If
 
 
-                ElseIf splitter(0) = "JazzFormat" Then
+                ElseIf splitter(0) = "JazzFormat" And Integer.TryParse(splitter(1), Nothing) Then
 
                     If splitter(1) > 2 And PremiumFormats = True Then
                         JazzFormat = splitter(1)
@@ -2619,11 +2626,14 @@ startover:
                     If ListenKey = Nothing = False Then
                         SelectedChannel.Items.Add("My Favorites")
                     End If
-                ElseIf splitter(0) = Options.BetaVersions.Name Then
+
+                ElseIf splitter(0) = Options.BetaVersions.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     BetaVersions = splitter(1)
                 ElseIf splitter(0) = Options.UpdatesAtStart.Name Then
 
-                    UpdatesAtStart = splitter(1)
+                    If Boolean.TryParse(splitter(1), Nothing) Then
+                        UpdatesAtStart = splitter(1)
+                    End If
 
                     If UpdatesAtStart = True Then
                         AtStartup = True
@@ -2631,7 +2641,10 @@ startover:
                     End If
 
                 ElseIf splitter(0) = Options.Visualisation.Name Then
-                    Visualisation = splitter(1)
+
+                    If Boolean.TryParse(splitter(1), Nothing) Then
+                        Visualisation = splitter(1)
+                    End If
 
                     If Visualisation = True Then
 
@@ -2645,26 +2658,29 @@ startover:
 
                     End If
 
-                ElseIf splitter(0) = Options.VisualisationType.Name Then
+                ElseIf splitter(0) = Options.VisualisationType.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     VisualisationType = splitter(1)
-                ElseIf splitter(0) = Options.HighQualityVis.Name Then
+                ElseIf splitter(0) = Options.HighQualityVis.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     HighQualityVis = splitter(1)
-                ElseIf splitter(0) = Options.LinealRepresentation.Name Then
+                ElseIf splitter(0) = Options.LinealRepresentation.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     LinealRepresentation = splitter(1)
-                ElseIf splitter(0) = Options.FullSoundRange.Name Then
+                ElseIf splitter(0) = Options.FullSoundRange.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     FullSoundRange = splitter(1)
-                ElseIf splitter(0) = Options.Smoothness.Name Then
+                ElseIf splitter(0) = Options.Smoothness.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     Smoothness = splitter(1)
-                ElseIf splitter(0) = Options.MainColour.Name Then
+                ElseIf splitter(0) = Options.MainColour.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     MainColour = splitter(1)
-                ElseIf splitter(0) = Options.SecondaryColour.Name Then
+                ElseIf splitter(0) = Options.SecondaryColour.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     SecondaryColour = splitter(1)
-                ElseIf splitter(0) = Options.PeakColour.Name Then
+                ElseIf splitter(0) = Options.PeakColour.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     PeakColour = splitter(1)
-                ElseIf splitter(0) = Options.BackgroundColour.Name Then
+                ElseIf splitter(0) = Options.BackgroundColour.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     BackgroundColour = splitter(1)
                 ElseIf splitter(0) = Options.ChangeWholeBackground.Name Then
-                    ChangeWholeBackground = splitter(1)
+
+                    If Boolean.TryParse(splitter(1), Nothing) Then
+                        ChangeWholeBackground = splitter(1)
+                    End If
 
                     If ChangeWholeBackground = True Then
 
@@ -2705,43 +2721,80 @@ startover:
                         End If
 
                     End If
-                ElseIf splitter(0) = Options.MultimediaKeys.Name Then
-                    MultimediaKeys = splitter(1)
-                ElseIf splitter(0) = Options.HotkeyPlayStop.Name Then
-                    HumanModifiersPlayStop = splitter(1)
-                    ModifiersPlayStop = splitter(2)
-                    KeyPlayStop = splitter(3)
-                ElseIf splitter(0) = Options.HotkeyVolumeUp.Name Then
-                    HumanModifiersVolumeUp = splitter(1)
-                    ModifiersVolumeUp = splitter(2)
-                    KeyVolumeUp = splitter(3)
-                ElseIf splitter(0) = Options.HotkeyVolumeDown.Name Then
-                    HumanModifiersVolumeDown = splitter(1)
-                    ModifiersVolumeDown = splitter(2)
-                    KeyVolumeDown = splitter(3)
-                ElseIf splitter(0) = Options.HotkeyMuteUnmute.Name Then
-                    HumanModifiersMuteUnmute = splitter(1)
-                    ModifiersMuteUnmute = splitter(2)
-                    KeyMuteUnmute = splitter(3)
-                ElseIf splitter(0) = Options.HotkeyShowHide.Name Then
-                    HumanModifiersShowHide = splitter(1)
-                    ModifiersShowHide = splitter(2)
-                    KeyShowHide = splitter(3)
-                ElseIf splitter(0) = Options.Band0.Name Then
-                    Band0 = splitter(1)
-                ElseIf splitter(0) = Options.Band1.Name Then
-                    Band1 = splitter(1)
-                ElseIf splitter(0) = Options.Band2.Name Then
-                    Band2 = splitter(1)
-                ElseIf splitter(0) = Options.Band3.Name Then
-                    Band3 = splitter(1)
-                ElseIf splitter(0) = Options.Band4.Name Then
-                    Band4 = splitter(1)
-                ElseIf splitter(0) = Options.Band5.Name Then
-                    Band5 = splitter(1)
-                ElseIf splitter(0) = StationChooser.Name And splitter(1) = "" = False Then
 
-                    RadioStation = splitter(1)
+                ElseIf splitter(0) = Options.MultimediaKeys.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                    MultimediaKeys = splitter(1)
+                ElseIf splitter(0) = Options.HotkeyPlayStop.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    HumanModifiersPlayStop = splitter(1)
+
+                    If Integer.TryParse(splitter(2), Nothing) Then
+                        ModifiersPlayStop = splitter(2)
+                    End If
+
+                    If Integer.TryParse(splitter(2), Nothing) Then
+                        KeyPlayStop = splitter(3)
+                    End If
+
+                ElseIf splitter(0) = Options.HotkeyVolumeUp.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    HumanModifiersVolumeUp = splitter(1)
+
+                    If Integer.TryParse(splitter(2), Nothing) Then
+                        ModifiersVolumeUp = splitter(2)
+                    End If
+
+                    If Integer.TryParse(splitter(3), Nothing) Then
+                        KeyVolumeUp = splitter(3)
+                    End If
+
+                ElseIf splitter(0) = Options.HotkeyVolumeDown.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    HumanModifiersVolumeDown = splitter(1)
+                    If Integer.TryParse(splitter(2), Nothing) Then
+                        ModifiersVolumeDown = splitter(2)
+                    End If
+
+                    If Integer.TryParse(splitter(2), Nothing) Then
+                        KeyVolumeDown = splitter(3)
+                    End If
+
+                ElseIf splitter(0) = Options.HotkeyMuteUnmute.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    HumanModifiersMuteUnmute = splitter(1)
+
+                    If Integer.TryParse(splitter(2), Nothing) Then
+                        ModifiersMuteUnmute = splitter(2)
+                    End If
+
+                    If ModifiersMuteUnmute = splitter(3) Then
+                        KeyMuteUnmute = splitter(3)
+                    End If
+
+                ElseIf splitter(0) = Options.HotkeyShowHide.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    HumanModifiersShowHide = splitter(1)
+
+                    If Integer.TryParse(splitter(2), Nothing) Then
+                        ModifiersShowHide = splitter(2)
+                    End If
+
+                    If ModifiersMuteUnmute = splitter(3) Then
+                        KeyShowHide = splitter(3)
+                    End If
+
+                ElseIf splitter(0) = Options.Band0.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    Band0 = splitter(1)
+                ElseIf splitter(0) = Options.Band1.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    Band1 = splitter(1)
+                ElseIf splitter(0) = Options.Band2.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    Band2 = splitter(1)
+                ElseIf splitter(0) = Options.Band3.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    Band3 = splitter(1)
+                ElseIf splitter(0) = Options.Band4.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    Band4 = splitter(1)
+                ElseIf splitter(0) = Options.Band5.Name And Integer.TryParse(splitter(1), Nothing) Then
+                    Band5 = splitter(1)
+                ElseIf splitter(0) = StationChooser.Name Then
+
+                    If splitter(1) = "Digitally Imported" OrElse splitter(1) = "SKY.FM" OrElse splitter(1) = "JazzRadio" OrElse splitter(1) = "RockRadio" Then
+                        RadioStation = splitter(1)
+                    End If
 
                 ElseIf splitter(0) = "DIChannel" Then
 
@@ -2775,7 +2828,7 @@ startover:
                         RockChannel = splitter(1)
                     End If
 
-                ElseIf splitter(0) = Volume.Name Then
+                ElseIf splitter(0) = Volume.Name And IsNumeric(splitter(1)) Then
                     Volume.Value = splitter(1)
                 ElseIf splitter(0) = SelectedServer.Name And SelectedChannel.Text = "My Favorites" Then
                     OldFav = splitter(1)
@@ -2897,7 +2950,7 @@ startover:
 
         Catch ex As Exception
 
-            MessageBox.Show("Some of the options in the .ini file weren't valid and haven't been loaded.", "Error loading options", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("There was an error trying to load your options file. Please check the Options panel.", "Error loading options", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
         End Try
 
