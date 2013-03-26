@@ -136,7 +136,7 @@ Public Class Player
     Dim ServersArray As New ListView                ' -> Used to store a list of available servers for a particular channel
     Dim EventsArray As New ListView                 ' -> Used to store some info when obtaining events
     ' v  This list of channels may be outdated. It's only used as a fallback in case CheckForums fails to download the (maybe updated?) list of channels that don't have a forum link
-    Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel;UMF Radio;UMF Stage 1;Big Room House;EcLectronica;Russian Club Hits;Mainstage;Best of the 60s; Classic Motown;Russian Pop;Russian Dance Hits;Israeli Hits"
+    Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel;UMF Radio;UMF Stage 1;UMF Stage 2;Big Room House;EcLectronica;Russian Club Hits;Mainstage;Best of the 60s; Classic Motown;Russian Pop;Russian Dance Hits;Israeli Hits"
     Private _mySync As SYNCPROC                     ' -> Sync so BASS says when the stream title has changed
 
     Dim channelKey As Integer
@@ -314,9 +314,9 @@ Public Class Player
         If Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, Me.Handle, Nothing) = False Then
 
             If Bass.BASS_ErrorGetCode = 23 Then
-                MsgBox("No audio devices available." & vbNewLine & "The application will close now.", MsgBoxStyle.Critical, "Critical error")
+                MessageBox.Show("No audio devices available." & vbNewLine & "The application will close now.", "Critical error", MessageBoxButtons.OK, MessageBoxIcon.Stop)
             Else
-                MsgBox("The application can't start due to the error number " & Bass.BASS_ErrorGetCode, MsgBoxStyle.Critical, "Critical error")
+                MessageBox.Show("The application can't start due to the error number " & Bass.BASS_ErrorGetCode, "Critical error", MessageBoxButtons.OK, MessageBoxIcon.Stop)
             End If
 
             End
@@ -325,46 +325,12 @@ Public Class Player
 
         CheckForums.RunWorkerAsync()
 
-        ' Get the actual EXE path, create the servers folder and a folder for each station. Then - in case the user has just upgraded from a version
-        ' prior to 1.10, erase everything in all servers folders.
-
+        ' Create the servers folder and a folder for each station.
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers")
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & DIFM.Text)
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & JazzRadio.Text)
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & SKYFM.Text)
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & RockRadio.Text)
-
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & DIFM.Text & "\*.pls") Then
-            Kill(exeFolder & "\servers\" & DIFM.Text & "\*.pls")
-        End If
-
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & DIFM.Text & "\*.asx") Then
-            Kill(exeFolder & "\servers\" & DIFM.Text & "\*.asx")
-        End If
-
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & JazzRadio.Text & "\*.pls") Then
-            Kill(exeFolder & "\servers\" & JazzRadio.Text & "\*.*")
-        End If
-
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & JazzRadio.Text & "\*.asx") Then
-            Kill(exeFolder & "\servers\" & JazzRadio.Text & "\*.*")
-        End If
-
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & SKYFM.Text & "\*.pls") Then
-            Kill(exeFolder & "\servers\" & SKYFM.Text & "\*.*")
-        End If
-
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & SKYFM.Text & "\*.asx") Then
-            Kill(exeFolder & "\servers\" & SKYFM.Text & "\*.*")
-        End If
-
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & RockRadio.Text & "\*.pls") Then
-            Kill(exeFolder & "\servers\" & RockRadio.Text & "\*.*")
-        End If
-
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & RockRadio.Text & "\*.asx") Then
-            Kill(exeFolder & "\servers\" & RockRadio.Text & "\*.*")
-        End If
 
         ' Load plugins for WMA and AAC support
         Bass.BASS_PluginLoad("basswma.dll")

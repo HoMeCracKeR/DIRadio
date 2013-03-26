@@ -439,6 +439,8 @@
     End Sub
 
     Private Sub StationSelector_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles StationSelector.SelectedIndexChanged
+        EnableButtons = False
+
         If StationSelector.Text = "Digitally Imported" Then
             FileFormat.Enabled = True
 
@@ -451,7 +453,6 @@
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
                 FileFormat.Items.Add("Windows Media 64k")
-                EnableButtons = False
 
                 If DISettingPremium > -1 Then
                     FileFormat.SelectedIndex = DISettingPremium
@@ -464,7 +465,6 @@
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
-                EnableButtons = False
 
                 If DISetting > -1 Then
                     FileFormat.SelectedIndex = DISetting
@@ -485,7 +485,6 @@
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
                 FileFormat.Items.Add("Windows Media 64k")
-                EnableButtons = False
 
                 If SKYSettingPremium > -1 Then
                     FileFormat.SelectedIndex = SKYSettingPremium
@@ -498,7 +497,6 @@
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
-                EnableButtons = False
 
                 If SKYSetting > -1 Then
                     FileFormat.SelectedIndex = SKYSetting
@@ -518,7 +516,6 @@
                 FileFormat.Items.Add("MP3 256k")
                 FileFormat.Items.Add("MP3 128k")
                 FileFormat.Items.Add("Windows Media 128k")
-                EnableButtons = False
 
                 If JazzSettingPremium > -1 Then
                     FileFormat.SelectedIndex = JazzSettingPremium
@@ -531,7 +528,6 @@
                 FileFormat.Items.Add("AAC-HE")
                 FileFormat.Items.Add("MP3")
                 FileFormat.Items.Add("Windows Media")
-                EnableButtons = False
 
                 If JazzSetting > -1 Then
                     FileFormat.SelectedIndex = JazzSetting
@@ -543,7 +539,6 @@
         ElseIf StationSelector.Text = "RockRadio" Then
             FileFormat.Items.Clear()
             FileFormat.Items.Add("MP3")
-            EnableButtons = False
             FileFormat.SelectedIndex = 0
             FileFormat.Enabled = False
         End If
