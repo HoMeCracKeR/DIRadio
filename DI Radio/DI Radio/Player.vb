@@ -122,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 45    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 46    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -2624,7 +2624,7 @@ startover:
 
                     End If
 
-                ElseIf splitter(0) = Options.VisualisationType.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                ElseIf splitter(0) = Options.VisualisationType.Name And Integer.TryParse(splitter(1), Nothing) Then
                     VisualisationType = splitter(1)
                 ElseIf splitter(0) = Options.HighQualityVis.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     HighQualityVis = splitter(1)
@@ -2632,15 +2632,15 @@ startover:
                     LinealRepresentation = splitter(1)
                 ElseIf splitter(0) = Options.FullSoundRange.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     FullSoundRange = splitter(1)
-                ElseIf splitter(0) = Options.Smoothness.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                ElseIf splitter(0) = Options.Smoothness.Name And Integer.TryParse(splitter(1), Nothing) Then
                     Smoothness = splitter(1)
-                ElseIf splitter(0) = Options.MainColour.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                ElseIf splitter(0) = Options.MainColour.Name And Integer.TryParse(splitter(1), Nothing) Then
                     MainColour = splitter(1)
-                ElseIf splitter(0) = Options.SecondaryColour.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                ElseIf splitter(0) = Options.SecondaryColour.Name And Integer.TryParse(splitter(1), Nothing) Then
                     SecondaryColour = splitter(1)
-                ElseIf splitter(0) = Options.PeakColour.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                ElseIf splitter(0) = Options.PeakColour.Name And Integer.TryParse(splitter(1), Nothing) Then
                     PeakColour = splitter(1)
-                ElseIf splitter(0) = Options.BackgroundColour.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                ElseIf splitter(0) = Options.BackgroundColour.Name And Integer.TryParse(splitter(1), Nothing) Then
                     BackgroundColour = splitter(1)
                 ElseIf splitter(0) = Options.ChangeWholeBackground.Name Then
 
@@ -2718,7 +2718,7 @@ startover:
                         ModifiersVolumeDown = splitter(2)
                     End If
 
-                    If Integer.TryParse(splitter(2), Nothing) Then
+                    If Integer.TryParse(splitter(3), Nothing) Then
                         KeyVolumeDown = splitter(3)
                     End If
 
@@ -2729,7 +2729,7 @@ startover:
                         ModifiersMuteUnmute = splitter(2)
                     End If
 
-                    If ModifiersMuteUnmute = splitter(3) Then
+                    If Integer.TryParse(splitter(3), Nothing) Then
                         KeyMuteUnmute = splitter(3)
                     End If
 
@@ -2740,7 +2740,7 @@ startover:
                         ModifiersShowHide = splitter(2)
                     End If
 
-                    If ModifiersMuteUnmute = splitter(3) Then
+                    If Integer.TryParse(splitter(3), Nothing) Then
                         KeyShowHide = splitter(3)
                     End If
 
