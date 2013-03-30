@@ -138,6 +138,7 @@ Public Class Player
     ' v  This list of channels may be outdated. It's only used as a fallback in case CheckForums fails to download the (maybe updated?) list of channels that don't have a forum link
     Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel;UMF Radio;UMF Stage 1;UMF Stage 2;Big Room House;EcLectronica;Russian Club Hits;Mainstage;Best of the 60s; Classic Motown;Russian Pop;Russian Dance Hits;Israeli Hits"
     Private _mySync As SYNCPROC                     ' -> Sync so BASS says when the stream title has changed
+    Dim nochange As Boolean
 
     Dim channelKey As Integer
     Dim KeysArray As New ListView
@@ -1019,6 +1020,9 @@ Public Class Player
         If PlayStop.Tag = "Stop" And PlayNewOnChannelChange = True Then
             RestartPlayback = True
             PlayStop_Click(Me, Nothing)
+            nochange = False
+        Else
+            nochange = True
         End If
 
         If StationChooser.Text = DIFM.Text Then
@@ -1073,7 +1077,7 @@ Public Class Player
             PlayStop_Click(Me, Nothing)
             OldFav = SelectedServer.Text
             SelectedChannel_SelectedIndexChanged(Me, Nothing)
-        ElseIf SelectedChannel.Text = "My Favorites" = False And PlayStop.Tag = "Stop" Then
+        ElseIf SelectedChannel.Text = "My Favorites" = False And PlayStop.Tag = "Stop" And nochange = False Then
             PlayStop_Click(Me, Nothing)
             PlayStop_Click(Me, Nothing)
         End If
@@ -1201,8 +1205,10 @@ Public Class Player
             Dim thistime As Integer
             thistime = (DateTime.UtcNow - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
 
-            If thistime > EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text And thistime < EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text Then
+            If thistime > EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text And thistime < EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text And EventName.Text = RadioString.Text Then
                 EventTimes.Text += " ♫ Now playing ♫"
+            ElseIf thistime > EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text And thistime < EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text Then
+                EventTimes.Text += " > On air"
             End If
 
             EventDescription.Text = "Please wait, downloading event details..."
@@ -1674,14 +1680,7 @@ again:
 
         SelectedChannel.Enabled = True
         SelectedServer.Enabled = True
-
-        'If SelectedChannel.Text = "My Favorites" = False Then
-        '    SelectedChannel.Enabled = True
-        'Else
-        '    SelectedServer.Enabled = True
-        '    SelectedChannel.Enabled = False
-        'End If
-
+        nochange = False
         TrayMenu_Opening(Me, Nothing)
         RefreshFavorites.Enabled = True
     End Sub
@@ -2243,7 +2242,7 @@ startover:
     End Sub
 
     Private Sub CopyTitleMenu_Opening(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles CopyTitleMenu.Opening
-        If RadioString.Text = "" OrElse RadioString.Text.Contains("Connection is taking some time") = True OrElse RadioString.Text.Contains("Lost connection to") = True OrElse RadioString.Text.Contains("Connecting, please wait...") = True OrElse RadioString.Text.Contains("Couldn't connect to") = True Then
+        If RadioString.Text = "" OrElse RadioString.Text.Contains("Connection is taking some time") OrElse RadioString.Text.Contains("Lost connection to") OrElse RadioString.Text.Contains("Connecting, please wait...") OrElse RadioString.Text.Contains("Couldn't connect to") OrElse RadioString.Text.Contains("Internet connection") Then
             CopyToolStripMenuItem.Enabled = False
             GoogleSearchToolStripMenuItem.Enabled = False
         Else
