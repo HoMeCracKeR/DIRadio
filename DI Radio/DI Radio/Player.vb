@@ -122,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 46    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 47    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -1205,10 +1205,8 @@ Public Class Player
             Dim thistime As Integer
             thistime = (DateTime.UtcNow - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
 
-            If thistime > EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text And thistime < EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text And EventName.Text = RadioString.Text Then
+            If thistime > EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text And thistime < EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text Then
                 EventTimes.Text += " ♫ Now playing ♫"
-            ElseIf thistime > EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text And thistime < EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text Then
-                EventTimes.Text += " > On air"
             End If
 
             EventDescription.Text = "Please wait, downloading event details..."
@@ -1267,19 +1265,27 @@ Public Class Player
         ' open file
 
         Try
-            Dim readerChdb As IO.StreamReader = channelDb(chdb)
 
-            ' read file
-            Do While (readerChdb.Peek > -1)
-                Dim line = readerChdb.ReadLine()
-                Dim splitter = Split(line, "|")
-                If splitter(0) = channel Then
-                    channel = splitter(1)
-                End If
-            Loop
+            If My.Computer.FileSystem.FileExists(chdb) Then
+                Dim readerChdb As IO.StreamReader = channelDb(chdb)
 
-            readerChdb.Close()
-            readerChdb.Dispose()
+                ' read file
+                Do While (readerChdb.Peek > -1)
+                    Dim line = readerChdb.ReadLine()
+                    Dim splitter = Split(line, "|")
+                    If splitter(0) = channel Then
+                        channel = splitter(1)
+                    End If
+                Loop
+
+                readerChdb.Close()
+                readerChdb.Dispose()
+            Else
+
+                DownloadDb.RunWorkerAsync()
+                Exit Sub
+            End If
+
         Catch ex As Exception
             Dim word As String
 
@@ -1295,9 +1301,6 @@ Public Class Player
 
             Exit Sub
         End Try
-
-
-
 
         Dim file = serversFolder & "\" & channel & ".db"
 
@@ -1518,7 +1521,6 @@ Public Class Player
 
         reader.Close()
         reader.Dispose()
-
     End Sub
 
     Private Sub ServersDownloader_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles ServersDownloader.RunWorkerCompleted
@@ -2020,6 +2022,7 @@ startover:
     Private Sub DownloadDb_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadDb.DoWork
 
         Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
+        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & StationChooser.Text)
 
         Try
 
