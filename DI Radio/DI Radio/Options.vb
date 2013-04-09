@@ -1832,10 +1832,12 @@ nofavs:
                 Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
             Catch
             End Try
+
             Try
                 Kill(Player.exeFolder & "servers\JazzRadio\*.*")
             Catch
             End Try
+
             Try
                 Kill(Player.exeFolder & "servers\SKY.FM\*.*")
             Catch

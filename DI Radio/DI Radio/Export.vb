@@ -266,8 +266,9 @@ startover:
             Dim URL As String
 
             If IncludeLink.Checked = True Then
-                URL = "\n" & splitter(1)
+                URL = "\n http://www.di.fm/calendar/event/" & splitter(1)
             End If
+
             writer.WriteLine("DESCRIPTION:" & description & URL)
 
             Dim transparency As String = "TRANSP"
@@ -315,6 +316,5 @@ startover:
     End Sub
 
 #End Region
-
 
 End Class
