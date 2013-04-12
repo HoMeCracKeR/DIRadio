@@ -1828,18 +1828,36 @@ nofavs:
                 End If
             End If
 
-            Try
-                Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
-            Catch
-            End Try
-            Try
-                Kill(Player.exeFolder & "servers\JazzRadio\*.*")
-            Catch
-            End Try
-            Try
-                Kill(Player.exeFolder & "servers\SKY.FM\*.*")
-            Catch
-            End Try
+            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\Digitally Imported") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\Digitally Imported")
+
+                    If foundFile.Contains("channels.db") = False Then
+                        Kill(foundFile)
+                    End If
+
+                Next
+            End If
+
+            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\JazzRadio") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\JazzRadio")
+
+                    If foundFile.Contains("channels.db") = False Then
+                        Kill(foundFile)
+                    End If
+
+                Next
+            End If
+
+            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\SKY.FM") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\SKY.FM")
+
+                    If foundFile.Contains("channels.db") = False Then
+                        Kill(foundFile)
+                    End If
+
+                Next
+            End If
+
 
 
             If Player.SelectedChannel.Text = "My Favorites" Then
@@ -1874,10 +1892,15 @@ nofavs:
                 End If
 
 
-                Try
-                    Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
-                Catch
-                End Try
+                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\Digitally Imported") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\Digitally Imported")
+
+                        If foundFile.Contains("channels.db") = False Then
+                            Kill(foundFile)
+                        End If
+
+                    Next
+                End If
 
                 If Player.StationChooser.Text = Player.DIFM.Text Then
 
@@ -1915,10 +1938,15 @@ nofavs:
                 End If
 
 
-                Try
-                    Kill(Player.exeFolder & "servers\SKY.FM\*.*")
-                Catch
-                End Try
+                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\SKY.FM") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\SKY.FM")
+
+                        If foundFile.Contains("channels.db") = False Then
+                            Kill(foundFile)
+                        End If
+
+                    Next
+                End If
 
                 If Player.StationChooser.Text = Player.SKYFM.Text Then
 
@@ -1953,11 +1981,16 @@ nofavs:
                     Player.JazzFormat = JazzSettingPremium
                 End If
 
+                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\JazzRadio") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\JazzRadio")
 
-                Try
-                    Kill(Player.exeFolder & "servers\JazzRadio\*.*")
-                Catch
-                End Try
+                        If foundFile.Contains("channels.db") = False Then
+                            Kill(foundFile)
+                        End If
+
+                    Next
+                End If
+
 
                 If Player.StationChooser.Text = Player.JazzRadio.Text Then
 

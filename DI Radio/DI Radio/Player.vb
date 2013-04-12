@@ -122,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 47    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 48    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -156,6 +156,7 @@ Public Class Player
     Public exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
 
     Public HotkeysSet As Boolean = False
+    Delegate Sub RestartPlaybackSafe()
 
 #End Region
 
@@ -1281,7 +1282,7 @@ Public Class Player
                 readerChdb.Close()
                 readerChdb.Dispose()
             Else
-
+                Marquee.Show()
                 DownloadDb.RunWorkerAsync()
                 Exit Sub
             End If
@@ -1524,61 +1525,62 @@ Public Class Player
     End Sub
 
     Private Sub ServersDownloader_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles ServersDownloader.RunWorkerCompleted
-        Marquee.Hide()
-        SelectedChannel.Enabled = True
+        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & StationChooser.Text & "\channels.db") Then
+            Marquee.Hide()
+            SelectedChannel.Enabled = True
 
-        If SelectedServer.Items.Count > 0 Then
-            PlayStop.Enabled = True
-            SelectedServer.SelectedIndex = 0
-            SelectedServer.Enabled = True
-        End If
+            If SelectedServer.Items.Count > 0 Then
+                PlayStop.Enabled = True
+                SelectedServer.SelectedIndex = 0
+                SelectedServer.Enabled = True
+            End If
 
-        StationChooser.Enabled = True
+            StationChooser.Enabled = True
 
-        If SelectedChannel.Text = "My Favorites" And OldFav = Nothing = False Then
-            Try
-                SelectedServer.SelectedItem = OldFav
-            Catch
-            End Try
-        End If
+            If SelectedChannel.Text = "My Favorites" And OldFav = Nothing = False Then
+                Try
+                    SelectedServer.SelectedItem = OldFav
+                Catch
+                End Try
+            End If
 
+            Dim Restart As New RestartPlaybackSafe(AddressOf ResumePlaying)
 
-        If PlayStop.Tag = "Stop" And PlayNewOnChannelChange = True OrElse RestartPlayback = True Then
-            PlayStop_Click(Me, Nothing)
-            RestartPlayback = False
-        End If
+            If PlayStop.Tag = "Stop" And PlayNewOnChannelChange = True OrElse RestartPlayback = True Then
+                Me.Invoke(Restart)
+            End If
 
-        If SelectedServer.Items.Count = 0 And SelectedChannel.Text = "My Favorites" Then
-            SelectedServer.Items.Add("Click the link to edit list")
-            SelectedServer.SelectedIndex = 0
-            SelectedServer.Enabled = False
-            Forums.Enabled = False
-            History.Enabled = False
-            HistoryList.Hide()
-            History.ImageAlign = ContentAlignment.BottomRight
-            History.Image = My.Resources.history
-            Events.Enabled = False
-            EventsPanel.Hide()
-            Events.ImageAlign = ContentAlignment.MiddleCenter
-            Events.Image = My.Resources.events
-        ElseIf StationChooser.Text = JazzRadio.Text = False And StationChooser.Text = RockRadio.Text = False Then
-            History.Enabled = True
+            If SelectedServer.Items.Count = 0 And SelectedChannel.Text = "My Favorites" Then
+                SelectedServer.Items.Add("Click the link to edit list")
+                SelectedServer.SelectedIndex = 0
+                SelectedServer.Enabled = False
+                Forums.Enabled = False
+                History.Enabled = False
+                HistoryList.Hide()
+                History.ImageAlign = ContentAlignment.BottomRight
+                History.Image = My.Resources.history
+                Events.Enabled = False
+                EventsPanel.Hide()
+                Events.ImageAlign = ContentAlignment.MiddleCenter
+                Events.Image = My.Resources.events
+            ElseIf StationChooser.Text = JazzRadio.Text = False And StationChooser.Text = RockRadio.Text = False Then
+                History.Enabled = True
 
-            If StationChooser.Text = SKYFM.Text = False Then
-                Events.Enabled = True
+                If StationChooser.Text = SKYFM.Text = False Then
+                    Events.Enabled = True
+                End If
+            End If
+
+            If Bufer.IsBusy = False Then
+                RefreshFavorites.Enabled = True
+            End If
+
+            DownloadingMessage.Hide()
+
+            If SelectedServer.Items.Count < 1 Then
+                RetryServers.Show()
             End If
         End If
-
-        If Bufer.IsBusy = False Then
-            RefreshFavorites.Enabled = True
-        End If
-
-        DownloadingMessage.Hide()
-
-        If SelectedServer.Items.Count < 1 Then
-            RetryServers.Show()
-        End If
-
     End Sub
 
     Private Sub Bufer_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles Bufer.DoWork
@@ -2027,6 +2029,7 @@ startover:
         Try
 
             Dim readerChdb As IO.StreamReader = channelDb(chdb)
+            SelectedChannel.Items.Clear()
 
             Do While (readerChdb.Peek > -1)
                 Dim line = readerChdb.ReadLine()
@@ -3013,6 +3016,11 @@ startover:
 
         Return datestring
     End Function
+
+    Sub ResumePlaying()
+        RestartPlayback = False
+        PlayStop_Click(Me, Nothing)
+    End Sub
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
 
