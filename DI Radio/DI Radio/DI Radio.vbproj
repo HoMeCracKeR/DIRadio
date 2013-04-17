@@ -107,6 +107,12 @@
     <Compile Include="Export.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Gallery.Designer.vb">
+      <DependentUpon>Gallery.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Gallery.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Player.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -145,6 +151,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Export.resx">
       <DependentUpon>Export.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gallery.resx">
+      <DependentUpon>Gallery.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Player.resx">
       <DependentUpon>Player.vb</DependentUpon>

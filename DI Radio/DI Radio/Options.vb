@@ -231,6 +231,7 @@
 
     Private Sub Options_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         Changelog.Close()
+        Gallery.Close()
     End Sub
 
 #End Region
@@ -1480,7 +1481,9 @@
     End Sub
 
     Private Sub GetMoreThemesToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles GetMoreThemesToolStripMenuItem.Click
-        Process.Start("http://tobiass.eu/themes/browse")
+        Gallery.Location = New Point(Me.Location.X - 21, Me.Location.Y + 9)
+        Gallery.Show()
+        Gallery.BringToFront()
     End Sub
 
 #End Region
@@ -1828,20 +1831,36 @@ nofavs:
                 End If
             End If
 
-            Try
-                Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
-            Catch
-            End Try
+            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\Digitally Imported") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\Digitally Imported")
 
-            Try
-                Kill(Player.exeFolder & "servers\JazzRadio\*.*")
-            Catch
-            End Try
+                    If foundFile.Contains("channels.db") = False Then
+                        Kill(foundFile)
+                    End If
 
-            Try
-                Kill(Player.exeFolder & "servers\SKY.FM\*.*")
-            Catch
-            End Try
+                Next
+            End If
+
+            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\JazzRadio") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\JazzRadio")
+
+                    If foundFile.Contains("channels.db") = False Then
+                        Kill(foundFile)
+                    End If
+
+                Next
+            End If
+
+            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\SKY.FM") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\SKY.FM")
+
+                    If foundFile.Contains("channels.db") = False Then
+                        Kill(foundFile)
+                    End If
+
+                Next
+            End If
+
 
 
             If Player.SelectedChannel.Text = "My Favorites" Then
@@ -1876,10 +1895,15 @@ nofavs:
                 End If
 
 
-                Try
-                    Kill(Player.exeFolder & "servers\Digitally Imported\*.*")
-                Catch
-                End Try
+                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\Digitally Imported") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\Digitally Imported")
+
+                        If foundFile.Contains("channels.db") = False Then
+                            Kill(foundFile)
+                        End If
+
+                    Next
+                End If
 
                 If Player.StationChooser.Text = Player.DIFM.Text Then
 
@@ -1917,10 +1941,15 @@ nofavs:
                 End If
 
 
-                Try
-                    Kill(Player.exeFolder & "servers\SKY.FM\*.*")
-                Catch
-                End Try
+                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\SKY.FM") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\SKY.FM")
+
+                        If foundFile.Contains("channels.db") = False Then
+                            Kill(foundFile)
+                        End If
+
+                    Next
+                End If
 
                 If Player.StationChooser.Text = Player.SKYFM.Text Then
 
@@ -1955,11 +1984,16 @@ nofavs:
                     Player.JazzFormat = JazzSettingPremium
                 End If
 
+                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\JazzRadio") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\JazzRadio")
 
-                Try
-                    Kill(Player.exeFolder & "servers\JazzRadio\*.*")
-                Catch
-                End Try
+                        If foundFile.Contains("channels.db") = False Then
+                            Kill(foundFile)
+                        End If
+
+                    Next
+                End If
+
 
                 If Player.StationChooser.Text = Player.JazzRadio.Text Then
 
@@ -2115,77 +2149,7 @@ nofavs:
         Player.BackgroundColour = BackgroundColour.BackColor.ToArgb()
         Player.ChangeWholeBackground = ChangeWholeBackground.Checked
 
-        If ChangeWholeBackground.Checked = True Then
-
-            Player.BackColor = BackgroundColour.BackColor
-            Player.ToolStrip1.BackColor = BackgroundColour.BackColor
-            Player.StationChooser.BackColor = BackgroundColour.BackColor
-            Player.Label1.BackColor = BackgroundColour.BackColor
-            Player.Label2.BackColor = BackgroundColour.BackColor
-            Player.EventDescription.BackColor = BackgroundColour.BackColor
-            Player.HistoryList.BackColor = BackgroundColour.BackColor
-            Player.TimerString.BackColor = BackgroundColour.BackColor
-
-            If BackgroundColour.BackColor.ToArgb() < -8323328 Then
-                Player.EventName.ForeColor = Color.White
-                Player.EventDescription.ForeColor = Color.White
-                Player.EventTimes.ForeColor = Color.White
-                Player.EventTagline.ForeColor = Color.White
-                Player.HistoryList.ForeColor = Color.White
-            Else
-                Player.EventName.ForeColor = Color.Black
-                Player.EventDescription.ForeColor = Color.Black
-                Player.EventTimes.ForeColor = Color.Black
-                Player.EventTagline.ForeColor = Color.Black
-                Player.HistoryList.ForeColor = Color.Black
-            End If
-
-            If BackgroundColour.BackColor.ToArgb() < -7105537 Then
-                Player.EditFavorites.LinkColor = Color.White
-                Player.RefreshFavorites.LinkColor = Color.White
-            Else
-                Player.EditFavorites.LinkColor = Color.Blue
-                Player.RefreshFavorites.LinkColor = Color.Blue
-            End If
-
-            If Player.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Player.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Player.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                Player.RadioString.BackColor = BackgroundColour.BackColor
-
-                If BackgroundColour.BackColor.ToArgb() < -8323328 Then
-                    Player.RadioString.ForeColor = Color.White
-                    Player.TimerString.ForeColor = Color.White
-                Else
-                    Player.RadioString.ForeColor = Color.Black
-                    Player.TimerString.ForeColor = Color.Black
-                End If
-
-            End If
-
-        Else
-
-            Player.BackColor = SystemColors.Control
-            Player.ToolStrip1.BackColor = SystemColors.Control
-            Player.StationChooser.BackColor = SystemColors.Control
-            Player.Label1.BackColor = SystemColors.Control
-            Player.Label2.BackColor = SystemColors.Control
-            Player.EventDescription.BackColor = SystemColors.Control
-            Player.EventName.ForeColor = SystemColors.ControlText
-            Player.EventDescription.ForeColor = SystemColors.ControlText
-            Player.EventTimes.ForeColor = SystemColors.ControlText
-            Player.EventTagline.ForeColor = SystemColors.ControlText
-            Player.HistoryList.BackColor = SystemColors.Window
-            Player.HistoryList.ForeColor = SystemColors.ControlText
-            Player.EditFavorites.LinkColor = Color.Blue
-            Player.RefreshFavorites.LinkColor = Color.Blue
-            Player.TimerString.BackColor = SystemColors.Control
-
-            If Player.RadioString.Text.ToLower.StartsWith("internet connection") = False And Player.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Player.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Player.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                Player.RadioString.BackColor = SystemColors.Control
-                Player.RadioString.ForeColor = SystemColors.ControlText
-                Player.TimerString.ForeColor = SystemColors.ControlText
-            End If
-
-        End If
+        Player.ApplyTheme()
 
         Player.PlayNewOnChannelChange = PlayNewOnChannelChange.Checked
 

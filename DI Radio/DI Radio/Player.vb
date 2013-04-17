@@ -122,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 47    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 48    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -156,6 +156,7 @@ Public Class Player
     Public exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
 
     Public HotkeysSet As Boolean = False
+    Delegate Sub RestartPlaybackSafe()
 
 #End Region
 
@@ -181,125 +182,11 @@ Public Class Player
 
     Private Sub Player_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles Me.DragDrop
         If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+
             Dim filepath() As String = e.Data.GetData(DataFormats.FileDrop)
-            Dim reader As New IO.StreamReader(filepath(0))
-            Dim lineNumber As Integer = 0
+            ReadThemeFile(filepath(0))
+            ApplyTheme()
 
-            Do While (reader.Peek > -1)
-                Dim line As String = reader.ReadLine
-
-                If lineNumber = 0 Then
-                    MainColour = line
-
-                    If Options.Visible = True Then
-                        Options.MainColour.BackColor = Color.FromArgb(line)
-                    End If
-                ElseIf lineNumber = 1 Then
-                    SecondaryColour = line
-
-                    If Options.Visible = True Then
-                        Options.SecondaryColour.BackColor = Color.FromArgb(line)
-                    End If
-                ElseIf lineNumber = 2 Then
-                    PeakColour = line
-
-                    If Options.Visible = True Then
-                        Options.PeakColour.BackColor = Color.FromArgb(line)
-                    End If
-                ElseIf lineNumber = 3 Then
-                    BackgroundColour = line
-
-                    If Options.Visible = True Then
-                        Options.BackgroundColour.BackColor = Color.FromArgb(line)
-                    End If
-                ElseIf lineNumber = 4 Then
-                    ChangeWholeBackground = line
-
-                    If Options.Visible = True Then
-                        Options.ChangeWholeBackground.Checked = line
-                    End If
-                End If
-
-                lineNumber += 1
-            Loop
-
-            reader.Close()
-            reader.Dispose()
-
-            If ChangeWholeBackground = True Then
-
-                Me.BackColor = Color.FromArgb(BackgroundColour)
-                ToolStrip1.BackColor = Color.FromArgb(BackgroundColour)
-                StationChooser.BackColor = Color.FromArgb(BackgroundColour)
-                Label1.BackColor = Color.FromArgb(BackgroundColour)
-                Label2.BackColor = Color.FromArgb(BackgroundColour)
-                EventDescription.BackColor = Color.FromArgb(BackgroundColour)
-                HistoryList.BackColor = Color.FromArgb(BackgroundColour)
-                TimerString.BackColor = Color.FromArgb(BackgroundColour)
-
-                If BackgroundColour < -8323328 Then
-                    RadioString.ForeColor = Color.White
-                    TimerString.ForeColor = Color.White
-                    EventName.ForeColor = Color.White
-                    EventDescription.ForeColor = Color.White
-                    EventTimes.ForeColor = Color.White
-                    EventTagline.ForeColor = Color.White
-                    HistoryList.ForeColor = Color.White
-                Else
-                    RadioString.ForeColor = Color.Black
-                    TimerString.ForeColor = Color.Black
-                    EventName.ForeColor = Color.Black
-                    EventDescription.ForeColor = Color.Black
-                    EventTimes.ForeColor = Color.Black
-                    EventTagline.ForeColor = Color.Black
-                    HistoryList.ForeColor = Color.Black
-                End If
-
-                If BackgroundColour < -7105537 Then
-                    EditFavorites.LinkColor = Color.White
-                    RefreshFavorites.LinkColor = Color.White
-                Else
-                    EditFavorites.LinkColor = Color.Blue
-                    RefreshFavorites.LinkColor = Color.Blue
-                End If
-
-                If RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                    RadioString.BackColor = Color.FromArgb(BackgroundColour)
-
-                    If BackgroundColour < -8323328 Then
-                        RadioString.ForeColor = Color.White
-                        TimerString.ForeColor = Color.White
-                    Else
-                        RadioString.ForeColor = Color.Black
-                        TimerString.ForeColor = Color.Black
-                    End If
-
-                End If
-            Else
-
-                BackColor = SystemColors.Control
-                ToolStrip1.BackColor = SystemColors.Control
-                StationChooser.BackColor = SystemColors.Control
-                Label1.BackColor = SystemColors.Control
-                Label2.BackColor = SystemColors.Control
-                EventDescription.BackColor = SystemColors.Control
-                EventName.ForeColor = SystemColors.ControlText
-                EventDescription.ForeColor = SystemColors.ControlText
-                EventTimes.ForeColor = SystemColors.ControlText
-                EventTagline.ForeColor = SystemColors.ControlText
-                HistoryList.BackColor = SystemColors.Window
-                HistoryList.ForeColor = SystemColors.ControlText
-                EditFavorites.LinkColor = Color.Blue
-                RefreshFavorites.LinkColor = Color.Blue
-                TimerString.BackColor = SystemColors.Control
-
-                If RadioString.Text.ToLower.StartsWith("internet connection") = False And RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                    RadioString.BackColor = SystemColors.Control
-                    RadioString.ForeColor = SystemColors.ControlText
-                    TimerString.ForeColor = SystemColors.ControlText
-                End If
-
-            End If
         End If
     End Sub
 
@@ -1281,7 +1168,7 @@ Public Class Player
                 readerChdb.Close()
                 readerChdb.Dispose()
             Else
-                DownloadingMessage.Show()
+                Marquee.Show()
                 DownloadDb.RunWorkerAsync()
                 Exit Sub
             End If
@@ -1525,7 +1412,6 @@ Public Class Player
 
     Private Sub ServersDownloader_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles ServersDownloader.RunWorkerCompleted
         If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & StationChooser.Text & "\channels.db") Then
-
             Marquee.Hide()
             SelectedChannel.Enabled = True
 
@@ -1544,10 +1430,10 @@ Public Class Player
                 End Try
             End If
 
+            Dim Restart As New RestartPlaybackSafe(AddressOf ResumePlaying)
 
             If PlayStop.Tag = "Stop" And PlayNewOnChannelChange = True OrElse RestartPlayback = True Then
-                PlayStop_Click(Me, Nothing)
-                RestartPlayback = False
+                Me.Invoke(Restart)
             End If
 
             If SelectedServer.Items.Count = 0 And SelectedChannel.Text = "My Favorites" Then
@@ -1580,7 +1466,6 @@ Public Class Player
             If SelectedServer.Items.Count < 1 Then
                 RetryServers.Show()
             End If
-
         End If
     End Sub
 
@@ -2026,11 +1911,11 @@ startover:
 
         Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & StationChooser.Text)
-        SelectedChannel.Items.Clear()
 
         Try
 
             Dim readerChdb As IO.StreamReader = channelDb(chdb)
+            SelectedChannel.Items.Clear()
 
             Do While (readerChdb.Peek > -1)
                 Dim line = readerChdb.ReadLine()
@@ -3017,6 +2902,136 @@ startover:
 
         Return datestring
     End Function
+
+    Sub ResumePlaying()
+        RestartPlayback = False
+        PlayStop_Click(Me, Nothing)
+    End Sub
+
+    Public Sub ApplyTheme()
+
+        If ChangeWholeBackground = True Then
+
+            Me.BackColor = Color.FromArgb(BackgroundColour)
+            ToolStrip1.BackColor = Color.FromArgb(BackgroundColour)
+            StationChooser.BackColor = Color.FromArgb(BackgroundColour)
+            Label1.BackColor = Color.FromArgb(BackgroundColour)
+            Label2.BackColor = Color.FromArgb(BackgroundColour)
+            EventDescription.BackColor = Color.FromArgb(BackgroundColour)
+            HistoryList.BackColor = Color.FromArgb(BackgroundColour)
+            TimerString.BackColor = Color.FromArgb(BackgroundColour)
+
+            If BackgroundColour < -8323328 Then
+                RadioString.ForeColor = Color.White
+                TimerString.ForeColor = Color.White
+                EventName.ForeColor = Color.White
+                EventDescription.ForeColor = Color.White
+                EventTimes.ForeColor = Color.White
+                EventTagline.ForeColor = Color.White
+                HistoryList.ForeColor = Color.White
+            Else
+                RadioString.ForeColor = Color.Black
+                TimerString.ForeColor = Color.Black
+                EventName.ForeColor = Color.Black
+                EventDescription.ForeColor = Color.Black
+                EventTimes.ForeColor = Color.Black
+                EventTagline.ForeColor = Color.Black
+                HistoryList.ForeColor = Color.Black
+            End If
+
+            If BackgroundColour < -7105537 Then
+                EditFavorites.LinkColor = Color.White
+                RefreshFavorites.LinkColor = Color.White
+            Else
+                EditFavorites.LinkColor = Color.Blue
+                RefreshFavorites.LinkColor = Color.Blue
+            End If
+
+            If RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
+                RadioString.BackColor = Color.FromArgb(BackgroundColour)
+
+                If BackgroundColour < -8323328 Then
+                    RadioString.ForeColor = Color.White
+                    TimerString.ForeColor = Color.White
+                Else
+                    RadioString.ForeColor = Color.Black
+                    TimerString.ForeColor = Color.Black
+                End If
+
+            End If
+        Else
+
+            BackColor = SystemColors.Control
+            ToolStrip1.BackColor = SystemColors.Control
+            StationChooser.BackColor = SystemColors.Control
+            Label1.BackColor = SystemColors.Control
+            Label2.BackColor = SystemColors.Control
+            EventDescription.BackColor = SystemColors.Control
+            EventName.ForeColor = SystemColors.ControlText
+            EventDescription.ForeColor = SystemColors.ControlText
+            EventTimes.ForeColor = SystemColors.ControlText
+            EventTagline.ForeColor = SystemColors.ControlText
+            HistoryList.BackColor = SystemColors.Window
+            HistoryList.ForeColor = SystemColors.ControlText
+            EditFavorites.LinkColor = Color.Blue
+            RefreshFavorites.LinkColor = Color.Blue
+            TimerString.BackColor = SystemColors.Control
+
+            If RadioString.Text.ToLower.StartsWith("internet connection") = False And RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
+                RadioString.BackColor = SystemColors.Control
+                RadioString.ForeColor = SystemColors.ControlText
+                TimerString.ForeColor = SystemColors.ControlText
+            End If
+
+        End If
+
+    End Sub
+
+    Public Sub ReadThemeFile(ByVal path As String)
+        Dim reader As New IO.StreamReader(path)
+        Dim lineNumber As Integer = 0
+
+        Do While (reader.Peek > -1)
+            Dim line As String = reader.ReadLine
+
+            If lineNumber = 0 Then
+                MainColour = line
+
+                If Options.Visible = True Then
+                    Options.MainColour.BackColor = Color.FromArgb(line)
+                End If
+            ElseIf lineNumber = 1 Then
+                SecondaryColour = line
+
+                If Options.Visible = True Then
+                    Options.SecondaryColour.BackColor = Color.FromArgb(line)
+                End If
+            ElseIf lineNumber = 2 Then
+                PeakColour = line
+
+                If Options.Visible = True Then
+                    Options.PeakColour.BackColor = Color.FromArgb(line)
+                End If
+            ElseIf lineNumber = 3 Then
+                BackgroundColour = line
+
+                If Options.Visible = True Then
+                    Options.BackgroundColour.BackColor = Color.FromArgb(line)
+                End If
+            ElseIf lineNumber = 4 Then
+                ChangeWholeBackground = line
+
+                If Options.Visible = True Then
+                    Options.ChangeWholeBackground.Checked = line
+                End If
+            End If
+
+            lineNumber += 1
+        Loop
+
+        reader.Close()
+        reader.Dispose()
+    End Sub
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
 
