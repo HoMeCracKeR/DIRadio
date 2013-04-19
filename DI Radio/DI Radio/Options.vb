@@ -2227,6 +2227,8 @@ nofavs:
         Player.Band3 = Band3.Value
         Player.Band4 = Band4.Value
         Player.Band5 = Band5.Value
+
+        Player.SaveSettings(False)
     End Sub
 
     Private Sub ColourPicker_HelpRequest(sender As System.Object, e As System.EventArgs) Handles ColourPicker.HelpRequest

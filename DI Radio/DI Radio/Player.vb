@@ -122,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 48    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 49    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -311,79 +311,13 @@ Public Class Player
     End Sub
 
     Private Sub Player_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-
-        Dim file As String = exeFolder & "\options.ini"
-
         If FadeOut.Enabled = False Then
-            Try
-
-                Dim writer As New IO.StreamWriter(file, False)
-                writer.WriteLine(Options.NotificationTitle.Name & "=" & NotificationTitle)
-                writer.WriteLine(Options.PlayNewOnChannelChange.Name & "=" & PlayNewOnChannelChange)
-                writer.WriteLine(Options.NotificationIcon.Name & "=" & NotificationIcon)
-                writer.WriteLine(Options.NoTaskbarButton.Name & "=" & NoTaskbarButton)
-                writer.WriteLine(Options.GoogleSearch.Name & "=" & GoogleSearch)
-                writer.WriteLine(Options.ShowSongStart.Name & "=" & ShowSongStart)
-                writer.WriteLine(Options.PremiumFormats.Name & "=" & PremiumFormats)
-                writer.WriteLine("DIFormat=" & DIFormat)
-                writer.WriteLine("SKYFormat=" & SKYFormat)
-                writer.WriteLine("JazzFormat=" & JazzFormat)
-                writer.WriteLine(Options.ListenKey.Name & "=" & ListenKey)
-                writer.WriteLine(Options.BetaVersions.Name & "=" & BetaVersions)
-                writer.WriteLine(Options.UpdatesAtStart.Name & "=" & UpdatesAtStart)
-                writer.WriteLine(Options.Visualisation.Name & "=" & Visualisation)
-                writer.WriteLine(Options.VisualisationType.Name & "=" & VisualisationType)
-                writer.WriteLine(Options.HighQualityVis.Name & "=" & HighQualityVis)
-                writer.WriteLine(Options.LinealRepresentation.Name & "=" & LinealRepresentation)
-                writer.WriteLine(Options.FullSoundRange.Name & "=" & FullSoundRange)
-                writer.WriteLine(Options.Smoothness.Name & "=" & Smoothness)
-                writer.WriteLine(Options.MainColour.Name & "=" & MainColour)
-                writer.WriteLine(Options.SecondaryColour.Name & "=" & SecondaryColour)
-                writer.WriteLine(Options.PeakColour.Name & "=" & PeakColour)
-                writer.WriteLine(Options.BackgroundColour.Name & "=" & BackgroundColour)
-                writer.WriteLine(Options.ChangeWholeBackground.Name & "=" & ChangeWholeBackground)
-                writer.WriteLine(Options.MultimediaKeys.Name & "=" & MultimediaKeys)
-                writer.WriteLine(Options.HotkeyPlayStop.Name & "=" & HumanModifiersPlayStop & "=" & ModifiersPlayStop & "=" & KeyPlayStop)
-                writer.WriteLine(Options.HotkeyVolumeUp.Name & "=" & HumanModifiersVolumeUp & "=" & ModifiersVolumeUp & "=" & KeyVolumeUp)
-                writer.WriteLine(Options.HotkeyVolumeDown.Name & "=" & HumanModifiersVolumeDown & "=" & ModifiersVolumeDown & "=" & KeyVolumeDown)
-                writer.WriteLine(Options.HotkeyMuteUnmute.Name & "=" & HumanModifiersMuteUnmute & "=" & ModifiersMuteUnmute & "=" & KeyMuteUnmute)
-                writer.WriteLine(Options.HotkeyShowHide.Name & "=" & HumanModifiersShowHide & "=" & ModifiersShowHide & "=" & KeyShowHide)
-                writer.WriteLine(Options.Band0.Name & "=" & Band0)
-                writer.WriteLine(Options.Band1.Name & "=" & Band1)
-                writer.WriteLine(Options.Band2.Name & "=" & Band2)
-                writer.WriteLine(Options.Band3.Name & "=" & Band3)
-                writer.WriteLine(Options.Band4.Name & "=" & Band4)
-                writer.WriteLine(Options.Band5.Name & "=" & Band5)
-                writer.WriteLine(StationChooser.Name & "=" & StationChooser.Text)
-                writer.WriteLine("DIChannel=" & DIChannel)
-                writer.WriteLine("SkyChannel=" & SKYChannel)
-                writer.WriteLine("JazzChannel=" & JazzChannel)
-                writer.WriteLine("RockChannel=" & RockChannel)
-
-                ' If volume is above 0 then save the volume, else save it as 50 so the application doesn't start muted the next time the user launches it
-                If Volume.Value > 0 Then
-                    writer.WriteLine(Volume.Name & "=" & Volume.Value)
-                ElseIf Volume.Value = 0 Then
-                    writer.WriteLine(Volume.Name & "=50")
-                End If
-
-                ' If My Favourites is selected, save the current selected favourite so that it can be selected again automatically on the next application launch
-                If SelectedChannel.Text = "My Favorites" Then
-                    writer.WriteLine(SelectedServer.Name & "=" & SelectedServer.Text)
-                End If
-
-                writer.Close()
-                writer.Dispose()
-
-            Catch ex As Exception
-
-                ' If the options file couldn't be written, display an error message and ask the user if the player should be closed anyway
-                If MessageBox.Show("Your options couldn't be saved due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Would you like to close the player anyway (your options won't be saved)?", "Error saving options", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = MsgBoxResult.No Then
+            If SaveSettings(True) = False Then
+                If MessageBox.Show("Your options couldn't be saved." & vbNewLine & "Would you like to close the player anyway (your options won't be saved)?", "Error saving options", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = MsgBoxResult.No Then
                     e.Cancel = True
                     Exit Sub
                 End If
-
-            End Try
+            End If
         End If
 
         ' Unregister hotkeys if they were set
@@ -3032,6 +2966,83 @@ startover:
         reader.Close()
         reader.Dispose()
     End Sub
+
+    Public Function SaveSettings(ByVal closing As Boolean)
+        Dim file As String = exeFolder & "\options.ini"
+
+        Try
+
+            Dim writer As New IO.StreamWriter(file, False)
+            writer.WriteLine(Options.NotificationTitle.Name & "=" & NotificationTitle)
+            writer.WriteLine(Options.PlayNewOnChannelChange.Name & "=" & PlayNewOnChannelChange)
+            writer.WriteLine(Options.NotificationIcon.Name & "=" & NotificationIcon)
+            writer.WriteLine(Options.NoTaskbarButton.Name & "=" & NoTaskbarButton)
+            writer.WriteLine(Options.GoogleSearch.Name & "=" & GoogleSearch)
+            writer.WriteLine(Options.ShowSongStart.Name & "=" & ShowSongStart)
+            writer.WriteLine(Options.PremiumFormats.Name & "=" & PremiumFormats)
+            writer.WriteLine("DIFormat=" & DIFormat)
+            writer.WriteLine("SKYFormat=" & SKYFormat)
+            writer.WriteLine("JazzFormat=" & JazzFormat)
+            writer.WriteLine(Options.ListenKey.Name & "=" & ListenKey)
+            writer.WriteLine(Options.BetaVersions.Name & "=" & BetaVersions)
+            writer.WriteLine(Options.UpdatesAtStart.Name & "=" & UpdatesAtStart)
+            writer.WriteLine(Options.Visualisation.Name & "=" & Visualisation)
+            writer.WriteLine(Options.VisualisationType.Name & "=" & VisualisationType)
+            writer.WriteLine(Options.HighQualityVis.Name & "=" & HighQualityVis)
+            writer.WriteLine(Options.LinealRepresentation.Name & "=" & LinealRepresentation)
+            writer.WriteLine(Options.FullSoundRange.Name & "=" & FullSoundRange)
+            writer.WriteLine(Options.Smoothness.Name & "=" & Smoothness)
+            writer.WriteLine(Options.MainColour.Name & "=" & MainColour)
+            writer.WriteLine(Options.SecondaryColour.Name & "=" & SecondaryColour)
+            writer.WriteLine(Options.PeakColour.Name & "=" & PeakColour)
+            writer.WriteLine(Options.BackgroundColour.Name & "=" & BackgroundColour)
+            writer.WriteLine(Options.ChangeWholeBackground.Name & "=" & ChangeWholeBackground)
+            writer.WriteLine(Options.MultimediaKeys.Name & "=" & MultimediaKeys)
+            writer.WriteLine(Options.HotkeyPlayStop.Name & "=" & HumanModifiersPlayStop & "=" & ModifiersPlayStop & "=" & KeyPlayStop)
+            writer.WriteLine(Options.HotkeyVolumeUp.Name & "=" & HumanModifiersVolumeUp & "=" & ModifiersVolumeUp & "=" & KeyVolumeUp)
+            writer.WriteLine(Options.HotkeyVolumeDown.Name & "=" & HumanModifiersVolumeDown & "=" & ModifiersVolumeDown & "=" & KeyVolumeDown)
+            writer.WriteLine(Options.HotkeyMuteUnmute.Name & "=" & HumanModifiersMuteUnmute & "=" & ModifiersMuteUnmute & "=" & KeyMuteUnmute)
+            writer.WriteLine(Options.HotkeyShowHide.Name & "=" & HumanModifiersShowHide & "=" & ModifiersShowHide & "=" & KeyShowHide)
+            writer.WriteLine(Options.Band0.Name & "=" & Band0)
+            writer.WriteLine(Options.Band1.Name & "=" & Band1)
+            writer.WriteLine(Options.Band2.Name & "=" & Band2)
+            writer.WriteLine(Options.Band3.Name & "=" & Band3)
+            writer.WriteLine(Options.Band4.Name & "=" & Band4)
+            writer.WriteLine(Options.Band5.Name & "=" & Band5)
+
+            If closing = True Then
+                writer.WriteLine(StationChooser.Name & "=" & StationChooser.Text)
+                writer.WriteLine("DIChannel=" & DIChannel)
+                writer.WriteLine("SkyChannel=" & SKYChannel)
+                writer.WriteLine("JazzChannel=" & JazzChannel)
+                writer.WriteLine("RockChannel=" & RockChannel)
+
+                ' If volume is above 0 then save the volume, else save it as 50 so the application doesn't start muted the next time the user launches it
+                If Volume.Value > 0 Then
+                    writer.WriteLine(Volume.Name & "=" & Volume.Value)
+                ElseIf Volume.Value = 0 Then
+                    writer.WriteLine(Volume.Name & "=50")
+                End If
+
+                ' If My Favourites is selected, save the current selected favourite so that it can be selected again automatically on the next application launch
+                If SelectedChannel.Text = "My Favorites" Then
+                    writer.WriteLine(SelectedServer.Name & "=" & SelectedServer.Text)
+                End If
+            End If
+
+            writer.Close()
+            writer.Dispose()
+
+            Return True
+
+        Catch ex As Exception
+
+            ' If the options file couldn't be written, return an error message
+            Return ex.Message
+
+        End Try
+
+    End Function
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
 
