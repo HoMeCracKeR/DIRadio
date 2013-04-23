@@ -122,7 +122,7 @@ Public Class Player
     Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 48    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Integer = 50    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -182,125 +182,11 @@ Public Class Player
 
     Private Sub Player_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles Me.DragDrop
         If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+
             Dim filepath() As String = e.Data.GetData(DataFormats.FileDrop)
-            Dim reader As New IO.StreamReader(filepath(0))
-            Dim lineNumber As Integer = 0
+            ReadThemeFile(filepath(0))
+            ApplyTheme()
 
-            Do While (reader.Peek > -1)
-                Dim line As String = reader.ReadLine
-
-                If lineNumber = 0 Then
-                    MainColour = line
-
-                    If Options.Visible = True Then
-                        Options.MainColour.BackColor = Color.FromArgb(line)
-                    End If
-                ElseIf lineNumber = 1 Then
-                    SecondaryColour = line
-
-                    If Options.Visible = True Then
-                        Options.SecondaryColour.BackColor = Color.FromArgb(line)
-                    End If
-                ElseIf lineNumber = 2 Then
-                    PeakColour = line
-
-                    If Options.Visible = True Then
-                        Options.PeakColour.BackColor = Color.FromArgb(line)
-                    End If
-                ElseIf lineNumber = 3 Then
-                    BackgroundColour = line
-
-                    If Options.Visible = True Then
-                        Options.BackgroundColour.BackColor = Color.FromArgb(line)
-                    End If
-                ElseIf lineNumber = 4 Then
-                    ChangeWholeBackground = line
-
-                    If Options.Visible = True Then
-                        Options.ChangeWholeBackground.Checked = line
-                    End If
-                End If
-
-                lineNumber += 1
-            Loop
-
-            reader.Close()
-            reader.Dispose()
-
-            If ChangeWholeBackground = True Then
-
-                Me.BackColor = Color.FromArgb(BackgroundColour)
-                ToolStrip1.BackColor = Color.FromArgb(BackgroundColour)
-                StationChooser.BackColor = Color.FromArgb(BackgroundColour)
-                Label1.BackColor = Color.FromArgb(BackgroundColour)
-                Label2.BackColor = Color.FromArgb(BackgroundColour)
-                EventDescription.BackColor = Color.FromArgb(BackgroundColour)
-                HistoryList.BackColor = Color.FromArgb(BackgroundColour)
-                TimerString.BackColor = Color.FromArgb(BackgroundColour)
-
-                If BackgroundColour < -8323328 Then
-                    RadioString.ForeColor = Color.White
-                    TimerString.ForeColor = Color.White
-                    EventName.ForeColor = Color.White
-                    EventDescription.ForeColor = Color.White
-                    EventTimes.ForeColor = Color.White
-                    EventTagline.ForeColor = Color.White
-                    HistoryList.ForeColor = Color.White
-                Else
-                    RadioString.ForeColor = Color.Black
-                    TimerString.ForeColor = Color.Black
-                    EventName.ForeColor = Color.Black
-                    EventDescription.ForeColor = Color.Black
-                    EventTimes.ForeColor = Color.Black
-                    EventTagline.ForeColor = Color.Black
-                    HistoryList.ForeColor = Color.Black
-                End If
-
-                If BackgroundColour < -7105537 Then
-                    EditFavorites.LinkColor = Color.White
-                    RefreshFavorites.LinkColor = Color.White
-                Else
-                    EditFavorites.LinkColor = Color.Blue
-                    RefreshFavorites.LinkColor = Color.Blue
-                End If
-
-                If RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                    RadioString.BackColor = Color.FromArgb(BackgroundColour)
-
-                    If BackgroundColour < -8323328 Then
-                        RadioString.ForeColor = Color.White
-                        TimerString.ForeColor = Color.White
-                    Else
-                        RadioString.ForeColor = Color.Black
-                        TimerString.ForeColor = Color.Black
-                    End If
-
-                End If
-            Else
-
-                BackColor = SystemColors.Control
-                ToolStrip1.BackColor = SystemColors.Control
-                StationChooser.BackColor = SystemColors.Control
-                Label1.BackColor = SystemColors.Control
-                Label2.BackColor = SystemColors.Control
-                EventDescription.BackColor = SystemColors.Control
-                EventName.ForeColor = SystemColors.ControlText
-                EventDescription.ForeColor = SystemColors.ControlText
-                EventTimes.ForeColor = SystemColors.ControlText
-                EventTagline.ForeColor = SystemColors.ControlText
-                HistoryList.BackColor = SystemColors.Window
-                HistoryList.ForeColor = SystemColors.ControlText
-                EditFavorites.LinkColor = Color.Blue
-                RefreshFavorites.LinkColor = Color.Blue
-                TimerString.BackColor = SystemColors.Control
-
-                If RadioString.Text.ToLower.StartsWith("internet connection") = False And RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                    RadioString.BackColor = SystemColors.Control
-                    RadioString.ForeColor = SystemColors.ControlText
-                    TimerString.ForeColor = SystemColors.ControlText
-                End If
-
-            End If
         End If
     End Sub
 
@@ -333,6 +219,8 @@ Public Class Player
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & JazzRadio.Text)
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & SKYFM.Text)
         My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & RockRadio.Text)
+        My.Computer.FileSystem.CreateDirectory(exeFolder & "\equalizer\")
+        My.Computer.FileSystem.WriteAllText(exeFolder & "\equalizer\readme.txt", "Use this folder to load equalizer settings per-channel." & vbNewLine & "Simply place your .feq files with the name of the channel you want to use (trance.feq or smooth jazz 24'7.feq, for example) and the player will load it automatically when you select that channel." & vbNewLine & "You can also have a default.feq file for channels that don't have a custom setting, or no files at all to use what's in your options.ini file.", False)
 
         ' Load plugins for WMA and AAC support
         Bass.BASS_PluginLoad("basswma.dll")
@@ -425,79 +313,13 @@ Public Class Player
     End Sub
 
     Private Sub Player_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-
-        Dim file As String = exeFolder & "\options.ini"
-
         If FadeOut.Enabled = False Then
-            Try
-
-                Dim writer As New IO.StreamWriter(file, False)
-                writer.WriteLine(Options.NotificationTitle.Name & "=" & NotificationTitle)
-                writer.WriteLine(Options.PlayNewOnChannelChange.Name & "=" & PlayNewOnChannelChange)
-                writer.WriteLine(Options.NotificationIcon.Name & "=" & NotificationIcon)
-                writer.WriteLine(Options.NoTaskbarButton.Name & "=" & NoTaskbarButton)
-                writer.WriteLine(Options.GoogleSearch.Name & "=" & GoogleSearch)
-                writer.WriteLine(Options.ShowSongStart.Name & "=" & ShowSongStart)
-                writer.WriteLine(Options.PremiumFormats.Name & "=" & PremiumFormats)
-                writer.WriteLine("DIFormat=" & DIFormat)
-                writer.WriteLine("SKYFormat=" & SKYFormat)
-                writer.WriteLine("JazzFormat=" & JazzFormat)
-                writer.WriteLine(Options.ListenKey.Name & "=" & ListenKey)
-                writer.WriteLine(Options.BetaVersions.Name & "=" & BetaVersions)
-                writer.WriteLine(Options.UpdatesAtStart.Name & "=" & UpdatesAtStart)
-                writer.WriteLine(Options.Visualisation.Name & "=" & Visualisation)
-                writer.WriteLine(Options.VisualisationType.Name & "=" & VisualisationType)
-                writer.WriteLine(Options.HighQualityVis.Name & "=" & HighQualityVis)
-                writer.WriteLine(Options.LinealRepresentation.Name & "=" & LinealRepresentation)
-                writer.WriteLine(Options.FullSoundRange.Name & "=" & FullSoundRange)
-                writer.WriteLine(Options.Smoothness.Name & "=" & Smoothness)
-                writer.WriteLine(Options.MainColour.Name & "=" & MainColour)
-                writer.WriteLine(Options.SecondaryColour.Name & "=" & SecondaryColour)
-                writer.WriteLine(Options.PeakColour.Name & "=" & PeakColour)
-                writer.WriteLine(Options.BackgroundColour.Name & "=" & BackgroundColour)
-                writer.WriteLine(Options.ChangeWholeBackground.Name & "=" & ChangeWholeBackground)
-                writer.WriteLine(Options.MultimediaKeys.Name & "=" & MultimediaKeys)
-                writer.WriteLine(Options.HotkeyPlayStop.Name & "=" & HumanModifiersPlayStop & "=" & ModifiersPlayStop & "=" & KeyPlayStop)
-                writer.WriteLine(Options.HotkeyVolumeUp.Name & "=" & HumanModifiersVolumeUp & "=" & ModifiersVolumeUp & "=" & KeyVolumeUp)
-                writer.WriteLine(Options.HotkeyVolumeDown.Name & "=" & HumanModifiersVolumeDown & "=" & ModifiersVolumeDown & "=" & KeyVolumeDown)
-                writer.WriteLine(Options.HotkeyMuteUnmute.Name & "=" & HumanModifiersMuteUnmute & "=" & ModifiersMuteUnmute & "=" & KeyMuteUnmute)
-                writer.WriteLine(Options.HotkeyShowHide.Name & "=" & HumanModifiersShowHide & "=" & ModifiersShowHide & "=" & KeyShowHide)
-                writer.WriteLine(Options.Band0.Name & "=" & Band0)
-                writer.WriteLine(Options.Band1.Name & "=" & Band1)
-                writer.WriteLine(Options.Band2.Name & "=" & Band2)
-                writer.WriteLine(Options.Band3.Name & "=" & Band3)
-                writer.WriteLine(Options.Band4.Name & "=" & Band4)
-                writer.WriteLine(Options.Band5.Name & "=" & Band5)
-                writer.WriteLine(StationChooser.Name & "=" & StationChooser.Text)
-                writer.WriteLine("DIChannel=" & DIChannel)
-                writer.WriteLine("SkyChannel=" & SKYChannel)
-                writer.WriteLine("JazzChannel=" & JazzChannel)
-                writer.WriteLine("RockChannel=" & RockChannel)
-
-                ' If volume is above 0 then save the volume, else save it as 50 so the application doesn't start muted the next time the user launches it
-                If Volume.Value > 0 Then
-                    writer.WriteLine(Volume.Name & "=" & Volume.Value)
-                ElseIf Volume.Value = 0 Then
-                    writer.WriteLine(Volume.Name & "=50")
-                End If
-
-                ' If My Favourites is selected, save the current selected favourite so that it can be selected again automatically on the next application launch
-                If SelectedChannel.Text = "My Favorites" Then
-                    writer.WriteLine(SelectedServer.Name & "=" & SelectedServer.Text)
-                End If
-
-                writer.Close()
-                writer.Dispose()
-
-            Catch ex As Exception
-
-                ' If the options file couldn't be written, display an error message and ask the user if the player should be closed anyway
-                If MessageBox.Show("Your options couldn't be saved due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Would you like to close the player anyway (your options won't be saved)?", "Error saving options", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = MsgBoxResult.No Then
+            If SaveSettings(True) = False Then
+                If MessageBox.Show("Your options couldn't be saved." & vbNewLine & "Would you like to close the player anyway (your options won't be saved)?", "Error saving options", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = MsgBoxResult.No Then
                     e.Cancel = True
                     Exit Sub
                 End If
-
-            End Try
+            End If
         End If
 
         ' Unregister hotkeys if they were set
@@ -522,6 +344,8 @@ Public Class Player
             Bass.BASS_Free()
             Bass.BASS_PluginFree(0)
         End If
+
+        My.Settings.Save()
     End Sub
 
 #End Region
@@ -974,10 +798,6 @@ Public Class Player
 
         SelectedChannel.Items.Clear()
 
-        If ListenKey = Nothing = False And StationChooser.Text = RockRadio.Text = False Then
-            SelectedChannel.Items.Add("My Favorites")
-        End If
-
         Events.Enabled = False
         History.Enabled = False
         Forums.Enabled = False
@@ -1068,6 +888,14 @@ Public Class Player
                 Exit Do
             End If
         Loop
+
+        Dim file As String = exeFolder & "\equalizer\" & SelectedChannel.Text & ".feq"
+
+        If My.Computer.FileSystem.FileExists(file) Then
+            LoadEqFile(file)
+        ElseIf My.Computer.FileSystem.FileExists(exeFolder & "\equalizer\default.feq") Then
+            LoadEqFile(exeFolder & "\equalizer\default.feq")
+        End If
 
     End Sub
 
@@ -2051,6 +1879,17 @@ startover:
             Marquee.Hide()
         End Try
 
+        If ListenKey = Nothing = False And StationChooser.Text = RockRadio.Text = False Then
+            SelectedChannel.Items.Add("My Favorites")
+
+            If SelectedChannel.Text = "My Favorites" And OldFav = Nothing = False Then
+                Try
+                    SelectedServer.SelectedItem = OldFav
+                Catch
+                End Try
+            End If
+        End If
+
     End Sub
 
     Private Sub DownloadDb_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadDb.RunWorkerCompleted
@@ -2101,6 +1940,7 @@ startover:
             RetryChannels.Show()
             StationChooser.Enabled = True
         End If
+
 
 
     End Sub
@@ -2594,10 +2434,6 @@ startover:
 
                     ListenKey = splitter(1)
 
-                    If ListenKey = Nothing = False Then
-                        SelectedChannel.Items.Add("My Favorites")
-                    End If
-
                 ElseIf splitter(0) = Options.BetaVersions.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     BetaVersions = splitter(1)
                 ElseIf splitter(0) = Options.UpdatesAtStart.Name Then
@@ -2801,7 +2637,7 @@ startover:
 
                 ElseIf splitter(0) = Volume.Name And IsNumeric(splitter(1)) Then
                     Volume.Value = splitter(1)
-                ElseIf splitter(0) = SelectedServer.Name And SelectedChannel.Text = "My Favorites" Then
+                ElseIf splitter(0) = SelectedServer.Name Then
                     OldFav = splitter(1)
                 End If
 
@@ -3020,6 +2856,294 @@ startover:
     Sub ResumePlaying()
         RestartPlayback = False
         PlayStop_Click(Me, Nothing)
+    End Sub
+
+    Public Sub ApplyTheme()
+
+        If ChangeWholeBackground = True Then
+
+            Me.BackColor = Color.FromArgb(BackgroundColour)
+            ToolStrip1.BackColor = Color.FromArgb(BackgroundColour)
+            StationChooser.BackColor = Color.FromArgb(BackgroundColour)
+            Label1.BackColor = Color.FromArgb(BackgroundColour)
+            Label2.BackColor = Color.FromArgb(BackgroundColour)
+            EventDescription.BackColor = Color.FromArgb(BackgroundColour)
+            HistoryList.BackColor = Color.FromArgb(BackgroundColour)
+            TimerString.BackColor = Color.FromArgb(BackgroundColour)
+
+            If BackgroundColour < -8323328 Then
+                RadioString.ForeColor = Color.White
+                TimerString.ForeColor = Color.White
+                EventName.ForeColor = Color.White
+                EventDescription.ForeColor = Color.White
+                EventTimes.ForeColor = Color.White
+                EventTagline.ForeColor = Color.White
+                HistoryList.ForeColor = Color.White
+            Else
+                RadioString.ForeColor = Color.Black
+                TimerString.ForeColor = Color.Black
+                EventName.ForeColor = Color.Black
+                EventDescription.ForeColor = Color.Black
+                EventTimes.ForeColor = Color.Black
+                EventTagline.ForeColor = Color.Black
+                HistoryList.ForeColor = Color.Black
+            End If
+
+            If BackgroundColour < -7105537 Then
+                EditFavorites.LinkColor = Color.White
+                RefreshFavorites.LinkColor = Color.White
+            Else
+                EditFavorites.LinkColor = Color.Blue
+                RefreshFavorites.LinkColor = Color.Blue
+            End If
+
+            If RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
+                RadioString.BackColor = Color.FromArgb(BackgroundColour)
+
+                If BackgroundColour < -8323328 Then
+                    RadioString.ForeColor = Color.White
+                    TimerString.ForeColor = Color.White
+                Else
+                    RadioString.ForeColor = Color.Black
+                    TimerString.ForeColor = Color.Black
+                End If
+
+            End If
+        Else
+
+            BackColor = SystemColors.Control
+            ToolStrip1.BackColor = SystemColors.Control
+            StationChooser.BackColor = SystemColors.Control
+            Label1.BackColor = SystemColors.Control
+            Label2.BackColor = SystemColors.Control
+            EventDescription.BackColor = SystemColors.Control
+            EventName.ForeColor = SystemColors.ControlText
+            EventDescription.ForeColor = SystemColors.ControlText
+            EventTimes.ForeColor = SystemColors.ControlText
+            EventTagline.ForeColor = SystemColors.ControlText
+            HistoryList.BackColor = SystemColors.Window
+            HistoryList.ForeColor = SystemColors.ControlText
+            EditFavorites.LinkColor = Color.Blue
+            RefreshFavorites.LinkColor = Color.Blue
+            TimerString.BackColor = SystemColors.Control
+
+            If RadioString.Text.ToLower.StartsWith("internet connection") = False And RadioString.Text.ToLower.StartsWith("lost connection to") = False And RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
+                RadioString.BackColor = SystemColors.Control
+                RadioString.ForeColor = SystemColors.ControlText
+                TimerString.ForeColor = SystemColors.ControlText
+            End If
+
+        End If
+
+    End Sub
+
+    Public Sub ReadThemeFile(ByVal path As String)
+        Dim reader As New IO.StreamReader(path)
+        Dim lineNumber As Integer = 0
+
+        Do While (reader.Peek > -1)
+            Dim line As String = reader.ReadLine
+
+            If lineNumber = 0 Then
+                MainColour = line
+
+                If Options.Visible = True Then
+                    Options.MainColour.BackColor = Color.FromArgb(line)
+                End If
+            ElseIf lineNumber = 1 Then
+                SecondaryColour = line
+
+                If Options.Visible = True Then
+                    Options.SecondaryColour.BackColor = Color.FromArgb(line)
+                End If
+            ElseIf lineNumber = 2 Then
+                PeakColour = line
+
+                If Options.Visible = True Then
+                    Options.PeakColour.BackColor = Color.FromArgb(line)
+                End If
+            ElseIf lineNumber = 3 Then
+                BackgroundColour = line
+
+                If Options.Visible = True Then
+                    Options.BackgroundColour.BackColor = Color.FromArgb(line)
+                End If
+            ElseIf lineNumber = 4 Then
+                ChangeWholeBackground = line
+
+                If Options.Visible = True Then
+                    Options.ChangeWholeBackground.Checked = line
+                End If
+            End If
+
+            lineNumber += 1
+        Loop
+
+        reader.Close()
+        reader.Dispose()
+    End Sub
+
+    Public Function SaveSettings(ByVal closing As Boolean)
+        Dim file As String = exeFolder & "\options.ini"
+
+        Try
+
+            Dim writer As New IO.StreamWriter(file, False)
+            writer.WriteLine(Options.NotificationTitle.Name & "=" & NotificationTitle)
+            writer.WriteLine(Options.PlayNewOnChannelChange.Name & "=" & PlayNewOnChannelChange)
+            writer.WriteLine(Options.NotificationIcon.Name & "=" & NotificationIcon)
+            writer.WriteLine(Options.NoTaskbarButton.Name & "=" & NoTaskbarButton)
+            writer.WriteLine(Options.GoogleSearch.Name & "=" & GoogleSearch)
+            writer.WriteLine(Options.ShowSongStart.Name & "=" & ShowSongStart)
+            writer.WriteLine(Options.PremiumFormats.Name & "=" & PremiumFormats)
+            writer.WriteLine("DIFormat=" & DIFormat)
+            writer.WriteLine("SKYFormat=" & SKYFormat)
+            writer.WriteLine("JazzFormat=" & JazzFormat)
+            writer.WriteLine(Options.ListenKey.Name & "=" & ListenKey)
+            writer.WriteLine(Options.BetaVersions.Name & "=" & BetaVersions)
+            writer.WriteLine(Options.UpdatesAtStart.Name & "=" & UpdatesAtStart)
+            writer.WriteLine(Options.Visualisation.Name & "=" & Visualisation)
+            writer.WriteLine(Options.VisualisationType.Name & "=" & VisualisationType)
+            writer.WriteLine(Options.HighQualityVis.Name & "=" & HighQualityVis)
+            writer.WriteLine(Options.LinealRepresentation.Name & "=" & LinealRepresentation)
+            writer.WriteLine(Options.FullSoundRange.Name & "=" & FullSoundRange)
+            writer.WriteLine(Options.Smoothness.Name & "=" & Smoothness)
+            writer.WriteLine(Options.MainColour.Name & "=" & MainColour)
+            writer.WriteLine(Options.SecondaryColour.Name & "=" & SecondaryColour)
+            writer.WriteLine(Options.PeakColour.Name & "=" & PeakColour)
+            writer.WriteLine(Options.BackgroundColour.Name & "=" & BackgroundColour)
+            writer.WriteLine(Options.ChangeWholeBackground.Name & "=" & ChangeWholeBackground)
+            writer.WriteLine(Options.MultimediaKeys.Name & "=" & MultimediaKeys)
+            writer.WriteLine(Options.HotkeyPlayStop.Name & "=" & HumanModifiersPlayStop & "=" & ModifiersPlayStop & "=" & KeyPlayStop)
+            writer.WriteLine(Options.HotkeyVolumeUp.Name & "=" & HumanModifiersVolumeUp & "=" & ModifiersVolumeUp & "=" & KeyVolumeUp)
+            writer.WriteLine(Options.HotkeyVolumeDown.Name & "=" & HumanModifiersVolumeDown & "=" & ModifiersVolumeDown & "=" & KeyVolumeDown)
+            writer.WriteLine(Options.HotkeyMuteUnmute.Name & "=" & HumanModifiersMuteUnmute & "=" & ModifiersMuteUnmute & "=" & KeyMuteUnmute)
+            writer.WriteLine(Options.HotkeyShowHide.Name & "=" & HumanModifiersShowHide & "=" & ModifiersShowHide & "=" & KeyShowHide)
+            writer.WriteLine(Options.Band0.Name & "=" & Band0)
+            writer.WriteLine(Options.Band1.Name & "=" & Band1)
+            writer.WriteLine(Options.Band2.Name & "=" & Band2)
+            writer.WriteLine(Options.Band3.Name & "=" & Band3)
+            writer.WriteLine(Options.Band4.Name & "=" & Band4)
+            writer.WriteLine(Options.Band5.Name & "=" & Band5)
+
+            If closing = True Then
+                writer.WriteLine(StationChooser.Name & "=" & StationChooser.Text)
+                writer.WriteLine("DIChannel=" & DIChannel)
+                writer.WriteLine("SkyChannel=" & SKYChannel)
+                writer.WriteLine("JazzChannel=" & JazzChannel)
+                writer.WriteLine("RockChannel=" & RockChannel)
+
+                ' If volume is above 0 then save the volume, else save it as 50 so the application doesn't start muted the next time the user launches it
+                If Volume.Value > 0 Then
+                    writer.WriteLine(Volume.Name & "=" & Volume.Value)
+                ElseIf Volume.Value = 0 Then
+                    writer.WriteLine(Volume.Name & "=50")
+                End If
+
+                ' If My Favourites is selected, save the current selected favourite so that it can be selected again automatically on the next application launch
+                If SelectedChannel.Text = "My Favorites" Then
+                    writer.WriteLine(SelectedServer.Name & "=" & SelectedServer.Text)
+                End If
+            End If
+
+            writer.Close()
+            writer.Dispose()
+
+            Return True
+
+        Catch ex As Exception
+
+            ' If the options file couldn't be written, return an error message
+            Return ex.Message
+
+        End Try
+
+    End Function
+
+    Public Sub LoadEqFile(ByVal path As String)
+
+        Dim reader As New IO.StreamReader(path)
+        Dim band As Integer = 0
+
+        Do While (reader.Peek > -1)
+            Dim bandValue As String = reader.ReadLine
+
+            If band = 1 Then
+
+                If bandValue > 15 Then
+                    Band0 = 15
+                ElseIf bandValue < -15 Then
+                    Band0 = -15
+                Else
+                    Band0 = bandValue
+                End If
+
+            ElseIf band = 3 Then
+
+                If bandValue > 15 Then
+                    Band1 = 15
+                ElseIf bandValue < -15 Then
+                    Band1 = -15
+                Else
+                    Band1 = bandValue
+                End If
+
+            ElseIf band = 7 Then
+
+                If bandValue > 15 Then
+                    Band2 = 15
+                ElseIf bandValue < -15 Then
+                    Band2 = -15
+                Else
+                    Band2 = bandValue
+                End If
+
+            ElseIf band = 10 Then
+
+                If bandValue > 15 Then
+                    Band3 = 15
+                ElseIf bandValue < -15 Then
+                    Band3 = -15
+                Else
+                    Band3 = bandValue
+                End If
+
+            ElseIf band = 13 Then
+
+                If bandValue > 15 Then
+                    Band4 = 15
+                ElseIf bandValue < -15 Then
+                    Band4 = -15
+                Else
+                    Band4 = bandValue
+                End If
+
+            ElseIf band = 16 Then
+
+                If bandValue > 15 Then
+                    Band5 = 15
+                ElseIf bandValue < -15 Then
+                    Band5 = -15
+                Else
+                    Band5 = bandValue
+                End If
+
+            End If
+
+            band += 1
+        Loop
+
+        reader.Close()
+        reader.Dispose()
+
+        Options.Band0.Value = Band0
+        Options.Band1.Value = Band1
+        Options.Band2.Value = Band2
+        Options.Band3.Value = Band3
+        Options.Band4.Value = Band4
+        Options.Band5.Value = Band5
+
+
     End Sub
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.

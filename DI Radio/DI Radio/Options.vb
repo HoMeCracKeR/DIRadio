@@ -231,6 +231,7 @@
 
     Private Sub Options_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         Changelog.Close()
+        Gallery.Close()
     End Sub
 
 #End Region
@@ -1480,7 +1481,9 @@
     End Sub
 
     Private Sub GetMoreThemesToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles GetMoreThemesToolStripMenuItem.Click
-        Process.Start("http://tobiass.eu/themes/browse")
+        Gallery.Location = New Point(Me.Location.X - 21, Me.Location.Y + 9)
+        Gallery.Show()
+        Gallery.BringToFront()
     End Sub
 
 #End Region
@@ -1598,79 +1601,7 @@
         OpenPresetDialog.FileName = Nothing
 
         If OpenPresetDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
-            Dim reader As New IO.StreamReader(OpenPresetDialog.FileName)
-            Dim band As Integer = 0
-
-            Do While (reader.Peek > -1)
-                Dim bandValue As String = reader.ReadLine
-
-                If band = 1 Then
-
-                    If bandValue > Band0.Maximum Then
-                        Band0.Value = Band0.Maximum
-                    ElseIf bandValue < Band0.Minimum Then
-                        Band0.Value = Band0.Minimum
-                    Else
-                        Band0.Value = bandValue
-                    End If
-
-                ElseIf band = 3 Then
-
-                    If bandValue > Band1.Maximum Then
-                        Band1.Value = Band1.Maximum
-                    ElseIf bandValue < Band1.Minimum Then
-                        Band1.Value = Band1.Minimum
-                    Else
-                        Band1.Value = bandValue
-                    End If
-
-                ElseIf band = 7 Then
-
-                    If bandValue > Band2.Maximum Then
-                        Band2.Value = Band2.Maximum
-                    ElseIf bandValue < Band2.Minimum Then
-                        Band2.Value = Band2.Minimum
-                    Else
-                        Band2.Value = bandValue
-                    End If
-
-                ElseIf band = 10 Then
-
-                    If bandValue > Band3.Maximum Then
-                        Band3.Value = Band3.Maximum
-                    ElseIf bandValue < Band3.Minimum Then
-                        Band3.Value = Band3.Minimum
-                    Else
-                        Band3.Value = bandValue
-                    End If
-
-                ElseIf band = 13 Then
-
-                    If bandValue > Band4.Maximum Then
-                        Band4.Value = Band4.Maximum
-                    ElseIf bandValue < Band4.Minimum Then
-                        Band4.Value = Band4.Minimum
-                    Else
-                        Band4.Value = bandValue
-                    End If
-
-                ElseIf band = 16 Then
-
-                    If bandValue > Band5.Maximum Then
-                        Band5.Value = Band5.Maximum
-                    ElseIf bandValue < Band5.Minimum Then
-                        Band5.Value = Band5.Minimum
-                    Else
-                        Band5.Value = bandValue
-                    End If
-
-                End If
-
-                band += 1
-            Loop
-
-            reader.Close()
-            reader.Dispose()
+            Player.LoadEqFile(OpenPresetDialog.FileName)
         End If
     End Sub
 
@@ -1828,7 +1759,7 @@ nofavs:
                 End If
             End If
 
-            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\Digitally Imported") Then
+            If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\Digitally Imported") Then
                 For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\Digitally Imported")
 
                     If foundFile.Contains("channels.db") = False Then
@@ -1838,7 +1769,7 @@ nofavs:
                 Next
             End If
 
-            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\JazzRadio") Then
+            If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\JazzRadio") Then
                 For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\JazzRadio")
 
                     If foundFile.Contains("channels.db") = False Then
@@ -1848,7 +1779,7 @@ nofavs:
                 Next
             End If
 
-            If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\SKY.FM") Then
+            If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\SKY.FM") Then
                 For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\SKY.FM")
 
                     If foundFile.Contains("channels.db") = False Then
@@ -1892,7 +1823,7 @@ nofavs:
                 End If
 
 
-                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\Digitally Imported") Then
+                If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\Digitally Imported") Then
                     For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\Digitally Imported")
 
                         If foundFile.Contains("channels.db") = False Then
@@ -1938,7 +1869,7 @@ nofavs:
                 End If
 
 
-                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\SKY.FM") Then
+                If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\SKY.FM") Then
                     For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\SKY.FM")
 
                         If foundFile.Contains("channels.db") = False Then
@@ -1981,7 +1912,7 @@ nofavs:
                     Player.JazzFormat = JazzSettingPremium
                 End If
 
-                If My.Computer.FileSystem.FileExists(Player.exeFolder & "servers\JazzRadio") Then
+                If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\JazzRadio") Then
                     For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\JazzRadio")
 
                         If foundFile.Contains("channels.db") = False Then
@@ -2146,77 +2077,7 @@ nofavs:
         Player.BackgroundColour = BackgroundColour.BackColor.ToArgb()
         Player.ChangeWholeBackground = ChangeWholeBackground.Checked
 
-        If ChangeWholeBackground.Checked = True Then
-
-            Player.BackColor = BackgroundColour.BackColor
-            Player.ToolStrip1.BackColor = BackgroundColour.BackColor
-            Player.StationChooser.BackColor = BackgroundColour.BackColor
-            Player.Label1.BackColor = BackgroundColour.BackColor
-            Player.Label2.BackColor = BackgroundColour.BackColor
-            Player.EventDescription.BackColor = BackgroundColour.BackColor
-            Player.HistoryList.BackColor = BackgroundColour.BackColor
-            Player.TimerString.BackColor = BackgroundColour.BackColor
-
-            If BackgroundColour.BackColor.ToArgb() < -8323328 Then
-                Player.EventName.ForeColor = Color.White
-                Player.EventDescription.ForeColor = Color.White
-                Player.EventTimes.ForeColor = Color.White
-                Player.EventTagline.ForeColor = Color.White
-                Player.HistoryList.ForeColor = Color.White
-            Else
-                Player.EventName.ForeColor = Color.Black
-                Player.EventDescription.ForeColor = Color.Black
-                Player.EventTimes.ForeColor = Color.Black
-                Player.EventTagline.ForeColor = Color.Black
-                Player.HistoryList.ForeColor = Color.Black
-            End If
-
-            If BackgroundColour.BackColor.ToArgb() < -7105537 Then
-                Player.EditFavorites.LinkColor = Color.White
-                Player.RefreshFavorites.LinkColor = Color.White
-            Else
-                Player.EditFavorites.LinkColor = Color.Blue
-                Player.RefreshFavorites.LinkColor = Color.Blue
-            End If
-
-            If Player.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Player.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Player.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                Player.RadioString.BackColor = BackgroundColour.BackColor
-
-                If BackgroundColour.BackColor.ToArgb() < -8323328 Then
-                    Player.RadioString.ForeColor = Color.White
-                    Player.TimerString.ForeColor = Color.White
-                Else
-                    Player.RadioString.ForeColor = Color.Black
-                    Player.TimerString.ForeColor = Color.Black
-                End If
-
-            End If
-
-        Else
-
-            Player.BackColor = SystemColors.Control
-            Player.ToolStrip1.BackColor = SystemColors.Control
-            Player.StationChooser.BackColor = SystemColors.Control
-            Player.Label1.BackColor = SystemColors.Control
-            Player.Label2.BackColor = SystemColors.Control
-            Player.EventDescription.BackColor = SystemColors.Control
-            Player.EventName.ForeColor = SystemColors.ControlText
-            Player.EventDescription.ForeColor = SystemColors.ControlText
-            Player.EventTimes.ForeColor = SystemColors.ControlText
-            Player.EventTagline.ForeColor = SystemColors.ControlText
-            Player.HistoryList.BackColor = SystemColors.Window
-            Player.HistoryList.ForeColor = SystemColors.ControlText
-            Player.EditFavorites.LinkColor = Color.Blue
-            Player.RefreshFavorites.LinkColor = Color.Blue
-            Player.TimerString.BackColor = SystemColors.Control
-
-            If Player.RadioString.Text.ToLower.StartsWith("internet connection") = False And Player.RadioString.Text.ToLower.StartsWith("lost connection to") = False And Player.RadioString.Text.ToLower.StartsWith("couldn't connect to") = False And Player.RadioString.Text.ToLower.StartsWith("connection is taking") = False Then
-                Player.RadioString.BackColor = SystemColors.Control
-                Player.RadioString.ForeColor = SystemColors.ControlText
-                Player.TimerString.ForeColor = SystemColors.ControlText
-            End If
-
-        End If
+        Player.ApplyTheme()
 
         Player.PlayNewOnChannelChange = PlayNewOnChannelChange.Checked
 
@@ -2294,6 +2155,8 @@ nofavs:
         Player.Band3 = Band3.Value
         Player.Band4 = Band4.Value
         Player.Band5 = Band5.Value
+
+        Player.SaveSettings(False)
     End Sub
 
     Private Sub ColourPicker_HelpRequest(sender As System.Object, e As System.EventArgs) Handles ColourPicker.HelpRequest
