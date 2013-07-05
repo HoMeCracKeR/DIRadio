@@ -129,6 +129,8 @@ Partial Class Gallery
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(362, 478)
+        Me.MinimumSize = New System.Drawing.Size(362, 478)
         Me.Name = "Gallery"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Me.Text = "Themes viewer"

@@ -6,11 +6,21 @@
     Dim use12hs As Boolean = True
     Dim path As String
 
+    Public dataFolder As String
+
 #End Region
 
 #Region "Main Form Events"
 
     Private Sub Export_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+
+        If String.IsNullOrEmpty(My.Computer.Registry.GetValue("HKEY_LOCAL_MACHINE\SOFTWARE\DI Radio", "installDir", Nothing)) = True Then
+            Dim executable As String = Application.ExecutablePath
+            Dim tabla() As String = Split(executable, "\")
+            dataFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
+        Else
+            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio"
+        End If
 
         Dim item As String
 
@@ -26,14 +36,14 @@
             ChannelsList.SelectedItem = Player.SelectedChannel.Text
         End If
 
-        Dim readerChdb As New IO.StreamReader(Player.exeFolder & "\servers\Digitally Imported\channels.db")
+        Dim readerChdb As New IO.StreamReader(dataFolder & "servers\Digitally Imported\channels.db")
 
         Do While (readerChdb.Peek > -1)
             Dim line = readerChdb.ReadLine()
             Dim splitter = Split(line, "|")
-            KeysArray.Items.Add(splitter(0))
-            KeysArray.Items.Item(KeysArray.Items.Count - 1).Tag = splitter(2)
-            KeysArray.Items.Item(KeysArray.Items.Count - 1).Name = splitter(0)
+            KeysArray.Items.Add(splitter(1))
+            KeysArray.Items.Item(KeysArray.Items.Count - 1).Tag = splitter(0)
+            KeysArray.Items.Item(KeysArray.Items.Count - 1).Name = splitter(2)
         Loop
 
         readerChdb.Close()
@@ -44,6 +54,14 @@
 #End Region
 
 #Region "Events caused by the controls in the main form"
+
+    Private Sub Label4_Click(sender As System.Object, e As System.EventArgs) Handles Label4.Click
+        If SetReminder.Checked = True Then
+            SetReminder.Checked = False
+        Else
+            SetReminder.Checked = True
+        End If
+    End Sub
 
     Private Sub ChannelsList_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ChannelsList.SelectedIndexChanged
 
@@ -140,7 +158,12 @@
 
     Private Sub ReminderMinutes_ValueChanged(sender As System.Object, e As System.EventArgs) Handles ReminderMinutes.ValueChanged
 
-        SetReminder.Checked = True
+        If ReminderMinutes.Value > 0 Then
+            SetReminder.Checked = True
+        Else
+            SetReminder.Checked = False
+        End If
+
 
     End Sub
 
@@ -157,64 +180,82 @@
 
     Private Sub GetEvents_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
         Dim WebClient As Net.WebClient = New Net.WebClient()
-        Dim eventsfile As String
-        Dim file As String = Player.exeFolder & "\servers\exporttemp"
-        Dim writer As New IO.StreamWriter(file)
+        Dim eventsfile As String = ""
         Dim channel As String
-
+        Dim success As Boolean = False
 startover:
         channel = ChannelsList.Text
         AvailableBox.Enabled = False
 
         Try
-            eventsfile = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(ChannelsList.Text).Tag)
+            eventsfile = WebClient.DownloadString("http://api.audioaddict.com/v1/di/events/channel/" & KeysArray.Items.Item(ChannelsList.Text).Tag)
+            success = True
         Catch ex As Exception
             AvailableBox.Items.Clear()
             AvailableBox.Items.Add("Couldn't download events. Please try again.")
             Retry.Show()
+            success = False
         End Try
 
-        writer.Write(eventsfile)
-        writer.Close()
-        writer.Dispose()
+        If success Then
 
-        Dim reader As New IO.StreamReader(file)
+            Dim reader As New IO.StringReader(eventsfile.Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(",""", vbNewLine))
 
-        AvailableBox.Items.Clear()
+            AvailableBox.Items.Clear()
 
-        ExportLabel.Text = "Status: Reading events file..."
+            ExportLabel.Text = "Status: Reading events file..."
 
-        Do While (reader.Peek > -1)
+            Do While (reader.Peek > -1)
 
-            If channel = ChannelsList.Text = False Then
-                GoTo startover
+                If channel = ChannelsList.Text = False Then
+                    GoTo startover
+                End If
+
+                Dim line As String = reader.ReadLine
+
+                Dim id As String = ""
+                Dim start_at As Date
+                Dim end_at As Date
+                Dim name As String = ""
+                Dim artists_tagline As String
+
+
+                If line.StartsWith("""id""") OrElse line.StartsWith("id""") Then
+                    id = Split(line, ":")(1)
+                ElseIf line.StartsWith("start_at") Then
+                    start_at = Split(line, """:""")(1).Replace("""", Nothing)
+                ElseIf line.StartsWith("end_at") Then
+                    end_at = Split(line, """:""")(1).Replace("""", Nothing)
+                ElseIf line.StartsWith("name") Then
+                    name = Split(line, """:""")(1).Replace("""", Nothing)
+                ElseIf line.StartsWith("artists_tagline") Then
+                    artists_tagline = Split(line, """:""")(1).Replace("""", Nothing)
+
+                    AvailableBox.Items.Add(Player.ReturnDate((start_at - New DateTime(1970, 1, 1)).TotalSeconds, "fulldate") & ": " & name)
+                    AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag = ChannelsList.Text
+                    AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & id
+                    AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & (start_at - New DateTime(1970, 1, 1)).TotalSeconds
+                    AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & (end_at - New DateTime(1970, 1, 1)).TotalSeconds
+                    AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & name
+                    AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & artists_tagline
+
+                End If
+
+            Loop
+
+            reader.Close()
+            reader.Dispose()
+
+            If AvailableBox.Items.Count > 0 Then
+                AvailableBox.Enabled = True
+            Else
+                AvailableBox.Items.Add("There are no future events for this channel")
             End If
 
-            Dim line As String = reader.ReadLine
-            Dim splitter() As String = Split(line, "|&|")
+            ExportLabel.Text = "Status: Idle"
 
-            AvailableBox.Items.Add(Player.ReturnDate(splitter(1), "fulldate") & ": " & splitter(3))
-
-            AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag = ChannelsList.Text
-            AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(0)
-            AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(1)
-            AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(2)
-            AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(3)
-            AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag += "|" & splitter(4)
-
-        Loop
-
-        reader.Close()
-        reader.Dispose()
-        Kill(file)
-
-        If AvailableBox.Items.Count > 0 Then
-            AvailableBox.Enabled = True
-        Else
-            AvailableBox.Items.Add("There are no future events for this channel")
         End If
 
-        ExportLabel.Text = "Status: Idle"
     End Sub
 
     Private Sub Exporter_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles Exporter.DoWork
@@ -253,17 +294,31 @@ startover:
             If IncludeDescription.Checked = True Then
 
                 Try
+
                     Dim downloadDescription As Net.WebClient = New Net.WebClient()
-                    description = downloadDescription.DownloadString("http://a.pi1.nl/calendar/di/filter/event/" & splitter(1))
-                    Dim splitterDesc() As String = Split(description, "|&|")
-                    description = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(splitterDesc(5).Replace("**", Nothing).Replace("_", Nothing).Replace(Chr(10), "\n")))
+                    description = downloadDescription.DownloadString("http://api.audioaddict.com/v1/di/events/" & splitter(1))
+
+                    Dim reader As New IO.StringReader(description.Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(",""", vbNewLine))
+
+                    Do While (reader.Peek > -1)
+
+                        Dim line As String = reader.ReadLine
+
+                        If line.StartsWith("description""") Then
+                            description = Split(line, """:""")(1).Replace("**", Nothing).Replace("\""", """").Replace("_", Nothing)
+                            description = description.Remove(description.Length - 1, 1)
+                            Exit Do
+                        End If
+
+                    Loop
+
                 Catch
 
                 End Try
 
             End If
 
-            Dim URL As String
+            Dim URL As String = ""
 
             If IncludeLink.Checked = True Then
                 URL = "\n http://www.di.fm/calendar/event/" & splitter(1)
@@ -315,6 +370,5 @@ startover:
     End Sub
 
 #End Region
-
 
 End Class

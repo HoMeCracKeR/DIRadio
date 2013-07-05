@@ -29,16 +29,33 @@
     Dim versionnumber As String = Application.ProductVersion
     Dim KeyConverter As New KeysConverter
 
-    Public DISetting As Integer = -1
-    Public SKYSetting As Integer = -1
-    Public JazzSetting As Integer = -1
-    Public DISettingPremium As Integer = -1
-    Public SKYSettingPremium As Integer = -1
-    Public JazzSettingPremium As Integer = -1
+    Public DISetting As SByte = -1
+    Public SKYSetting As SByte = -1
+    Public JazzSetting As SByte = -1
+    Public DISettingPremium As SByte = -1
+    Public SKYSettingPremium As SByte = -1
+    Public JazzSettingPremium As SByte = -1
 
     Public EnableButtons As Boolean = True
 
     Delegate Sub MsgBoxSafe(ByVal text As String, ByVal style As MsgBoxStyle, ByVal title As String)
+
+    Public username As String
+    Public password As String
+    Public userInfo As String
+    Public isLogged As Boolean
+    Public isPremium As Boolean
+    Public canTrial As Boolean
+    Public apiKey As String
+    Public userId As String
+    Public radioStation As String
+
+    Dim success As Boolean
+    Dim loginAttempts As Byte = 0
+
+    Dim returnedData As Byte()
+
+    Public dataFolder As String
 
 #End Region
 
@@ -46,19 +63,68 @@
 
     Private Sub Options_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
+        If String.IsNullOrEmpty(My.Computer.Registry.GetValue("HKEY_LOCAL_MACHINE\SOFTWARE\DI Radio", "installDir", Nothing)) = True Then
+            Dim executable As String = Application.ExecutablePath
+            Dim tabla() As String = Split(executable, "\")
+            dataFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
+        Else
+            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio"
+        End If
+
         AboutLabel.Text = Player.Text
+        Copyright.Text += Now.Year.ToString() & " ViRUS"
 
         ' Load values from the global variables of the main form and accomodate the interface
 
-        If Player.PremiumFormats = False Then
+        If Player.isLogged Then
+            isLogged = Player.isLogged
+            isPremium = Player.isPremium
+
+            If Player.isPremium = False Then
+                DISetting = Player.DIFormat
+                JazzSetting = Player.JazzFormat
+                SKYSetting = Player.SKYFormat
+            Else
+                DISettingPremium = Player.DIFormat
+                JazzSettingPremium = Player.JazzFormat
+                SKYSettingPremium = Player.SKYFormat
+            End If
+
+            emailBox.Text = Player.username
+            emailBox.ReadOnly = True
+            passwordBox.Text = Player.password
+            passwordBox.ReadOnly = True
+            logIn.Text = "Logout"
+            createAccount.Enabled = False
+            forgotPass.Enabled = False
+            infoLogIn.Hide()
+            userInfo = Player.userInfo
+            accountOwner.Text = Player.userInfo.Replace("|", " ")
+
+            If Player.isPremium Then
+                premiumAccount.Text = "Yes"
+            Else
+                premiumAccount.Text = "No"
+            End If
+
+            If Player.canTrial Then
+                premiumTrial.Text = "Available"
+                startTrial.Show()
+            Else
+                premiumTrial.Text = "Not available"
+                startTrial.Hide()
+            End If
+
+            ListenKey.Text = Player.ListenKey
+            apiKey = Player.apiKey
+            userId = Player.userId
+        Else
             DISetting = Player.DIFormat
             JazzSetting = Player.JazzFormat
             SKYSetting = Player.SKYFormat
-        Else
-            DISettingPremium = Player.DIFormat
-            JazzSettingPremium = Player.JazzFormat
-            SKYSettingPremium = Player.SKYFormat
         End If
+
+        StationSelector_SelectedIndexChanged(Me, Nothing)
 
         NotificationTitle.Checked = Player.NotificationTitle
         Visualisation.Checked = Player.Visualisation
@@ -67,17 +133,8 @@
         MultimediaKeys.Checked = Player.MultimediaKeys
         GoogleSearch.Checked = Player.GoogleSearch
         ShowSongStart.Checked = Player.ShowSongStart
-        ListenKey.Text = Player.ListenKey
-
-        If ListenKey.Text = Nothing = False Then
-            PremiumFormats.Checked = Player.PremiumFormats
-            ValidateKey.Enabled = True
-        Else
-            PremiumFormats.Checked = False
-            PremiumFormats.Enabled = False
-            ValidateKey.Enabled = False
-        End If
-
+        removeListenKey.Checked = Player.removeKey
+        cacheList.SelectedItem = Player.cacheList
         StationSelector.SelectedItem = Player.StationChooser.Text
 
         If StationSelector.Text = "Digitally Imported" Then
@@ -175,16 +232,16 @@
             Status.Text = "Status: Looking for updates, please wait..."
         End If
 
-        If Player.TotalVersionString > Player.TotalVersionFixed Then
-            LookNow.Text = "Download update"
-            LatestVersion.ForeColor = Color.Green
+        If Player.TotalVersionString = "Didn't download" = False Then
+
+            If Player.TotalVersionString > Player.TotalVersionFixed Then
+                LookNow.Text = "Download update"
+                LatestVersion.ForeColor = Color.Green
+            End If
+
         End If
 
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
-
-        Dim file As String = exeFolder & "\Updater.exe"
+        Dim file As String = dataFolder & "\Updater.exe"
 
         If Player.UpdaterDownloaded = True And My.Computer.FileSystem.FileExists(file) Then
             LookNow.Text = "Run updater"
@@ -197,7 +254,7 @@
         CurrentVersion.Text = CurrentVersion.Text.Replace("JazzRadio Radio Player", Nothing)
         CurrentVersion.Text = CurrentVersion.Text.Replace("RockRadio Radio Player", Nothing)
 
-        If Player.LatestVersionString = Nothing = False Then
+        If Player.LatestVersionString = "Didn't download" = False Then
             Dim FullLine As String = Player.LatestVersionString
             Dim Splitter As String() = Split(FullLine, ".")
 
@@ -223,15 +280,22 @@
         Cancel.Text = "Close"
         Apply.Enabled = False
 
+        If isLogged = False Then
+            qualityInfo.Text = "Only Free quality options are available for anonymous users."
+        End If
+
+        lookForChannels.Enabled = Player.StationChooser.Enabled
+
     End Sub
 
     Private Sub Options_Move(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Move
         OnlyModifiers.Hide(Me)
     End Sub
 
-    Private Sub Options_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub Options_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         Changelog.Close()
         Gallery.Close()
+        Signup.Close()
     End Sub
 
 #End Region
@@ -246,7 +310,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub PlayNewOnChannelChange_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles PlayNewOnChannelChange.CheckedChanged
+    Private Sub PlayNewOnChannelChange_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PlayNewOnChannelChange.CheckedChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -270,7 +334,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub ShowSongStart_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles ShowSongStart.CheckedChanged
+    Private Sub ShowSongStart_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ShowSongStart.CheckedChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -282,7 +346,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub BetaVersions_Click(sender As Object, e As System.EventArgs) Handles BetaVersions.Click
+    Private Sub BetaVersions_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles BetaVersions.Click
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -318,13 +382,13 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub MultimediaKeys_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles MultimediaKeys.CheckedChanged
+    Private Sub MultimediaKeys_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MultimediaKeys.CheckedChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
     End Sub
 
-    Private Sub VisualisationType_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles VisualisationType.SelectedIndexChanged
+    Private Sub VisualisationType_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles VisualisationType.SelectedIndexChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -332,140 +396,30 @@
 
     ' -----------------------------------------------------------
 
-    Private Sub PremiumFormats_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PremiumFormats.CheckedChanged
-        If PremiumFormats.Checked = True And StationSelector.Text = "RockRadio" = False Then
-            FileFormat.Items.Clear()
-            FileFormat.Items.Add("AAC-HE 128k")
-            FileFormat.Items.Add("AAC-HE 64k")
-            FileFormat.Items.Add("AAC-HE 40k")
-            FileFormat.Items.Add("MP3 256k")
-            FileFormat.Items.Add("MP3 128k")
-            FileFormat.Items.Add("Windows Media 128k")
-
-            If StationSelector.Text = "JazzRadio" = False Then
-                FileFormat.Items.Add("Windows Media 64k")
-            End If
-
-            If StationSelector.Text = "Digitally Imported" Then
-                If DISettingPremium > -1 Then
-                    FileFormat.SelectedIndex = DISettingPremium
-                Else
-                    If DISetting = 0 Then
-                        FileFormat.SelectedIndex = 0
-                    ElseIf DISetting = 1 Then
-                        FileFormat.SelectedIndex = 3
-                    ElseIf DISetting = 2 Then
-                        FileFormat.SelectedIndex = 5
-                    End If
-                End If
-
-            ElseIf StationSelector.Text = "JazzRadio" Then
-                If JazzSettingPremium > -1 Then
-                    FileFormat.SelectedIndex = JazzSettingPremium
-                Else
-                    If JazzSetting = 0 Then
-                        FileFormat.SelectedIndex = 0
-                    ElseIf JazzSetting = 1 Then
-                        FileFormat.SelectedIndex = 3
-                    ElseIf JazzSetting = 2 Then
-                        FileFormat.SelectedIndex = 5
-                    End If
-                End If
-
-            ElseIf StationSelector.Text = "SKY.FM" Then
-                If SKYSettingPremium > -1 Then
-                    FileFormat.SelectedIndex = SKYSettingPremium
-                Else
-                    If SKYSetting = 0 Then
-                        FileFormat.SelectedIndex = 0
-                    ElseIf SKYSetting = 1 Then
-                        FileFormat.SelectedIndex = 3
-                    ElseIf SKYSetting = 2 Then
-                        FileFormat.SelectedIndex = 5
-                    End If
-                End If
-
-            End If
-        ElseIf PremiumFormats.Checked = False And StationSelector.Text = "RockRadio" = False Then
-            FileFormat.Items.Clear()
-            FileFormat.Items.Add("AAC-HE")
-            FileFormat.Items.Add("MP3")
-            FileFormat.Items.Add("Windows Media")
-
-            If StationSelector.Text = "Digitally Imported" Then
-                If DISetting > -1 Then
-                    FileFormat.SelectedIndex = DISetting
-                Else
-                    If DISettingPremium <= 2 Then
-                        FileFormat.SelectedIndex = 0
-                    ElseIf DISettingPremium >= 3 And DISettingPremium <= 4 Then
-                        FileFormat.SelectedIndex = 1
-                    ElseIf DISettingPremium >= 5 Then
-                        FileFormat.SelectedIndex = 2
-                    End If
-                End If
-
-            ElseIf StationSelector.Text = "JazzRadio" Then
-                If JazzSetting > -1 Then
-                    FileFormat.SelectedIndex = JazzSetting
-                Else
-                    If JazzSettingPremium <= 2 Then
-                        FileFormat.SelectedIndex = 0
-                    ElseIf JazzSettingPremium >= 3 And JazzSettingPremium <= 4 Then
-                        FileFormat.SelectedIndex = 1
-                    ElseIf JazzSettingPremium >= 5 Then
-                        FileFormat.SelectedIndex = 2
-                    End If
-                End If
-
-            ElseIf StationSelector.Text = "SKY.FM" Then
-                If SKYSetting > -1 Then
-                    FileFormat.SelectedIndex = SKYSetting
-                Else
-                    If SKYSettingPremium <= 2 Then
-                        FileFormat.SelectedIndex = 0
-                    ElseIf SKYSettingPremium >= 3 And SKYSettingPremium <= 4 Then
-                        FileFormat.SelectedIndex = 1
-                    ElseIf SKYSettingPremium >= 5 Then
-                        FileFormat.SelectedIndex = 2
-                    End If
-                End If
-
-            End If
-        End If
-
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-    End Sub
-
-    Private Sub StationSelector_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles StationSelector.SelectedIndexChanged
+    Private Sub StationSelector_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles StationSelector.SelectedIndexChanged
         EnableButtons = False
 
         If StationSelector.Text = "Digitally Imported" Then
             FileFormat.Enabled = True
 
-            If PremiumFormats.Checked = True Then
+            If isPremium Then
                 FileFormat.Items.Clear()
-                FileFormat.Items.Add("AAC-HE 128k")
-                FileFormat.Items.Add("AAC-HE 64k")
-                FileFormat.Items.Add("AAC-HE 40k")
-                FileFormat.Items.Add("MP3 256k")
-                FileFormat.Items.Add("MP3 128k")
-                FileFormat.Items.Add("Windows Media 128k")
-                FileFormat.Items.Add("Windows Media 64k")
+                FileFormat.Items.Add("Excellent (128k AAC)")
+                FileFormat.Items.Add("Excellent (256k MP3)")
+                FileFormat.Items.Add("Good (64k AAC-HE)")
+                FileFormat.Items.Add("Low (40k AAC-HE)")
 
                 If DISettingPremium > -1 Then
                     FileFormat.SelectedIndex = DISettingPremium
                 Else
-                    FileFormat.SelectedIndex = 3
+                    FileFormat.SelectedIndex = 1
                 End If
 
             Else
                 FileFormat.Items.Clear()
-                FileFormat.Items.Add("AAC-HE")
-                FileFormat.Items.Add("MP3")
-                FileFormat.Items.Add("Windows Media")
+                FileFormat.Items.Add("Good (64k AAC-HE)")
+                FileFormat.Items.Add("Good (96k MP3)")
+                FileFormat.Items.Add("Low (40k AAC-HE)")
 
                 If DISetting > -1 Then
                     FileFormat.SelectedIndex = DISetting
@@ -477,78 +431,85 @@
         ElseIf StationSelector.Text = "SKY.FM" Then
             FileFormat.Enabled = True
 
-            If PremiumFormats.Checked = True Then
+            If isPremium Then
                 FileFormat.Items.Clear()
-                FileFormat.Items.Add("AAC-HE 128k")
-                FileFormat.Items.Add("AAC-HE 64k")
-                FileFormat.Items.Add("AAC-HE 40k")
-                FileFormat.Items.Add("MP3 256k")
-                FileFormat.Items.Add("MP3 128k")
-                FileFormat.Items.Add("Windows Media 128k")
-                FileFormat.Items.Add("Windows Media 64k")
+                FileFormat.Items.Add("Excellent (128k AAC)")
+                FileFormat.Items.Add("Excellent (256k MP3)")
+                FileFormat.Items.Add("Excellent (128k WMA)")
+                FileFormat.Items.Add("Good (64k AAC-HE)")
+                FileFormat.Items.Add("Good (64k WMA)")
+                FileFormat.Items.Add("Low (40k AAC-HE)")
 
                 If SKYSettingPremium > -1 Then
                     FileFormat.SelectedIndex = SKYSettingPremium
                 Else
-                    FileFormat.SelectedIndex = 3
+                    FileFormat.SelectedIndex = 1
                 End If
 
             Else
                 FileFormat.Items.Clear()
-                FileFormat.Items.Add("AAC-HE")
-                FileFormat.Items.Add("MP3")
-                FileFormat.Items.Add("Windows Media")
+                FileFormat.Items.Add("Good (96k MP3)")
+                FileFormat.Items.Add("Good (40k AAC-HE)")
+                FileFormat.Items.Add("Good (40k WMA)")
+
 
                 If SKYSetting > -1 Then
                     FileFormat.SelectedIndex = SKYSetting
                 Else
-                    FileFormat.SelectedIndex = 1
+                    FileFormat.SelectedIndex = 0
                 End If
 
             End If
         ElseIf StationSelector.Text = "JazzRadio" Then
             FileFormat.Enabled = True
 
-            If PremiumFormats.Checked = True Then
+            If isPremium Then
                 FileFormat.Items.Clear()
-                FileFormat.Items.Add("AAC-HE 128k")
-                FileFormat.Items.Add("AAC-HE 64k")
-                FileFormat.Items.Add("AAC-HE 40k")
-                FileFormat.Items.Add("MP3 256k")
-                FileFormat.Items.Add("MP3 128k")
-                FileFormat.Items.Add("Windows Media 128k")
+                FileFormat.Items.Add("Excellent (128k AAC)")
+                FileFormat.Items.Add("Excellent (256k MP3)")
+                FileFormat.Items.Add("Excellent (128k WMA)")
+                FileFormat.Items.Add("Good (64k AAC-HE)")
 
                 If JazzSettingPremium > -1 Then
                     FileFormat.SelectedIndex = JazzSettingPremium
                 Else
-                    FileFormat.SelectedIndex = 3
+                    FileFormat.SelectedIndex = 1
                 End If
 
             Else
                 FileFormat.Items.Clear()
-                FileFormat.Items.Add("AAC-HE")
-                FileFormat.Items.Add("MP3")
-                FileFormat.Items.Add("Windows Media")
+                FileFormat.Items.Add("Good (64k MP3)")
+                FileFormat.Items.Add("Good (40k AAC-HE)")
+                FileFormat.Items.Add("Good (40k WMA)")
 
                 If JazzSetting > -1 Then
                     FileFormat.SelectedIndex = JazzSetting
                 Else
-                    FileFormat.SelectedIndex = 1
+                    FileFormat.SelectedIndex = 0
                 End If
 
             End If
         ElseIf StationSelector.Text = "RockRadio" Then
             FileFormat.Items.Clear()
-            FileFormat.Items.Add("MP3")
+            FileFormat.Items.Add("Good (96k MP3)")
             FileFormat.SelectedIndex = 0
             FileFormat.Enabled = False
         End If
 
+        If isPremium And StationSelector.Text = "RockRadio" = False Then
+            qualityInfo.Text = "Showing Premium quality options."
+        ElseIf isPremium = False And StationSelector.Text = "RockRadio" = False And isLogged Then
+            qualityInfo.Text = "Showing Free quality options."
+        ElseIf StationSelector.Text = "RockRadio" Then
+            qualityInfo.Text = "RockRadio only supports MP3 at 96kbits/sec."
+        ElseIf isLogged = False Then
+            qualityInfo.Text = "Only Free quality options are available for anonymous users."
+        End If
     End Sub
 
-    Private Sub FileFormat_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles FileFormat.SelectedIndexChanged
+    Private Sub FileFormat_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles FileFormat.SelectedIndexChanged
 
-        If PremiumFormats.Checked = True Then
+        If isPremium Then
             If StationSelector.Text = "Digitally Imported" Then
                 DISettingPremium = FileFormat.SelectedIndex
             ElseIf StationSelector.Text = "JazzRadio" Then
@@ -576,40 +537,6 @@
 
     End Sub
 
-    Private Sub ListenLink_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles ListenLink.LinkClicked
-
-        If StationSelector.Text = "Digitally Imported" OrElse StationSelector.Text = "RockRadio" Then
-            Process.Start("http://www.di.fm/member/listen_key")
-        ElseIf StationSelector.Text = "JazzRadio" Then
-            Process.Start("http://www.jazzradio.com/member/listen_key")
-        ElseIf StationSelector.Text = "SKY.FM" Then
-            Process.Start("http://www.sky.fm/member/listen_key")
-        End If
-
-    End Sub
-
-    Private Sub ListenKeyBox_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ListenKey.TextChanged
-        If ListenKey.TextLength = Nothing = False Then
-            ValidateKey.Enabled = True
-            PremiumFormats.Enabled = True
-        Else
-            ValidateKey.Enabled = False
-            PremiumFormats.Checked = False
-            PremiumFormats.Enabled = False
-        End If
-
-        OK.Enabled = True
-        Cancel.Text = "Cancel"
-        Apply.Enabled = True
-    End Sub
-
-    Private Sub ValidateKey_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ValidateKey.Click
-        ListenKey.Enabled = False
-        ValidateKey.Text = "Wait..."
-        ValidateKey.Enabled = False
-        ValidateWorker.RunWorkerAsync()
-    End Sub
-
     Public Sub LookNow_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LookNow.Click
         If LookNow.Text = "Look for updates now" Then
             LookNow.Enabled = False
@@ -630,7 +557,7 @@
         Changelog.BringToFront()
     End Sub
 
-    Private Sub Band0_ValueChanged(sender As Object, e As System.EventArgs) Handles Band0.ValueChanged
+    Private Sub Band0_ValueChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Band0.ValueChanged
         If Band0.Value >= 0 Then
             Band1db.Text = "+" & Band0.Value & "dB"
         Else
@@ -644,7 +571,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub Band1_ValueChanged(sender As Object, e As System.EventArgs) Handles Band1.ValueChanged
+    Private Sub Band1_ValueChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Band1.ValueChanged
         If Band1.Value >= 0 Then
             Band2db.Text = "+" & Band1.Value & "dB"
         Else
@@ -658,7 +585,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub Band2_ValueChanged(sender As Object, e As System.EventArgs) Handles Band2.ValueChanged
+    Private Sub Band2_ValueChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Band2.ValueChanged
         If Band2.Value >= 0 Then
             Band3db.Text = "+" & Band2.Value & "dB"
         Else
@@ -672,7 +599,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub Band3_ValueChanged(sender As Object, e As System.EventArgs) Handles Band3.ValueChanged
+    Private Sub Band3_ValueChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Band3.ValueChanged
         If Band3.Value >= 0 Then
             Band4db.Text = "+" & Band3.Value & "dB"
         Else
@@ -686,7 +613,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub Band4_ValueChanged(sender As Object, e As System.EventArgs) Handles Band4.ValueChanged
+    Private Sub Band4_ValueChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Band4.ValueChanged
         If Band4.Value >= 0 Then
             Band5db.Text = "+" & Band4.Value & "dB"
         Else
@@ -700,7 +627,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub Band5_ValueChanged(sender As Object, e As System.EventArgs) Handles Band5.ValueChanged
+    Private Sub Band5_ValueChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Band5.ValueChanged
         If Band5.Value >= 0 Then
             Band6db.Text = "+" & Band5.Value & "dB"
         Else
@@ -714,7 +641,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub Zero_Click(sender As System.Object, e As System.EventArgs) Handles Zero.Click
+    Private Sub Zero_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Zero.Click
         Band0.Value = 0
         Band1.Value = 0
         Band2.Value = 0
@@ -723,7 +650,7 @@
         Band5.Value = 0
     End Sub
 
-    Private Sub RestoreEq_Click(sender As System.Object, e As System.EventArgs) Handles RestoreEq.Click
+    Private Sub RestoreEq_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RestoreEq.Click
         Band0.Value = Player.Band0
         Band1.Value = Player.Band1
         Band2.Value = Player.Band2
@@ -732,8 +659,8 @@
         Band5.Value = Player.Band5
     End Sub
 
-    Private Sub AutoEq_Click(sender As System.Object, e As System.EventArgs) Handles AutoEq.Click
-        Dim Highest As Integer
+    Private Sub AutoEq_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AutoEq.Click
+        Dim Highest As SByte
 
         Highest = Band0.Value
 
@@ -794,13 +721,13 @@
         End If
     End Sub
 
-    Private Sub OK_Click(sender As System.Object, e As System.EventArgs) Handles OK.Click
+    Private Sub OK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OK.Click
         ApplyOptions()
         Me.Close()
         Player.BringToFront()
     End Sub
 
-    Private Sub Cancel_Click(sender As System.Object, e As System.EventArgs) Handles Cancel.Click
+    Private Sub Cancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Cancel.Click
         Me.Close()
 
         Player.UpdateEq(0, Player.Band0)
@@ -811,7 +738,7 @@
         Player.UpdateEq(5, Player.Band5)
     End Sub
 
-    Private Sub Apply_Click(sender As System.Object, e As System.EventArgs) Handles Apply.Click
+    Private Sub Apply_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Apply.Click
 
         ApplyOptions()
         OK.Enabled = False
@@ -825,11 +752,144 @@
         OnlyModifiers.Hide(Me)
     End Sub
 
+    Private Sub createAccount_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles createAccount.Click
+        Signup.Location = New Point(Me.Location.X + 87, Me.Location.Y + 83)
+        Signup.eMail.Text = emailBox.Text
+        Signup.passWord.Text = passwordBox.Text
+        Signup.retypePassword.Text = passwordBox.Text
+        Signup.Show()
+    End Sub
+
+    Public Sub logIn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles logIn.Click
+
+        If logIn.Text = "Login" Then
+
+            If CheckEmail(emailBox.Text) And passwordBox.Text.Length >= 5 Then
+                emailBox.ReadOnly = True
+                passwordBox.ReadOnly = True
+                logIn.Enabled = False
+                pleaseWait.Text = "Please wait, logging in..."
+                pleaseWait.Show()
+                StationSelector.Enabled = False
+                FileFormat.Enabled = False
+                forgotPass.Enabled = False
+                logInWorker.RunWorkerAsync()
+            ElseIf CheckEmail(emailBox.Text) = False Then
+                MessageBox.Show("The Email is invalid.", "Login error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            ElseIf passwordBox.Text.Length < 5 Then
+                MessageBox.Show("The password must have at least 5 characters.", "Login error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End If
+
+        Else
+
+            emailBox.Clear()
+            passwordBox.Clear()
+            emailBox.ReadOnly = False
+            passwordBox.ReadOnly = False
+            createAccount.Enabled = True
+            forgotPass.Enabled = True
+            logIn.Text = "Login"
+            infoLogIn.Show()
+            isPremium = False
+            isLogged = False
+            StationSelector_SelectedIndexChanged(Me, Nothing)
+            OK.Enabled = True
+            Cancel.Text = "Cancel"
+            Apply.Enabled = True
+
+        End If
+
+
+    End Sub
+
+    Private Sub forgotPass_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles forgotPass.Click
+        If CheckEmail(emailBox.Text) Then
+            If MessageBox.Show("Are you sure you want to receive an Email to reset your password?", "Password reset", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                emailBox.ReadOnly = True
+                passwordBox.ReadOnly = True
+                logIn.Enabled = False
+                pleaseWait.Text = "Please wait..."
+                pleaseWait.Show()
+                forgotPass.Enabled = False
+
+                resetPasswordWorker.RunWorkerAsync()
+            End If
+        Else
+            MessageBox.Show("The Email is invalid.", "Password reset error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        End If
+
+    End Sub
+
+    Private Sub refreshInfo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles refreshInfo.Click
+        pleaseWaitRefresh.Text = "Please wait, refreshing account information..."
+        pleaseWaitRefresh.Show()
+        logIn.Enabled = False
+        StationSelector.Enabled = False
+        FileFormat.Enabled = False
+        refreshInfo.Enabled = False
+        startTrial.Enabled = False
+        logInWorker.RunWorkerAsync()
+    End Sub
+
+    Private Sub startTrial_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles startTrial.Click
+        pleaseWaitRefresh.Text = "Please wait, starting trial offer..."
+        pleaseWaitRefresh.Show()
+        logIn.Enabled = False
+        StationSelector.Enabled = False
+        FileFormat.Enabled = False
+        refreshInfo.Enabled = False
+        startTrial.Enabled = False
+        startTrialWorker.RunWorkerAsync()
+    End Sub
+
+    Private Sub passWord_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles passwordBox.KeyDown
+        If e.KeyCode = Keys.Enter And passwordBox.ReadOnly = False And logIn.Enabled = True Then
+            logIn_Click(Me, Nothing)
+        End If
+    End Sub
+
+    Private Sub CopyListenKeyToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CopyListenKeyToolStripMenuItem.Click
+        Clipboard.Clear()
+        Clipboard.SetDataObject(ListenKey.Text)
+    End Sub
+
+    Private Sub lookForChannels_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lookForChannels.Click
+        My.Computer.FileSystem.DeleteDirectory("servers", FileIO.DeleteDirectoryOption.DeleteAllContents)
+        Player.StationChooser_TextChanged(Me, Nothing)
+        lookForChannels.Enabled = False
+    End Sub
+
+    Private Sub cacheList_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cacheList.SelectedIndexChanged
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub removeListenKey_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles removeListenKey.CheckedChanged
+        OK.Enabled = True
+        Cancel.Text = "Cancel"
+        Apply.Enabled = True
+    End Sub
+
+    Private Sub payPal_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles payPal.Click
+        Process.Start("http://www.paypal.com/cgi-bin/webscr?cmd=_flow&SESSION=CoGnN_73KfMI27PUA1Ecqg1g7GCA781wniihgiJJF9T8XokaV7YMD6IHXf8&dispatch=5885d80a13c0db1f8e263663d3faee8d4e181b3aff599f99e8c17bd6c7fe2f56")
+    End Sub
+
+    Private Sub flattr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles flattr.Click
+        Process.Start("http://flattr.com/thing/1352129/DI-Radio")
+    End Sub
+
+    Private Sub emailBox_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles emailBox.KeyDown
+        If e.KeyCode = Keys.Enter And emailBox.ReadOnly = False And logIn.Enabled = True Then
+            logIn_Click(Me, Nothing)
+        End If
+    End Sub
+
 #End Region
 
 #Region "Hotkeys code"
 
-    Private Sub HotkeyPlayStop_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles HotkeyPlayStop.CheckedChanged
+    Private Sub HotkeyPlayStop_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HotkeyPlayStop.CheckedChanged
 
         If HotkeyPlayStop.Checked = True Then
             CustomPlayStop.Enabled = True
@@ -848,13 +908,13 @@
 
     End Sub
 
-    Private Sub CustomPlayStop_Click(sender As Object, e As System.EventArgs) Handles CustomPlayStop.Click
+    Private Sub CustomPlayStop_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles CustomPlayStop.Click
         CustomPlayStop.Text = "Press keys now"
         CustomPlayStop.Font = New Font(CustomPlayStop.Font, FontStyle.Italic)
         CustomPlayStop.ForeColor = Color.Gray
     End Sub
 
-    Private Sub CustomPlayStop_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles CustomPlayStop.KeyDown
+    Private Sub CustomPlayStop_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomPlayStop.KeyDown
         If e.KeyValue = "16" Then
             ModifiersPlayStop += HotKeyModifiers.MOD_SHIFT
             HumanModifiersPlayStop = 0
@@ -873,7 +933,7 @@
         End If
     End Sub
 
-    Private Sub CustomPlayStop_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles CustomPlayStop.KeyUp
+    Private Sub CustomPlayStop_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomPlayStop.KeyUp
         CustomPlayStop.Text = KeyConverter.ConvertToString(HumanModifiersPlayStop + KeyPlayStop).Replace("None", Nothing)
 
         If KeyConverter.ConvertToString(HumanModifiersPlayStop + KeyPlayStop).Replace("None", Nothing) = Nothing = False Then
@@ -883,7 +943,7 @@
 
     End Sub
 
-    Private Sub HotkeyVolumeUp_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles HotkeyVolumeUp.CheckedChanged
+    Private Sub HotkeyVolumeUp_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HotkeyVolumeUp.CheckedChanged
         If HotkeyVolumeUp.Checked = True Then
             CustomVolumeUp.Enabled = True
             CustomVolumeUp.Focus()
@@ -900,23 +960,23 @@
         End If
     End Sub
 
-    Private Sub CustomVolumeUp_Click(sender As Object, e As System.EventArgs) Handles CustomVolumeUp.Click
+    Private Sub CustomVolumeUp_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles CustomVolumeUp.Click
         CustomVolumeUp.Text = "Press keys now"
         CustomVolumeUp.Font = New Font(CustomVolumeUp.Font, FontStyle.Italic)
         CustomVolumeUp.ForeColor = Color.Gray
     End Sub
 
-    Private Sub CustomVolumeUp_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles CustomVolumeUp.KeyDown
+    Private Sub CustomVolumeUp_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomVolumeUp.KeyDown
         If e.KeyValue = "16" Then
-            ModifiersVolumeUp += 4
+            ModifiersVolumeUp += HotKeyModifiers.MOD_SHIFT
             HumanModifiersVolumeUp = 0
             KeyVolumeUp = 0
         ElseIf e.KeyValue = "17" Then
-            ModifiersVolumeUp += 2
+            ModifiersVolumeUp += HotKeyModifiers.MOD_CONTROL
             HumanModifiersVolumeUp = 0
             KeyVolumeUp = 0
         ElseIf e.KeyValue = "18" Then
-            ModifiersVolumeUp += 1
+            ModifiersVolumeUp += HotKeyModifiers.MOD_ALT
             HumanModifiersVolumeUp = 0
             KeyVolumeUp = 0
         Else
@@ -925,7 +985,7 @@
         End If
     End Sub
 
-    Private Sub CustomVolumeUp_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles CustomVolumeUp.KeyUp
+    Private Sub CustomVolumeUp_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomVolumeUp.KeyUp
         CustomVolumeUp.Text = KeyConverter.ConvertToString(HumanModifiersVolumeUp + KeyVolumeUp).Replace("None", Nothing)
 
         If KeyConverter.ConvertToString(HumanModifiersVolumeUp + KeyVolumeUp).Replace("None", Nothing) = Nothing = False Then
@@ -934,7 +994,7 @@
         End If
     End Sub
 
-    Private Sub HotkeyVolumeDown_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles HotkeyVolumeDown.CheckedChanged
+    Private Sub HotkeyVolumeDown_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HotkeyVolumeDown.CheckedChanged
         If HotkeyVolumeDown.Checked = True Then
             CustomVolumeDown.Enabled = True
             CustomVolumeDown.Focus()
@@ -951,23 +1011,23 @@
         End If
     End Sub
 
-    Private Sub CustomVolumeDown_Click(sender As Object, e As System.EventArgs) Handles CustomVolumeDown.Click
+    Private Sub CustomVolumeDown_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles CustomVolumeDown.Click
         CustomVolumeDown.Text = "Press keys now"
         CustomVolumeDown.Font = New Font(CustomVolumeDown.Font, FontStyle.Italic)
         CustomVolumeDown.ForeColor = Color.Gray
     End Sub
 
-    Private Sub CustomVolumeDown_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles CustomVolumeDown.KeyDown
+    Private Sub CustomVolumeDown_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomVolumeDown.KeyDown
         If e.KeyValue = "16" Then
-            ModifiersVolumeDown += 4
+            ModifiersVolumeDown += HotKeyModifiers.MOD_SHIFT
             HumanModifiersVolumeDown = 0
             KeyVolumeDown = 0
         ElseIf e.KeyValue = "17" Then
-            ModifiersVolumeDown += 2
+            ModifiersVolumeDown += HotKeyModifiers.MOD_CONTROL
             HumanModifiersVolumeDown = 0
             KeyVolumeDown = 0
         ElseIf e.KeyValue = "18" Then
-            ModifiersVolumeDown += 1
+            ModifiersVolumeDown += HotKeyModifiers.MOD_ALT
             HumanModifiersVolumeDown = 0
             KeyVolumeDown = 0
         Else
@@ -976,7 +1036,7 @@
         End If
     End Sub
 
-    Private Sub CustomVolumeDown_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles CustomVolumeDown.KeyUp
+    Private Sub CustomVolumeDown_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomVolumeDown.KeyUp
         CustomVolumeDown.Text = KeyConverter.ConvertToString(HumanModifiersVolumeDown + KeyVolumeDown).Replace("None", Nothing)
         If KeyConverter.ConvertToString(HumanModifiersVolumeDown + KeyVolumeDown).Replace("None", Nothing) = Nothing = False Then
             CustomVolumeDown.Font = New Font(CustomVolumeDown.Font, FontStyle.Regular)
@@ -984,7 +1044,7 @@
         End If
     End Sub
 
-    Private Sub HotkeyMuteUnmute_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles HotkeyMuteUnmute.CheckedChanged
+    Private Sub HotkeyMuteUnmute_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HotkeyMuteUnmute.CheckedChanged
         If HotkeyMuteUnmute.Checked = True Then
             CustomMuteUnmute.Enabled = True
             CustomMuteUnmute.Focus()
@@ -1001,23 +1061,23 @@
         End If
     End Sub
 
-    Private Sub CustomMuteUnmute_Click(sender As Object, e As System.EventArgs) Handles CustomMuteUnmute.Click
+    Private Sub CustomMuteUnmute_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles CustomMuteUnmute.Click
         CustomMuteUnmute.Text = "Press keys now"
         CustomMuteUnmute.Font = New Font(CustomMuteUnmute.Font, FontStyle.Italic)
         CustomMuteUnmute.ForeColor = Color.Gray
     End Sub
 
-    Private Sub CustomMuteUnmute_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles CustomMuteUnmute.KeyDown
+    Private Sub CustomMuteUnmute_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomMuteUnmute.KeyDown
         If e.KeyValue = "16" Then
-            ModifiersMuteUnmute += 4
+            ModifiersMuteUnmute += HotKeyModifiers.MOD_SHIFT
             HumanModifiersMuteUnmute = 0
             KeyMuteUnmute = 0
         ElseIf e.KeyValue = "17" Then
-            ModifiersMuteUnmute += 2
+            ModifiersMuteUnmute += HotKeyModifiers.MOD_CONTROL
             HumanModifiersMuteUnmute = 0
             KeyMuteUnmute = 0
         ElseIf e.KeyValue = "18" Then
-            ModifiersMuteUnmute += 1
+            ModifiersMuteUnmute += HotKeyModifiers.MOD_ALT
             HumanModifiersMuteUnmute = 0
             KeyMuteUnmute = 0
         Else
@@ -1026,7 +1086,7 @@
         End If
     End Sub
 
-    Private Sub CustomMuteUnmute_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles CustomMuteUnmute.KeyUp
+    Private Sub CustomMuteUnmute_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomMuteUnmute.KeyUp
         CustomMuteUnmute.Text = KeyConverter.ConvertToString(HumanModifiersMuteUnmute + KeyMuteUnmute).Replace("None", Nothing)
         If KeyConverter.ConvertToString(HumanModifiersMuteUnmute + KeyMuteUnmute).Replace("None", Nothing) = Nothing = False Then
             CustomMuteUnmute.Font = New Font(CustomMuteUnmute.Font, FontStyle.Regular)
@@ -1034,7 +1094,7 @@
         End If
     End Sub
 
-    Private Sub CustomPlayStop_TextChanged(sender As System.Object, e As System.EventArgs) Handles CustomPlayStop.TextChanged
+    Private Sub CustomPlayStop_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CustomPlayStop.TextChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
@@ -1100,15 +1160,15 @@
 
     Private Sub CustomShowHide_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustomShowHide.KeyDown
         If e.KeyValue = "16" Then
-            ModifiersShowHide += 4
+            ModifiersShowHide += HotKeyModifiers.MOD_SHIFT
             HumanModifiersShowHide = 0
             KeyShowHide = 0
         ElseIf e.KeyValue = "17" Then
-            ModifiersShowHide += 2
+            ModifiersShowHide += HotKeyModifiers.MOD_CONTROL
             HumanModifiersShowHide = 0
             KeyShowHide = 0
         ElseIf e.KeyValue = "18" Then
-            ModifiersShowHide += 1
+            ModifiersShowHide += HotKeyModifiers.MOD_ALT
             HumanModifiersShowHide = 0
             KeyShowHide = 0
         Else
@@ -1162,55 +1222,15 @@
 
 #Region "Background Workers"
 
-    Private Sub ValidateWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles ValidateWorker.DoWork
-
-        Dim WebClient As Net.WebClient = New Net.WebClient()
-        WebClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded")
-        Dim listenkeybyte As Byte() = System.Text.Encoding.ASCII.GetBytes("key=" & ListenKey.Text & "&type=text")
-        Dim returnedData As Byte() = WebClient.UploadData("http://tobiass.eu/api/key/post", "POST", listenkeybyte)
-        Dim data As String()
-        Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
-
-        Try
-            data = Split(System.Text.Encoding.ASCII.GetString(returnedData), "|")
-        Catch ex As Exception
-            Me.Invoke(Message, "Couldn't validate the Listen Key due to the following error:" & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try again.", MsgBoxStyle.Exclamation, "Validation failed")
-        End Try
-
-        If data(0) = "true" Then
-            Me.Invoke(Message, "That Listen Key is valid and Premium.", MsgBoxStyle.Information, "Valid and Premium")
-            PremiumFormats.Checked = True
-        ElseIf data(1).ToLower.Contains("premium") Then
-            Me.Invoke(Message, "That Listen Key is valid but is not Premium.", MsgBoxStyle.Information, "Valid but not Premium")
-            PremiumFormats.Checked = False
-        Else
-            Me.Invoke(Message, "That Listen Key is invalid.", MsgBoxStyle.Exclamation, "Invalid")
-            PremiumFormats.Checked = False
-        End If
-
-        WebClient.Dispose()
-
-    End Sub
-
-    Private Sub ValidateWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles ValidateWorker.RunWorkerCompleted
-        ListenKey.Enabled = True
-        ValidateKey.Text = "Validate"
-        ValidateKey.Enabled = True
-    End Sub
-
-    Private Sub DownloadUpdater_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadUpdater.DoWork
+    Private Sub DownloadUpdater_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles DownloadUpdater.DoWork
         Status.Text = "Status: Connecting to server, please wait..."
         LookNow.Enabled = False
         UndefinedProgress.Hide()
 
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
-
-        Dim file As String = exeFolder & "\Updater.exe"
+        Dim file As String = dataFolder & "\Updater.exe"
         Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
-        Dim theResponse As Net.HttpWebResponse
+        Dim theResponse As Net.HttpWebResponse = Nothing
         Dim theRequest As Net.HttpWebRequest
 
         Try
@@ -1250,12 +1270,10 @@
         theResponse.GetResponseStream.Dispose()
     End Sub
 
-    Private Sub DownloadUpdater_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadUpdater.RunWorkerCompleted
+    Private Sub DownloadUpdater_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadUpdater.RunWorkerCompleted
         Status.Text = "Status: Updater downloaded. Launching and exiting..."
 
-        Dim executable As String = Application.ExecutablePath
-        Dim tabla() As String = Split(executable, "\")
-        Dim file As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing) & "\Updater.exe"
+        Dim file As String = dataFolder & "\Updater.exe"
 
         Try
             Process.Start(file)
@@ -1266,6 +1284,196 @@
             Status.Text = "Status: Updater downloaded. Click button to launch."
             Player.UpdaterDownloaded = True
         End Try
+    End Sub
+
+    Private Sub logInWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles logInWorker.DoWork
+
+        Dim WebClient As Net.WebClient = New Net.WebClient()
+        WebClient.Credentials = New Net.NetworkCredential("ephemeron", "dayeiph0ne@pp")
+        WebClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded")
+        Dim request As Byte() = System.Text.Encoding.ASCII.GetBytes("username=" & emailBox.Text & "&password=" & passwordBox.Text.Replace("%", "%25").Replace("&", "%26"))
+        Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+
+        Try
+            returnedData = WebClient.UploadData("https://api.audioaddict.com/v1/di/members/authenticate", "POST", request)
+            success = True
+        Catch ex As Exception
+            If ex.Message.Contains("403") Then
+                Me.Invoke(Message, "Invalid username or password.", MsgBoxStyle.Exclamation, "Login failed")
+                loginAttempts += 1
+            Else
+                Me.Invoke(Message, "There was an error while logging in." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try again.", MsgBoxStyle.Exclamation, "Error logging in")
+            End If
+
+            success = False
+        End Try
+
+    End Sub
+
+    Private Sub logInWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles logInWorker.RunWorkerCompleted
+        If success Then
+            premiumAccount.Text = "No"
+            isPremium = False
+
+            Dim reader As New IO.StringReader(System.Text.Encoding.UTF8.GetString(returnedData).Replace(",", vbNewLine))
+            Do While (reader.Peek > -1)
+                Dim whole As String = reader.ReadLine
+
+                Dim splitter() As String = Split(whole, ":")
+
+                If splitter(0) = "{""api_key""" Then
+                    apiKey = splitter(1).Replace("""", Nothing)
+                ElseIf splitter(0) = """listen_key""" Then
+                    ListenKey.Text = splitter(1).Replace("""", Nothing)
+                ElseIf splitter(0) = """first_name""" Then
+                    accountOwner.Text = splitter(1).Replace("""", Nothing) & " "
+                    userInfo = splitter(1).Replace("""", Nothing)
+                ElseIf splitter(0) = """id""" Then
+                    userId = splitter(1).Replace("""", Nothing)
+                ElseIf splitter(0) = """last_name""" Then
+                    accountOwner.Text += splitter(1).Replace("""", Nothing)
+                    userInfo += "|" & splitter(1).Replace("""", Nothing)
+                ElseIf splitter(0) = """status""" Then
+                    If splitter(1) = """active""" Then
+                        premiumAccount.Text = "Yes"
+                        isPremium = True
+                    End If
+                End If
+            Loop
+
+            reader.Close()
+            reader.Dispose()
+
+            Dim WebClient As Net.WebClient = New Net.WebClient()
+            WebClient.Credentials = New Net.NetworkCredential("ephemeron", "dayeiph0ne@pp")
+
+            If WebClient.DownloadString("https://api.audioaddict.com/v1/di/members/" & userId & "/subscriptions/trial_allowed/premium-pass?api_key=" & apiKey).Contains("true") Then
+                premiumTrial.Text = "Available"
+                startTrial.Enabled = True
+                startTrial.Show()
+            Else
+                premiumTrial.Text = "Not available"
+                startTrial.Hide()
+            End If
+
+            logIn.Text = "Logout"
+            logIn.Enabled = True
+            forgotPass.Enabled = False
+            createAccount.Enabled = False
+            pleaseWait.Hide()
+            infoLogIn.Hide()
+            StationSelector.Enabled = True
+            FileFormat.Enabled = True
+            pleaseWaitRefresh.Hide()
+            refreshInfo.Enabled = True
+
+            isLogged = True
+
+            If premiumAccount.Text = "Yes" Then
+                isPremium = True
+            Else
+                isPremium = False
+            End If
+
+            StationSelector_SelectedIndexChanged(Me, Nothing)
+
+            OK.Enabled = True
+            Cancel.Text = "Cancel"
+            Apply.Enabled = True
+
+        Else
+            If loginAttempts >= 5 Then
+                If MessageBox.Show("Login failed after " & loginAttempts & " attempts." & vbNewLine & "Would you like to receive an e-mail to reset your password?", "Password reset", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                    resetPasswordWorker.RunWorkerAsync()
+                    loginAttempts = 0
+                    pleaseWait.Text = "Please wait..."
+                    Exit Sub
+                Else
+                    loginAttempts = 0
+                End If
+            End If
+
+            emailBox.ReadOnly = False
+            passwordBox.ReadOnly = False
+            logIn.Enabled = True
+            pleaseWait.Hide()
+            StationSelector.Enabled = True
+            FileFormat.Enabled = True
+            forgotPass.Enabled = True
+        End If
+    End Sub
+
+    Private Sub resetPasswordWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles resetPasswordWorker.DoWork
+
+        Dim WebClient As Net.WebClient = New Net.WebClient()
+        WebClient.Credentials = New Net.NetworkCredential("ephemeron", "dayeiph0ne@pp")
+        WebClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded")
+        Dim request As Byte() = System.Text.Encoding.ASCII.GetBytes("username=" & emailBox.Text)
+        Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+
+        Try
+            Dim returnedData As Byte() = WebClient.UploadData("https://api.audioaddict.com/v1/di/members/send_reset_password", "POST", request)
+            success = True
+        Catch ex As Exception
+
+
+            If ex.Message.Contains("404") Then
+                Me.Invoke(Message, "A " & radioStation & " account was not found for that email address." & vbNewLine & "Please try another address or contact " & radioStation & " for support.", MsgBoxStyle.Exclamation, "Reset your password")
+            Else
+                Me.Invoke(Message, "There was an error while asking for a password reset email." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please try again.", MsgBoxStyle.Exclamation, "Reset your password")
+            End If
+
+            success = False
+        End Try
+
+        If success Then
+            Me.Invoke(Message, "An email was sent to the address you specified." & vbNewLine & vbNewLine & "Follow the instructions in the email to retrieve your password." & vbNewLine & "If you don't receive an email within 5 minutes, check your spam filter or contact " & radioStation & " for help.", MsgBoxStyle.Information, "Almost done")
+        End If
+
+    End Sub
+
+    Private Sub resetPasswordWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles resetPasswordWorker.RunWorkerCompleted
+        emailBox.ReadOnly = False
+        passwordBox.ReadOnly = False
+        logIn.Enabled = True
+        forgotPass.Enabled = True
+        pleaseWait.Hide()
+    End Sub
+
+    Private Sub startTrialWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles startTrialWorker.DoWork
+        Dim WebClient As Net.WebClient = New Net.WebClient()
+        WebClient.Credentials = New Net.NetworkCredential("ephemeron", "dayeiph0ne@pp")
+        WebClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded")
+        Dim request As Byte() = System.Text.Encoding.ASCII.GetBytes("api_key=" & apiKey)
+        Dim returnedData As Byte()
+        Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
+
+        Try
+            returnedData = WebClient.UploadData("https://api.audioaddict.com/v1/di/members/" & userId & "/subscriptions/trial/premium-pass", "POST", request)
+            success = True
+        Catch ex As Exception
+            Me.Invoke(Message, "Couldn't start your free trial." & vbNewLine & ex.Message & vbNewLine & vbNewLine & "Please refresh your account information and try again.", MsgBoxStyle.Exclamation, "Trial petition failed")
+            success = False
+        End Try
+    End Sub
+
+    Private Sub startTrialWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles startTrialWorker.RunWorkerCompleted
+        pleaseWaitRefresh.Hide()
+        logIn.Enabled = True
+        StationSelector.Enabled = True
+        FileFormat.Enabled = True
+        refreshInfo.Enabled = True
+        startTrial.Enabled = True
+
+        If success = True Then
+            premiumAccount.Text = "Yes"
+            premiumTrial.Text = "Not available"
+            startTrial.Hide()
+            isPremium = True
+            success = False
+        End If
+
+        StationSelector_SelectedIndexChanged(Me, Nothing)
     End Sub
 
 #End Region
@@ -1331,7 +1539,7 @@
         ThemesMenu.Show(Me, Themes.Location.X + 17, Themes.Location.Y + 245)
     End Sub
 
-    Private Sub RestoreColours_Click(sender As System.Object, e As System.EventArgs) Handles RestoreColours.Click
+    Private Sub RestoreColours_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RestoreColours.Click
         MainColour.BackColor = SystemColors.Control
         SecondaryColour.BackColor = Color.Black
         PeakColour.BackColor = Color.Silver
@@ -1342,7 +1550,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub BlackNight_Click(sender As System.Object, e As System.EventArgs) Handles BlackNight.Click
+    Private Sub BlackNight_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BlackNight.Click
         MainColour.BackColor = Color.FromArgb(-16777216)
         SecondaryColour.BackColor = Color.FromArgb(-1)
         PeakColour.BackColor = Color.FromArgb(-1)
@@ -1354,7 +1562,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub BlueOcean_Click(sender As System.Object, e As System.EventArgs) Handles BlueOcean.Click
+    Private Sub BlueOcean_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BlueOcean.Click
         MainColour.BackColor = Color.FromArgb(-5000193)
         SecondaryColour.BackColor = Color.FromArgb(-16777133)
         PeakColour.BackColor = Color.FromArgb(-9455617)
@@ -1366,7 +1574,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub BlueSky_Click(sender As System.Object, e As System.EventArgs) Handles BlueSky.Click
+    Private Sub BlueSky_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BlueSky.Click
         MainColour.BackColor = Color.FromArgb(-16725302)
         SecondaryColour.BackColor = Color.FromArgb(-3473409)
         PeakColour.BackColor = Color.FromArgb(-143)
@@ -1378,7 +1586,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub BrownWood_Click(sender As System.Object, e As System.EventArgs) Handles BrownWood.Click
+    Private Sub BrownWood_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BrownWood.Click
         MainColour.BackColor = Color.FromArgb(-8388608)
         SecondaryColour.BackColor = Color.FromArgb(-4497920)
         PeakColour.BackColor = Color.FromArgb(-12582912)
@@ -1390,7 +1598,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub SilverMetal_Click(sender As System.Object, e As System.EventArgs) Handles SilverMetal.Click
+    Private Sub SilverMetal_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SilverMetal.Click
         MainColour.BackColor = Color.FromArgb(-16777216)
         SecondaryColour.BackColor = Color.FromArgb(-8355712)
         PeakColour.BackColor = Color.FromArgb(-10526799)
@@ -1402,7 +1610,7 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub YellowSunset_Click(sender As System.Object, e As System.EventArgs) Handles YellowSunset.Click
+    Private Sub YellowSunset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles YellowSunset.Click
         MainColour.BackColor = Color.FromArgb(-7237376)
         SecondaryColour.BackColor = Color.FromArgb(-243)
         PeakColour.BackColor = Color.FromArgb(-32704)
@@ -1414,8 +1622,8 @@
         Apply.Enabled = True
     End Sub
 
-    Private Sub SaveTheme_Click(sender As System.Object, e As System.EventArgs) Handles SaveTheme.Click
-        SaveThemeDialog.InitialDirectory = Player.exeFolder
+    Private Sub SaveTheme_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveTheme.Click
+        SaveThemeDialog.InitialDirectory = dataFolder & "themes"
         SaveThemeDialog.FileName = Nothing
 
         If SaveThemeDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
@@ -1432,12 +1640,13 @@
         End If
     End Sub
 
-    Private Sub LoadTheme_Click(sender As System.Object, e As System.EventArgs) Handles LoadTheme.Click
+    Private Sub LoadTheme_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LoadTheme.Click
+        OpenThemeDialog.InitialDirectory = dataFolder & "themes"
         OpenThemeDialog.FileName = Nothing
 
         If OpenThemeDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
             Dim reader As New IO.StreamReader(OpenThemeDialog.FileName)
-            Dim lineNumber As Integer = 0
+            Dim lineNumber As Byte = 0
 
             Do While (reader.Peek > -1)
                 Dim line As String = reader.ReadLine
@@ -1466,22 +1675,22 @@
         End If
     End Sub
 
-    Private Sub ChangeWholeBackground_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles ChangeWholeBackground.CheckedChanged
+    Private Sub ChangeWholeBackground_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ChangeWholeBackground.CheckedChanged
         OK.Enabled = True
         Cancel.Text = "Cancel"
         Apply.Enabled = True
     End Sub
 
-    Private Sub SaveThemeDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles SaveThemeDialog.HelpRequest
+    Private Sub SaveThemeDialog_HelpRequest(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveThemeDialog.HelpRequest
         MessageBox.Show("Saving your current theme will allow you to share it with other people by sending the .cth file or by uploading it to the online gallery.", "Saving theme file", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
-    Private Sub OpenThemeDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles OpenThemeDialog.HelpRequest
+    Private Sub OpenThemeDialog_HelpRequest(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OpenThemeDialog.HelpRequest
         MessageBox.Show("Load a .cth file to replace your current colour theme.", "Loading a theme file", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
-    Private Sub GetMoreThemesToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles GetMoreThemesToolStripMenuItem.Click
-        Gallery.Location = New Point(Me.Location.X - 21, Me.Location.Y + 9)
+    Private Sub GetMoreThemesToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GetMoreThemesToolStripMenuItem.Click
+        Gallery.Location = New Point(Me.Location.X - 8, Me.Location.Y + 9)
         Gallery.Show()
         Gallery.BringToFront()
     End Sub
@@ -1490,11 +1699,11 @@
 
 #Region "Equalizer Presets"
 
-    Private Sub Presets_Click(sender As System.Object, e As System.EventArgs) Handles Presets.Click
+    Private Sub Presets_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Presets.Click
         PresetsMenu.Show(Me, Presets.Location.X + 15, Presets.Location.Y - 196)
     End Sub
 
-    Private Sub ClassicalMusic_Click(sender As System.Object, e As System.EventArgs) Handles ClassicalMusic.Click
+    Private Sub ClassicalMusic_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ClassicalMusic.Click
         Band0.Value = 6
         Band1.Value = 3
         Band2.Value = 0
@@ -1503,7 +1712,7 @@
         Band5.Value = 2
     End Sub
 
-    Private Sub DancePreset_Click(sender As System.Object, e As System.EventArgs) Handles DancePreset.Click
+    Private Sub DancePreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DancePreset.Click
         Band0.Value = 4
         Band1.Value = 1
         Band2.Value = -1
@@ -1512,7 +1721,7 @@
         Band5.Value = 4
     End Sub
 
-    Private Sub JazzPreset_Click(sender As System.Object, e As System.EventArgs) Handles JazzPreset.Click
+    Private Sub JazzPreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles JazzPreset.Click
         Band0.Value = 0
         Band1.Value = 3
         Band2.Value = 3
@@ -1521,7 +1730,7 @@
         Band5.Value = 5
     End Sub
 
-    Private Sub MetalPreset_Click(sender As System.Object, e As System.EventArgs) Handles MetalPreset.Click
+    Private Sub MetalPreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MetalPreset.Click
         Band0.Value = 0
         Band1.Value = 0
         Band2.Value = 0
@@ -1530,7 +1739,7 @@
         Band5.Value = 1
     End Sub
 
-    Private Sub NewAgePreset_Click(sender As System.Object, e As System.EventArgs) Handles NewAgePreset.Click
+    Private Sub NewAgePreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewAgePreset.Click
         Band0.Value = 3
         Band1.Value = 0
         Band2.Value = 0
@@ -1539,7 +1748,7 @@
         Band5.Value = 1
     End Sub
 
-    Private Sub ReggaePreset_Click(sender As System.Object, e As System.EventArgs) Handles ReggaePreset.Click
+    Private Sub ReggaePreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReggaePreset.Click
         Band0.Value = 0
         Band1.Value = -3
         Band2.Value = 0
@@ -1548,7 +1757,7 @@
         Band5.Value = 4
     End Sub
 
-    Private Sub RockPreset_Click(sender As System.Object, e As System.EventArgs) Handles RockPreset.Click
+    Private Sub RockPreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RockPreset.Click
         Band0.Value = 1
         Band1.Value = 3
         Band2.Value = -1
@@ -1557,7 +1766,7 @@
         Band5.Value = 4
     End Sub
 
-    Private Sub TechnoPreset_Click(sender As System.Object, e As System.EventArgs) Handles TechnoPreset.Click
+    Private Sub TechnoPreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TechnoPreset.Click
         Band0.Value = 1
         Band1.Value = -1
         Band2.Value = -1
@@ -1566,10 +1775,9 @@
         Band5.Value = 5
     End Sub
 
-    Private Sub SavePreset_Click(sender As System.Object, e As System.EventArgs) Handles SavePreset.Click
-        SavePresetDialog.InitialDirectory = Player.exeFolder
+    Private Sub SavePreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SavePreset.Click
+        SavePresetDialog.InitialDirectory = dataFolder & "equalizer"
         SavePresetDialog.FileName = Nothing
-
         If SavePresetDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
             Dim writer As New IO.StreamWriter(SavePresetDialog.FileName)
 
@@ -1597,7 +1805,8 @@
         End If
     End Sub
 
-    Private Sub LoadPreset_Click(sender As System.Object, e As System.EventArgs) Handles LoadPreset.Click
+    Private Sub LoadPreset_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LoadPreset.Click
+        OpenPresetDialog.InitialDirectory = dataFolder & "equalizer"
         OpenPresetDialog.FileName = Nothing
 
         If OpenPresetDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
@@ -1605,11 +1814,11 @@
         End If
     End Sub
 
-    Private Sub SavePresetDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles SavePresetDialog.HelpRequest
+    Private Sub SavePresetDialog_HelpRequest(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SavePresetDialog.HelpRequest
         MessageBox.Show("Use this dialog to save your current equalizer levels to a file that can then be loaded in foobar2000.", "Preset saving", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
-    Private Sub OpenPresetDialog_HelpRequest(sender As System.Object, e As System.EventArgs) Handles OpenPresetDialog.HelpRequest
+    Private Sub OpenPresetDialog_HelpRequest(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OpenPresetDialog.HelpRequest
         MessageBox.Show("Use this dialog to select a previously saved .feq file. Any .feq file saved by foobar2000 or this application will work.", "Preset loading", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
@@ -1653,21 +1862,36 @@
         End If
 
         Player.GoogleSearch = GoogleSearch.Checked
-
+        Player.cacheList = cacheList.Text
         Player.ShowSongStart = ShowSongStart.Checked
+        Player.removeKey = removeListenKey.Checked
 
-        If Player.ShowSongStart = False Then
-            Player.Time.Width = 0
-            Player.Title.Width = 255
-        ElseIf Player.ShowSongStart = True And New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
-            Player.Time.Width = 40
-            Player.Title.Width = 215
+        If Player.HistoryList.Items.Count < 20 Then
+            If Player.ShowSongStart = False Then
+                Player.Time.Width = 0
+                Player.Title.Width = 276
+            ElseIf Player.ShowSongStart = True And New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
+                Player.Title.Width = 236
+                Player.Time.Width = 40
+            Else
+                Player.Title.Width = 226
+                Player.Time.Width = 50
+            End If
         Else
-            Player.Time.Width = 50
-            Player.Title.Width = 209
+            If Player.ShowSongStart = False Then
+                Player.Time.Width = 0
+                Player.Title.Width = 259
+            ElseIf Player.ShowSongStart = True And New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
+                Player.Title.Width = 219
+                Player.Time.Width = 40
+            Else
+                Player.Title.Width = 209
+                Player.Time.Width = 50
+            End If
         End If
 
-        If ListenKey.Text.Length < 14 Then
+
+        If isLogged = False Then
 
             If Player.SelectedChannel.Text = "My Favorites" Then
                 Player.SelectedServer.Items.Clear()
@@ -1717,9 +1941,9 @@
 
 nofavs:
 
-        If PremiumFormats.Checked = Player.PremiumFormats = False OrElse ListenKey.Text = Player.ListenKey = False Then
+        If isPremium = Player.isPremium = False OrElse ListenKey.Text = Player.ListenKey = False Then
 
-            If PremiumFormats.Checked = False Then
+            If isPremium = False Then
                 If DISetting > -1 Then
                     Player.DIFormat = DISetting
                 Else
@@ -1759,8 +1983,8 @@ nofavs:
                 End If
             End If
 
-            If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\Digitally Imported") Then
-                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\Digitally Imported")
+            If My.Computer.FileSystem.DirectoryExists("servers\Digitally Imported") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles("servers\Digitally Imported")
 
                     If foundFile.Contains("channels.db") = False Then
                         Kill(foundFile)
@@ -1769,8 +1993,8 @@ nofavs:
                 Next
             End If
 
-            If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\JazzRadio") Then
-                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\JazzRadio")
+            If My.Computer.FileSystem.DirectoryExists("servers\JazzRadio") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles("servers\JazzRadio")
 
                     If foundFile.Contains("channels.db") = False Then
                         Kill(foundFile)
@@ -1779,8 +2003,8 @@ nofavs:
                 Next
             End If
 
-            If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\SKY.FM") Then
-                For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\SKY.FM")
+            If My.Computer.FileSystem.DirectoryExists("servers\SKY.FM") Then
+                For Each foundFile As String In My.Computer.FileSystem.GetFiles("servers\SKY.FM")
 
                     If foundFile.Contains("channels.db") = False Then
                         Kill(foundFile)
@@ -1816,15 +2040,15 @@ nofavs:
 
             If Player.DIFormat = DISetting = False And Player.DIFormat = DISettingPremium = False Then
 
-                If PremiumFormats.Checked = False Then
+                If isPremium = False Then
                     Player.DIFormat = DISetting
                 Else
                     Player.DIFormat = DISettingPremium
                 End If
 
 
-                If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\Digitally Imported") Then
-                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\Digitally Imported")
+                If My.Computer.FileSystem.DirectoryExists("servers\Digitally Imported") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles("servers\Digitally Imported")
 
                         If foundFile.Contains("channels.db") = False Then
                             Kill(foundFile)
@@ -1862,15 +2086,15 @@ nofavs:
 
             If Player.SKYFormat = SKYSetting = False And Player.SKYFormat = SKYSettingPremium = False Then
 
-                If PremiumFormats.Checked = False Then
+                If isPremium = False Then
                     Player.SKYFormat = SKYSetting
                 Else
                     Player.SKYFormat = SKYSettingPremium
                 End If
 
 
-                If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\SKY.FM") Then
-                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\SKY.FM")
+                If My.Computer.FileSystem.DirectoryExists("servers\SKY.FM") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles("servers\SKY.FM")
 
                         If foundFile.Contains("channels.db") = False Then
                             Kill(foundFile)
@@ -1906,14 +2130,14 @@ nofavs:
 
             If Player.JazzFormat = JazzSetting = False And Player.JazzFormat = JazzSettingPremium = False Then
 
-                If PremiumFormats.Checked = False Then
+                If isPremium = False Then
                     Player.JazzFormat = JazzSetting
                 Else
                     Player.JazzFormat = JazzSettingPremium
                 End If
 
-                If My.Computer.FileSystem.DirectoryExists(Player.exeFolder & "servers\JazzRadio") Then
-                    For Each foundFile As String In My.Computer.FileSystem.GetFiles(Player.exeFolder & "servers\JazzRadio")
+                If My.Computer.FileSystem.DirectoryExists("servers\JazzRadio") Then
+                    For Each foundFile As String In My.Computer.FileSystem.GetFiles("servers\JazzRadio")
 
                         If foundFile.Contains("channels.db") = False Then
                             Kill(foundFile)
@@ -1950,7 +2174,15 @@ nofavs:
         End If
 
         Player.ListenKey = ListenKey.Text
-        Player.PremiumFormats = PremiumFormats.Checked
+        Player.isPremium = isPremium
+        Player.userId = userId
+        Player.userInfo = userInfo
+        Player.isPremium = isPremium
+        Player.canTrial = canTrial
+        Player.apiKey = apiKey
+        Player.isLogged = isLogged
+        Player.username = emailBox.Text
+        Player.password = passwordBox.Text
         Player.UpdatesAtStart = UpdatesAtStart.Checked
         Player.BetaVersions = BetaVersions.Checked
         Player.Visualisation = Visualisation.Checked
@@ -2159,7 +2391,7 @@ nofavs:
         Player.SaveSettings(False)
     End Sub
 
-    Private Sub ColourPicker_HelpRequest(sender As System.Object, e As System.EventArgs) Handles ColourPicker.HelpRequest
+    Private Sub ColourPicker_HelpRequest(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ColourPicker.HelpRequest
         If ColourPicker.Tag.ToString.Contains("secondary") Then
             MessageBox.Show("You're selecting the Secondary colour of the visualisation." & vbNewLine & "This colour is used at the top of the visualisation as the frequency levels reach higher values." & vbNewLine & "The middle range of the visualisation uses a mixture of the Main and Secondary colours." & vbNewLine & vbNewLine & "You can select a colour from the default ones on the left side of the window or create a custom one by dragging the plus sign inside the color hue and the arrow on the brightness level." & vbNewLine & "Alternatively, you can write your own custom values on the number boxes to define a colour.", "Colour help", MessageBoxButtons.OK, MessageBoxIcon.Information)
         ElseIf ColourPicker.Tag.ToString.Contains("main") Then
@@ -2171,17 +2403,30 @@ nofavs:
         End If
     End Sub
 
-    Private Sub AboutWebsite_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutWebsite.LinkClicked
+    Private Sub AboutWebsite_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutWebsite.LinkClicked
         Process.Start("http://www.tobiass.eu")
     End Sub
 
-    Private Sub AboutForums_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutForums.LinkClicked
+    Private Sub AboutForums_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutForums.LinkClicked
         Process.Start("http://forums.di.fm")
     End Sub
 
-    Private Sub AboutLicense_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutLicense.LinkClicked
+    Private Sub AboutLicense_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles AboutLicense.LinkClicked
         Process.Start("http://www.tobiass.eu/files/license.htm")
     End Sub
+
+    Function CheckEmail(ByVal emailAddress As String) As Boolean
+
+        Dim pattern As String = "^.+@[^\.].*\.[a-z]{2,}$"
+        Dim emailAddressMatch As System.Text.RegularExpressions.Match = System.Text.RegularExpressions.Regex.Match(emailAddress, pattern)
+
+        If emailAddressMatch.Success Then
+            Return True
+        Else
+            Return False
+        End If
+
+    End Function
 
 #End Region
 

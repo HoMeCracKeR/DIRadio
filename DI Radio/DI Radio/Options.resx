@@ -123,50 +123,14 @@
   <metadata name="TabPage1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="GroupBox5.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="GroupBox1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="StationSelector.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="removeListenKey.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="Helper.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>136, 11</value>
-  </metadata>
-  <metadata name="ValidateKey.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="ValidateKey.HelpString" xml:space="preserve">
-    <value>Clicking this button will validate your Listen Key by contacting Digitally Imported's, JazzRadio's or SKY.FM's servers. RockRadio doesn't use Listen Keys so the Key will be validated against Digitally Imported's servers instead.</value>
-  </data>
-  <metadata name="PremiumFormats.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ListenLink.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="ListenLink.HelpString" xml:space="preserve">
-    <value>Clicking this link will open your default web browser pointing to your My Listen Key page, where you'll be able to check your current Listen Key and reset it. RockRadio doesn't use Listen Keys so this link will open the Digitally Imported page instead.</value>
-  </data>
-  <metadata name="ListenKey.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="ListenKey.HelpString" xml:space="preserve">
-    <value>Write your Listen key to enable support for My Favorites and, if you have a Premium account, enable support for Premium formats. You can use the Validate button to check if your Listen Key is a Premium one or not.</value>
-  </data>
-  <metadata name="Label10.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="FileFormat.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="FileFormat.HelpString" xml:space="preserve">
-    <value>Select your preferred file format for listening to Digitally Imported, SKY.FM or JazzRadio. The following file formats are supported for FREE accounts: MP3 at 96 kbits/sec, AAC-HE at 40 kbits/sec, Windows Media at 40 kbits/sec. The following formats are supported for PREMIUM accounts: MP3 at 256 and 128 kbits/sec, AAC-HE at 128, 64 and 40 kbits/sec, Windows Media at 128 and 64 kbits/sec (Windows Media at 64 kbits/sec not available for JazzRadio). Currently RockRadio is in Beta stage and only supports MP3 at 96kbits/sec.</value>
-  </data>
-  <metadata name="Label9.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="GroupBox1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
   </metadata>
   <metadata name="ShowSongStart.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -184,6 +148,18 @@
     <value>True</value>
   </metadata>
   <metadata name="NotificationTitle.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="GroupBox9.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lookForChannels.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="cacheList.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label26.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="GroupBox2.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -214,6 +190,108 @@
     <value>True</value>
   </metadata>
   <metadata name="UpdatesAtStart.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="TabPage6.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="GroupBox8.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="infoLogIn.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="startTrial.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="premiumTrial.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="pleaseWaitRefresh.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label25.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="refreshInfo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="ListenKey.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="listenKeyMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>881, 50</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="CopyListenKeyToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DAAACwwBP0AiyAAAAAd0SU1FB9UKGhQIL4MUNJsAAAEoSURBVDhPnZPLToNAFIZ5Q018HjMrL9Da6sJL
+        6tKlD+EChC5cuOAJxBWXoWEQCpQZz6EgwhA78U++kCFzPv6zQLtaGkeXxhlRYXGjn2jj6LPzUyEEUQEl
+        7VifTrDZxCSOqQS+R5QE67VDVo/373BRqADrPw8EiDG/qOGsFJRIDeDcCOD8JxhJgDt3DfCS49iTTApw
+        2LZf/9+A0ohEUXiwwaSAc07CMCSWZSo1KMtSMMZ6QVEUJAgC4vv+wQaUUpHnmTAtsxcwlpA0ZSRJkoFg
+        zHyhD2gEy+vZMUiwekfNeS0NY+2H1W3z3G5z4X1+7AXjgKAqy0Ia/i3wvP0w8NaO9UFBmqbNnln2JXa7
+        SlRVJVzXBcHdz5cB+b/AwG5PIOkuTfECtMOa9g3mdtnhv256TwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <metadata name="Label24.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="premiumAccount.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="accountOwner.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label22.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label23.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="GroupBox6.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="createAccount.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="pleaseWait.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="logIn.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="forgotPass.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="passwordBox.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label21.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="emailBox.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label20.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="GroupBox5.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="qualityInfo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label10.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="StationSelector.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="FileFormat.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Label9.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="TabPage2.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -247,7 +325,7 @@
     <value>True</value>
   </metadata>
   <metadata name="ToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>361, 17</value>
+    <value>224, 11</value>
   </metadata>
   <metadata name="BackgroundButton.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -426,6 +504,70 @@
   <metadata name="TabPage4.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="flattr.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        P+naWGV8AAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="payPal.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        R0lGODlhSgAVAIcmAP+sLf7iq/7gpf7ksf7en/+6Tf+vM7+LNv+xOu7bskBedhA+a/+0QN+aLo9/WHBu
+        WxA+aoCQl0BfeXB+f2BhUc+TMn+Jg7+YU76zkZ+HVp6jmX+Nj97Qre+iKo6Xk56gke+yT/63R3+LiTBU
+        dO7Tm1BdXs4HAkBfd+7ZrH+Khs+VON7MomB0fkBgeq6ojf7HbGBze765o87Bnp6hlf/s0M7Do/7Rhb62
+        mjBKWxA7YjBUczBUcv64SmB2gp9+Qs7EqP/89jBTcY6Uif+lNEBedN+dNIBwSa6wov/NgtEQBY6Vjb+O
+        O/7amP++Xf+3RlBpev7UjP/Ti6+QVb++r8+hUs6/mf/05P/CYNEOBc6+lN7Knf7epP+oLH+MjJ6fjVBr
+        fmBmXf/05v/ryf61Rv/ZoCBJbv/it3BoTY6WkP/py//YnyBCX/+vOkBVYP+/Wf63S767qP7WjP65Tf/w
+        2f/FZu/gwv/u0++kMVBsgmB1gP7hqmB4h//uzv7dnv/w2HCAhP7Qf66smf+mLf/boP6/WTBMYf7Jcv+u
+        M//y2yBIba6unv/sz//itv+pNP+yP/7mt/+pJv/15//rzv7pvv/syP/dqv/46v/03//OhP/w0/+/Xv+x
+        OAAzZswAAP+ZMwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        ACH/C05FVFNDQVBFMi4wAwEBAAAh+QQBAAAmACwAAAAASgAVAAAI/wBNCBxowpPBgwgTKlzIsKHDhAQj
+        DjS4KEykixgvAgGSsaPHjyBDfrSSxqDEiXMsqVzJsqXLlzBjynxpx9NJT34u6dzJs6fPn0CDCg2KyCZB
+        T2IyKV3KtKnTp1CjSp3Kx2jBQZSyat3KlVKErxGmdB1LlmudsmgpRTHqaZLbt3DjToLDqW7dPXLz6n17
+        BM/ev5Og2PTEY8ujw4gTK/bAScOjBC04/TgcY4MHDoc5xEigYUOCw5w3aEiQQBGnFph/WP6suPVhGzwM
+        vjE0oLbt27h7cKpROxCnLgN0j1iwgPcXThJGIB+AgrgE5GjszpjBafgCFLizD9BDSI7BMSFsBP8YT758
+        eR2cyN/gJOIDpz8BVnDKEwD9hwAQ0ssQISPAifQicHKDfCcE4J4S5iUYwAshhGCQIwww8EIfAlRo4YUV
+        cqKAhUJw4sUTnGiR4Yac7DCiAFWwoEAZJQqgACcCdKhACixwkgKGGDLhRoQMGMQGAkAyQEccBBRppJEY
+        cDJBkSQkAgEJRHBSZBacwJDkkleSAEEQLrigJAFbEmBBlRaUicGRRwJyBZBsGnSIAXDGaUABdNZJpwOc
+        PHCBFIVw4kABD3CSAQhtcHIBnhkUgOgFeYJQgqBUcFJCAYw+oCgYINhJpxNyymmQIACEKuqopFJgFyc5
+        GBHqHTjUlYMPAJiwqkKsnMzaKidrcLJEEXVRAMAZdsFK6rCicjEYJMgmq+yyFRzg7AHLQtJsB8g2Wy20
+        yB7QQAfaQtJAt94eQG205CLL1hCbpKvuuuy26+678MYrb7qNWOVJE5rkq+++/Pbr778AByywJlYJ5AkS
+        mCSs8MIMN+zwwxBHHHHBE6lRycUYZ6zxxhx37PHHHJNB8VGemCHJySijTAMNKbfs8sswxwwzIyadRPJD
+        OOesM0MnBQQAOw==
+</value>
+  </data>
   <metadata name="AboutForums.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -450,7 +592,6 @@
   <metadata name="PictureBox1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="PictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -1261,37 +1402,43 @@
     <value>True</value>
   </metadata>
   <metadata name="ThemesMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>168, 57</value>
-  </metadata>
-  <metadata name="ValidateWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>225, 17</value>
+    <value>314, 50</value>
   </metadata>
   <metadata name="OnlyModifiers.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>453, 17</value>
+    <value>316, 11</value>
   </metadata>
   <metadata name="DownloadUpdater.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>581, 17</value>
+    <value>444, 11</value>
   </metadata>
   <metadata name="PresetsMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>732, 17</value>
+    <value>884, 11</value>
   </metadata>
   <metadata name="SavePresetDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>859, 18</value>
+    <value>17, 50</value>
   </metadata>
   <metadata name="OpenPresetDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 57</value>
+    <value>163, 50</value>
   </metadata>
   <metadata name="OpenThemeDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>442, 57</value>
+    <value>588, 50</value>
   </metadata>
   <metadata name="SaveThemeDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>293, 57</value>
+    <value>439, 50</value>
+  </metadata>
+  <metadata name="logInWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>595, 11</value>
+  </metadata>
+  <metadata name="resetPasswordWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>714, 11</value>
+  </metadata>
+  <metadata name="startTrialWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>742, 50</value>
   </metadata>
   <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>83</value>
+    <value>90</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

@@ -36,7 +36,7 @@ Partial Class Changelog
         Me.ChangelogText.Location = New System.Drawing.Point(0, 0)
         Me.ChangelogText.Name = "ChangelogText"
         Me.ChangelogText.ReadOnly = True
-        Me.ChangelogText.Size = New System.Drawing.Size(294, 390)
+        Me.ChangelogText.Size = New System.Drawing.Size(320, 392)
         Me.ChangelogText.TabIndex = 0
         Me.ChangelogText.Text = "Please wait, downloading changelog..."
         '
@@ -57,12 +57,12 @@ Partial Class Changelog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(294, 390)
+        Me.ClientSize = New System.Drawing.Size(320, 392)
         Me.Controls.Add(Me.Retry)
         Me.Controls.Add(Me.ChangelogText)
         Me.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.MinimumSize = New System.Drawing.Size(310, 305)
+        Me.MinimumSize = New System.Drawing.Size(336, 431)
         Me.Name = "Changelog"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Me.Text = "Changelog"

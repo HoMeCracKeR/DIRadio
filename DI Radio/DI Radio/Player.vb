@@ -6,12 +6,6 @@
 '
 ' This source code is protected by the BSD license and you should have received a "BSD License.txt" file with it.
 ' If you haven't, please drop me an e-mail at newvirus@live.com.ar with information on where you downloaded the source code
-' 
-'
-' I'm currently struggling getting custom Hotkeys to work properly. Sometimes they do work, other times a hotkey will do other action
-' than the one set to and most of the times they simply don't work. If while you're poking around here you come up with a solution,
-' please drop me an e-mail. I'll give you a mention on the About tab and in the forums (plus, helping other people out always feels good)
-'
 '
 ' One last note. This source code will compile as-is, but Bass.Net will display a popup when you start the player since I've erased my
 ' e-mail and registration key (you can't publicly share it). To get a registration key head over to http://bass.radio42.com/bass_register.html
@@ -22,6 +16,7 @@
 
 Imports Un4seen.Bass
 Imports Un4seen.Bass.Misc
+Imports System.Runtime.InteropServices
 
 Public Class Player
 
@@ -40,21 +35,20 @@ Public Class Player
     Public GoogleSearch As Boolean = True
     Public ShowSongStart As Boolean = False
 
-    Public PremiumFormats As Boolean = False
-    Public DIFormat As Integer = 0
-    Public SKYFormat As Integer = 0
-    Public JazzFormat As Integer = 0
+    Public DIFormat As SByte = 0
+    Public SKYFormat As SByte = 0
+    Public JazzFormat As SByte = 0
     Public ListenKey As String
 
     Public UpdatesAtStart As Boolean = True
     Public BetaVersions As Boolean = False
 
     Public Visualisation As Boolean = True
-    Public VisualisationType As Integer = 5
+    Public VisualisationType As Byte = 5
     Public HighQualityVis As Boolean = False
     Public LinealRepresentation As Boolean = False
     Public FullSoundRange As Boolean = False
-    Public Smoothness As Integer = 27
+    Public Smoothness As Byte = 27
     Public MainColour As Integer = -986896
     Public SecondaryColour As Integer = -16777216
     Public PeakColour As Integer = -4144960
@@ -63,12 +57,25 @@ Public Class Player
 
     Public MultimediaKeys As Boolean = True
 
-    Public Band0 As Integer = 0
-    Public Band1 As Integer = 0
-    Public Band2 As Integer = 0
-    Public Band3 As Integer = 0
-    Public Band4 As Integer = 0
-    Public Band5 As Integer = 0
+    Public Band0 As SByte = 0
+    Public Band1 As SByte = 0
+    Public Band2 As SByte = 0
+    Public Band3 As SByte = 0
+    Public Band4 As SByte = 0
+    Public Band5 As SByte = 0
+
+    Public username As String
+    Public password As String
+    Public userInfo As String
+    Public isLogged As Boolean = False
+    Public isPremium As Boolean = False
+    Public canTrial As Boolean = False
+    Public apiKey As String
+    Public userId As String
+
+    Public removeKey As Boolean = True
+
+    Public cacheList As String = "Every day"
 
     ' These are not on the Options dialog but are saved anyway.
 
@@ -111,19 +118,24 @@ Public Class Player
     Public ModifiersShowHide As Integer
     Public KeyShowHide As Integer
 
-    Public Declare Function RegisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer, ByVal fsModifiers As Integer, ByVal vk As Integer) As Integer
-    Public Declare Function UnregisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer) As Integer
+    <DllImport("User32.dll")> Public Shared Function RegisterHotKey(ByVal hwnd As IntPtr, ByVal id As Integer, ByVal fsModifiers As Integer, ByVal vk As Integer) As Integer
+    End Function
+
+    <DllImport("User32.dll")> _
+    Public Shared Function UnregisterHotKey(ByVal hwnd As IntPtr, ByVal id As Integer) As Integer
+    End Function
+
     Public Const WM_HOTKEY As Integer = &H312
 
 #End Region
 
 #Region "Update stuff"
 
-    Public AtStartup As String = False          ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
-    Public TotalVersionString As String         ' -> Used to store the TotalVersion returned by the server
-    Public LatestVersionString As String        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Integer = 50    ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
-    Public UpdaterDownloaded As Boolean = False ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
+    Public AtStartup As String = False                              ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
+    Public TotalVersionString As String = "Didn't download"         ' -> Used to store the TotalVersion returned by the server
+    Public LatestVersionString As String = "Didn't download"        ' -> Used to store the actual version number returned by the server
+    Public TotalVersionFixed As Byte = 60                           ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public UpdaterDownloaded As Boolean = False                     ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
 
@@ -132,15 +144,15 @@ Public Class Player
     Public drawing As New Un4seen.Bass.Misc.Visuals ' -> Used to draw the vis
     Public RestartPlayback As Boolean               ' -> Used to know if playback should be restarted after an operation has completed (changing channels, for example)
     Public stream As Integer                        ' -> The stream that is passed to BASS so it plays it
-    Public oldvol As Integer                        ' -> This stores the volume when the user clicks the Mute button; to know which volume level should be used when the user clicks the Unmute button
+    Public oldvol As Byte                        ' -> This stores the volume when the user clicks the Mute button; to know which volume level should be used when the user clicks the Unmute button
     Dim ServersArray As New ListView                ' -> Used to store a list of available servers for a particular channel
     Dim EventsArray As New ListView                 ' -> Used to store some info when obtaining events
     ' v  This list of channels may be outdated. It's only used as a fallback in case CheckForums fails to download the (maybe updated?) list of channels that don't have a forum link
-    Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel;UMF Radio;UMF Stage 1;UMF Stage 2;Big Room House;EcLectronica;Russian Club Hits;Mainstage;Best of the 60s; Classic Motown;Russian Pop;Russian Dance Hits;Israeli Hits"
+    Dim NoForumsChannel As String = "Cosmic Downtempo;Deep Nu-Disco;Vocal Chillout;Deep House;Epic Trance;Hands Up;Club Dubstep;Progressive Psy;80's Rock Hits;Club Bollywood;Compact Discoveries;Hard Rock;Metal;Modern Blues;Modern Rock;Pop Rock;Relaxing Excursions;Ska;Smooth Lounge;Soft Rock;Glitch Hop;Deep Tech;Liquid Dubstep;Classic EuroDisco;Dark DnB;90's Hits;Mellow Jazz;Café de Paris;Christmas Channel;UMF Radio;UMF Stage 1;UMF Stage 2;Big Room House;EcLectronica;Russian Club Hits;Mainstage;Best of the 60s; Classic Motown;Russian Pop;Russian Dance Hits;Israeli Hits;ChillHop;Downtempo Lounge;Trap;Sankeys Radio;80's Dance;90's R&B;60's Rock"
     Private _mySync As SYNCPROC                     ' -> Sync so BASS says when the stream title has changed
     Dim nochange As Boolean
 
-    Dim channelKey As Integer
+    Dim channelKey As Byte
     Dim KeysArray As New ListView
     Dim UpdateWait As Integer = 0
 
@@ -151,9 +163,7 @@ Public Class Player
 
     Public WasPlaying As String
 
-    Dim executable As String = Application.ExecutablePath
-    Dim tabla() As String = Split(executable, "\")
-    Public exeFolder As String = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
+    Public dataFolder As String
 
     Public HotkeysSet As Boolean = False
     Delegate Sub RestartPlaybackSafe()
@@ -164,7 +174,7 @@ Public Class Player
 
 #Region "Main Form events"
 
-    Private Sub Player_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles Me.DragEnter
+    Private Sub Player_DragEnter(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles Me.DragEnter
         If e.Data.GetDataPresent(DataFormats.FileDrop) Then
 
             Dim filepaths() As String = e.Data.GetData(DataFormats.FileDrop)
@@ -180,7 +190,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub Player_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles Me.DragDrop
+    Private Sub Player_DragDrop(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles Me.DragDrop
         If e.Data.GetDataPresent(DataFormats.FileDrop) Then
 
             Dim filepath() As String = e.Data.GetData(DataFormats.FileDrop)
@@ -194,6 +204,14 @@ Public Class Player
 
         ' I know how to check my threads. Don't need VS babysitting me
         Control.CheckForIllegalCrossThreadCalls = False
+
+        If String.IsNullOrEmpty(My.Computer.Registry.GetValue("HKEY_LOCAL_MACHINE\SOFTWARE\DI Radio", "installDir", Nothing)) = True Then
+            Dim executable As String = Application.ExecutablePath
+            Dim tabla() As String = Split(executable, "\")
+            dataFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
+        Else
+            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio"
+        End If
 
         DownloadingMessage.SelectedIndex = 0
         DownloadingMessage.Show()
@@ -214,17 +232,17 @@ Public Class Player
         CheckForums.RunWorkerAsync()
 
         ' Create the servers folder and a folder for each station.
-        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers")
-        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & DIFM.Text)
-        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & JazzRadio.Text)
-        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & SKYFM.Text)
-        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & RockRadio.Text)
-        My.Computer.FileSystem.CreateDirectory(exeFolder & "\equalizer\")
-        My.Computer.FileSystem.WriteAllText(exeFolder & "\equalizer\readme.txt", "Use this folder to load equalizer settings per-channel." & vbNewLine & "Simply place your .feq files with the name of the channel you want to use (trance.feq or smooth jazz 24'7.feq, for example) and the player will load it automatically when you select that channel." & vbNewLine & "You can also have a default.feq file for channels that don't have a custom setting, or no files at all to use what's in your options.ini file.", False)
+        My.Computer.FileSystem.CreateDirectory(dataFolder & "servers")
+        My.Computer.FileSystem.CreateDirectory(dataFolder & "servers\" & DIFM.Text)
+        My.Computer.FileSystem.CreateDirectory(dataFolder & "servers\" & JazzRadio.Text)
+        My.Computer.FileSystem.CreateDirectory(dataFolder & "servers\" & SKYFM.Text)
+        My.Computer.FileSystem.CreateDirectory(dataFolder & "servers\" & RockRadio.Text)
+        My.Computer.FileSystem.CreateDirectory(dataFolder & "equalizer\")
+        My.Computer.FileSystem.WriteAllText(dataFolder & "equalizer\readme.txt", "Use this folder to load equalizer settings per-channel." & vbNewLine & "Simply place your .feq files with the name of the channel you want to use (trance.feq or smooth jazz 24'7.feq, for example) and the player will load it automatically when you select that channel." & vbNewLine & "You can also have a default.feq file for channels that don't have a custom setting, or no files at all to use what's in your options.ini file.", False)
 
-        ' Load plugins for WMA and AAC support
-        Bass.BASS_PluginLoad("basswma.dll")
+        ' Load plugin for AAC support
         Bass.BASS_PluginLoad("bassaac.dll")
+        Bass.BASS_PluginLoad("basswma.dll")
 
         ' Accomodate internal version number to my own weird numbering scheme. It goes as follows:
         ' Version 1.0.0.0 is 1.0
@@ -304,7 +322,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub Player_TextChanged(sender As Object, e As System.EventArgs) Handles Me.TextChanged
+    Private Sub Player_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.TextChanged
 
         If TrayIcon.Text.StartsWith("DI Radio") OrElse TrayIcon.Text.StartsWith("JazzRadio Radio") OrElse TrayIcon.Text.StartsWith("SKY.FM Radio") OrElse TrayIcon.Text.StartsWith("RockRadio Radio") Then
             TrayIcon.Text = Me.Text
@@ -354,7 +372,7 @@ Public Class Player
 
     Private Sub RadioString_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RadioString.Click
 
-        If GoogleSearch = True Then
+        If GoogleSearch Then
 
             If RadioString.Text = Nothing = False And RadioString.Text.Contains("Connection is taking some time") = False And RadioString.Text.Contains("Lost connection to") = False And RadioString.Text.Contains("Connecting, please wait...") = False And RadioString.Text.Contains("Couldn't connect to") = False Then
                 GoogleSearchToolStripMenuItem_Click(Me, Nothing)
@@ -364,9 +382,9 @@ Public Class Player
 
     End Sub
 
-    Private Sub RadioString_TextChanged(sender As Object, e As System.EventArgs) Handles RadioString.TextChanged
+    Private Sub RadioString_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles RadioString.TextChanged
 
-        If RadioString.Text = "" = False Then
+        If String.IsNullOrEmpty(RadioString.Text) = False Then
 
             Dim raw As String = RadioString.Text.Replace("&", "&&&")
 
@@ -376,7 +394,7 @@ Public Class Player
                 TrayIcon.Text = raw
             End If
 
-            If Me.WindowState = FormWindowState.Minimized And NotificationTitle = True And _
+            If Me.WindowState = FormWindowState.Minimized And NotificationTitle And _
              RadioString.Text.ToLower.Contains("photonvps.com") = False And _
              RadioString.Text.ToLower.Contains("adwtag") = False And _
              RadioString.Text.ToLower.Contains("job opportunity") = False And _
@@ -507,6 +525,7 @@ Public Class Player
             VisualisationBox.Image = Nothing
             TimerString.Text = "00:00"
             TrayIcon.Text = Me.Text
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATETHREADS, 0)
         End If
     End Sub
 
@@ -520,12 +539,12 @@ Public Class Player
 
         If Me.Visible = True Then
 
-            If Me.Location.X + 21 > SystemInformation.VirtualScreen.Width Then
+            If Me.Location.X + 8 > SystemInformation.VirtualScreen.Width Then
                 X = Me.Location.X - Options.Size.Width
-            ElseIf Me.Location.X + 21 < Screen.GetBounds(Me).X Then
+            ElseIf Me.Location.X + 8 < Screen.GetBounds(Me).X Then
                 X = Screen.GetBounds(Me).X
             Else
-                X = Me.Location.X + 21
+                X = Me.Location.X + 8
             End If
 
             If Visualisation = True Then
@@ -559,15 +578,15 @@ Public Class Player
 
     End Sub
 
-    Private Sub Events_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Events.Click
+    Private Sub showEvents_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles showEvents.Click
         If EventsPanel.Visible = False Then
 
             If HistoryList.Visible = True Then
                 History_Click(Me, Nothing)
             End If
 
-            Events.ImageAlign = ContentAlignment.BottomCenter
-            Events.Image = My.Resources.back
+            showEvents.ImageAlign = ContentAlignment.BottomCenter
+            showEvents.Image = My.Resources.back
             SelectedEvent.Enabled = False
 
             If GetEvents.IsBusy = False Then
@@ -579,11 +598,11 @@ Public Class Player
             VisTimer.Stop()
             Me.Size = Me.MaximumSize
 
-            ToolTip.SetToolTip(Events, "Hide events list")
+            ToolTip.SetToolTip(showEvents, "Hide events list")
         Else
 
-            Events.ImageAlign = ContentAlignment.MiddleCenter
-            Events.Image = My.Resources.events
+            showEvents.ImageAlign = ContentAlignment.MiddleCenter
+            showEvents.Image = My.Resources.events
             EventsPanel.Hide()
 
             If Visualisation = True Then
@@ -592,11 +611,11 @@ Public Class Player
                 Me.Size = Me.MinimumSize
             End If
 
-            ToolTip.SetToolTip(Events, "Show events list")
+            ToolTip.SetToolTip(showEvents, "Show events list")
         End If
     End Sub
 
-    Private Sub Forums_Click(sender As System.Object, e As System.EventArgs) Handles Forums.Click
+    Private Sub Forums_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Forums.Click
         ' Get the current channel, remove spaces and convert names to their URL counterparts if necessary. Then open the URL
         ' of the currently-chosen radio station. SKY.FM uses numbers to identify their boards so all channels need to be
         ' changed. There has to be a better way of doing that but this is what I came up with
@@ -737,7 +756,7 @@ Public Class Player
         If Volume.Value = 0 Then
             Mute.Image = My.Resources.mutedvol
             Mute.Tag = "Unmute"
-        ElseIf Volume.Value > 1 And Volume.Value < 25 Then
+        ElseIf Volume.Value > 0 And Volume.Value < 25 Then
             Mute.Image = My.Resources.lowvol
             Mute.Tag = "Mute"
         ElseIf Volume.Value >= 25 And Volume.Value < 75 Then
@@ -752,14 +771,14 @@ Public Class Player
         ToolTip.SetToolTip(Volume, Volume.Value & "%")
     End Sub
 
-    Private Sub EditFavorites_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles EditFavorites.LinkClicked
+    Private Sub EditFavorites_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles EditFavorites.LinkClicked
         Process.Start("http://www." & StationChooser.Tag & "/member/favorite/channels")
     End Sub
 
-    Private Sub RefreshFavorites_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles RefreshFavorites.LinkClicked
+    Private Sub RefreshFavorites_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles RefreshFavorites.LinkClicked
 
         OldFav = SelectedServer.Text
-        Dim file As String = exeFolder & "\servers\" & StationChooser.Text & "\favorites.db"
+        Dim file As String = dataFolder & "servers\" & StationChooser.Text & "\favorites.db"
 
         If My.Computer.FileSystem.FileExists(file) Then
             Kill(file)
@@ -775,7 +794,7 @@ Public Class Player
 
     End Sub
 
-    Private Sub StationChooser_ButtonClick(sender As Object, e As System.EventArgs) Handles StationChooser.ButtonClick
+    Private Sub StationChooser_ButtonClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles StationChooser.ButtonClick
         If StationChooser.Tag = "di.fm" Then
             JazzRadio_Click(sender, e)
         ElseIf StationChooser.Tag = "jazzradio.com" Then
@@ -787,7 +806,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub StationChooser_TextChanged(sender As Object, e As System.EventArgs) Handles StationChooser.TextChanged
+    Public Sub StationChooser_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles StationChooser.TextChanged
 
         ' Long lists were removed by _Tobias. Now the player doesn't have to be updated in order to add new channels!
 
@@ -798,13 +817,14 @@ Public Class Player
 
         SelectedChannel.Items.Clear()
 
-        Events.Enabled = False
+        showEvents.Enabled = False
         History.Enabled = False
         Forums.Enabled = False
         HistoryList.Items.Clear()
         RetryChannels.Hide()
         DownloadingMessage.Show()
         Marquee.Show()
+        Options.radioStation = StationChooser.Text
 
         DownloadDb.RunWorkerAsync()
 
@@ -865,19 +885,18 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub SelectedChannel_TextChanged(sender As Object, e As System.EventArgs) Handles SelectedChannel.TextChanged
+    Private Sub SelectedChannel_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles SelectedChannel.TextChanged
         ' Check if the Forums button should be enabled or not and exit as soon as there is a match
         ' Or always disable the button if JazzRadio or RockRadio is selected
 
-        Dim Channels As String = NoForumsChannel
-        Dim Channel() As String = Split(Channels, ";")
-        Dim ChannelNumber As Integer = 0
+        Dim Channel() As String = Split(NoForumsChannel, ";")
+        Dim ChannelNumber As Byte = 0
 
         Do While ChannelNumber < Channel.Length
             ChannelNumber += 1
             If ChannelNumber <= Channel.Length - 1 Then
 
-                If SelectedChannel.Text = Channel(ChannelNumber) OrElse StationChooser.Text = JazzRadio.Text OrElse StationChooser.Text = RockRadio.Text Then
+                If SelectedChannel.Text = Channel(ChannelNumber) OrElse StationChooser.Text = JazzRadio.Text OrElse StationChooser.Text = RockRadio.Text OrElse SelectedChannel.Text = Nothing Then
                     Forums.Enabled = False
                     Exit Do
                 Else
@@ -889,17 +908,19 @@ Public Class Player
             End If
         Loop
 
-        Dim file As String = exeFolder & "\equalizer\" & SelectedChannel.Text & ".feq"
+        Dim file As String = dataFolder & "equalizer\" & SelectedChannel.Text & ".feq"
 
-        If My.Computer.FileSystem.FileExists(file) Then
+        If My.Computer.FileSystem.FileExists(file) And SelectedChannel.Text = "My Favorites" = False Then
             LoadEqFile(file)
-        ElseIf My.Computer.FileSystem.FileExists(exeFolder & "\equalizer\default.feq") Then
-            LoadEqFile(exeFolder & "\equalizer\default.feq")
+        ElseIf My.Computer.FileSystem.FileExists(dataFolder & "equalizer\default.feq") And SelectedChannel.Text = "My Favorites" = False Then
+            LoadEqFile(dataFolder & "equalizer\default.feq")
         End If
+
+        Options.lookForChannels.Enabled = False
 
     End Sub
 
-    Private Sub SelectedServer_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles SelectedServer.SelectedIndexChanged
+    Private Sub SelectedServer_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles SelectedServer.SelectedIndexChanged
 
         If SelectedChannel.Text = "My Favorites" And PlayStop.Tag = "Stop" And PlayNewOnChannelChange = True Then
             RestartPlayback = True
@@ -914,7 +935,7 @@ Public Class Player
         If SelectedChannel.Text = "My Favorites" Then
             Dim Channels As String = NoForumsChannel
             Dim Channel() As String = Split(Channels, ";")
-            Dim ChannelNumber As Integer = 0
+            Dim ChannelNumber As Byte = 0
 
             If StationChooser.Text = JazzRadio.Text = False Then
                 Do While ChannelNumber < Channel.Length
@@ -943,9 +964,17 @@ Public Class Player
             End If
         End If
 
+        Dim file As String = dataFolder & "equalizer\" & SelectedServer.Text & ".feq"
+
+        If My.Computer.FileSystem.FileExists(file) And SelectedChannel.Text = "My Favorites" Then
+            LoadEqFile(file)
+        ElseIf My.Computer.FileSystem.FileExists(dataFolder & "equalizer\default.feq") And SelectedChannel.Text = "My Favorites" Then
+            LoadEqFile(dataFolder & "equalizer\default.feq")
+        End If
+
     End Sub
 
-    Private Sub TimerString_TextChanged(sender As System.Object, e As System.EventArgs) Handles TimerString.TextChanged
+    Private Sub TimerString_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerString.TextChanged
 
         ' BASS reporting that -01 seconds have passed since playback has started means that connection has been droppped
         ' In that case, if the user isn't using the My Favourites playlist, automatically stop playback, select a new
@@ -973,24 +1002,24 @@ Public Class Player
 
     End Sub
 
-    Private Sub RetryChannels_Click(sender As System.Object, e As System.EventArgs) Handles RetryChannels.Click
+    Private Sub RetryChannels_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RetryChannels.Click
         StationChooser_TextChanged(Me, Nothing)
         RetryChannels.Hide()
         Marquee.Show()
         StationChooser.Enabled = False
     End Sub
 
-    Private Sub RetryServers_Click(sender As System.Object, e As System.EventArgs) Handles RetryServers.Click
+    Private Sub RetryServers_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RetryServers.Click
         SelectedChannel_SelectedIndexChanged(Me, Nothing)
         RetryServers.Hide()
         Marquee.Show()
     End Sub
 
-    Private Sub History_Click(sender As System.Object, e As System.EventArgs) Handles History.Click
+    Private Sub History_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles History.Click
         If HistoryList.Visible = False Then
 
             If EventsPanel.Visible = True Then
-                Events_Click(Me, Nothing)
+                showEvents_Click(Me, Nothing)
             End If
 
             History.ImageAlign = ContentAlignment.BottomCenter
@@ -1021,7 +1050,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub SelectedEvent_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles SelectedEvent.SelectedIndexChanged
+    Private Sub SelectedEvent_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SelectedEvent.SelectedIndexChanged
 
         If SelectedEvent.Text.ToLower.StartsWith("please wait,") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False And SelectedEvent.Text.ToLower.StartsWith("there are no") = False Then
             EventName.Text = EventsArray.Items.Item(SelectedEvent.SelectedIndex).Text
@@ -1032,7 +1061,7 @@ Public Class Player
             EventTimes.Text += ReturnDate(EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text, "hourmin")
 
             Dim thistime As Integer
-            thistime = (DateTime.UtcNow - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
+            thistime = (DateTime.Now - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
 
             If thistime > EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(2).Text And thistime < EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(3).Text Then
                 EventTimes.Text += " ♫ Now playing ♫"
@@ -1048,17 +1077,15 @@ Public Class Player
 
     End Sub
 
-    Private Sub EventDescription_LinkClicked(sender As Object, e As System.Windows.Forms.LinkClickedEventArgs) Handles EventDescription.LinkClicked
+    Private Sub EventDescription_LinkClicked(ByVal sender As Object, ByVal e As System.Windows.Forms.LinkClickedEventArgs) Handles EventDescription.LinkClicked
         Process.Start(e.LinkText)
     End Sub
 
-    Private Sub Export_Click(sender As System.Object, e As System.EventArgs) Handles ExportButton.Click
-        If ExportButton.Text = "Export" Then
-            Export.Location = New Point(Me.Location.X, Me.Location.Y)
-            Export.Show()
-            Export.BringToFront()
+    Private Sub Export_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExportButton.Click
+        If ExportButton.Text = "Options" Then
+            eventOptionsMenu.Show(Me, ExportButton.Location.X + 13, ExportButton.Location.Y + 35)
         Else
-            ExportButton.Text = "Export"
+            ExportButton.Text = "Options"
             GetEvents.RunWorkerAsync()
         End If
 
@@ -1079,7 +1106,7 @@ Public Class Player
 
         Dim channel As String = SelectedChannel.Text
         Dim domain As String = StationChooser.Tag
-        Dim serversFolder = exeFolder & "\servers\" & StationChooser.Text
+        Dim serversFolder = dataFolder & "servers\" & StationChooser.Text
 
         ' create servers directory if doesn't exist
         My.Computer.FileSystem.CreateDirectory(serversFolder)
@@ -1102,7 +1129,8 @@ Public Class Player
                 Do While (readerChdb.Peek > -1)
                     Dim line = readerChdb.ReadLine()
                     Dim splitter = Split(line, "|")
-                    If splitter(0) = channel Then
+
+                    If splitter(2) = channel Then
                         channel = splitter(1)
                     End If
                 Loop
@@ -1133,11 +1161,11 @@ Public Class Player
 
         Dim file = serversFolder & "\" & channel & ".db"
 
-        Dim EndString As String
+        Dim EndString As String = ""
 
         Dim PremiumEnd As String = ""
 
-        If ListenKey = Nothing = False And PremiumFormats = True Then
+        If isPremium Then
 
             PremiumEnd = "?" & ListenKey
 
@@ -1145,17 +1173,11 @@ Public Class Player
                 If DIFormat = 0 Then
                     EndString = "premium"
                 ElseIf DIFormat = 1 Then
-                    EndString = "premium_medium"
-                ElseIf DIFormat = 2 Then
-                    EndString = "premium_low"
-                ElseIf DIFormat = 3 Then
                     EndString = "premium_high"
-                ElseIf DIFormat = 4 Then
-                    EndString = "premium"
-                ElseIf DIFormat = 5 Then
-                    EndString = "premium_wma"
-                ElseIf DIFormat = 6 Then
-                    EndString = "premium_wma_low"
+                ElseIf DIFormat = 2 Then
+                    EndString = "premium_medium"
+                ElseIf DIFormat = 3 Then
+                    EndString = "premium_low"
                 End If
 
             ElseIf StationChooser.Text = SKYFM.Text Then
@@ -1163,17 +1185,15 @@ Public Class Player
                 If SKYFormat = 0 Then
                     EndString = "premium"
                 ElseIf SKYFormat = 1 Then
-                    EndString = "premium_medium"
-                ElseIf SKYFormat = 2 Then
-                    EndString = "premium_low"
-                ElseIf SKYFormat = 3 Then
                     EndString = "premium_high"
-                ElseIf SKYFormat = 4 Then
-                    EndString = "premium"
-                ElseIf SKYFormat = 5 Then
+                ElseIf SKYFormat = 2 Then
                     EndString = "premium_wma"
-                ElseIf SKYFormat = 6 Then
+                ElseIf SKYFormat = 3 Then
+                    EndString = "premium_medium"
+                ElseIf SKYFormat = 4 Then
                     EndString = "premium_wma_low"
+                ElseIf SKYFormat = 5 Then
+                    EndString = "premium_low"
                 End If
 
             ElseIf StationChooser.Text = JazzRadio.Text Then
@@ -1181,15 +1201,11 @@ Public Class Player
                 If JazzFormat = 0 Then
                     EndString = "premium"
                 ElseIf JazzFormat = 1 Then
-                    EndString = "premium_medium"
-                ElseIf JazzFormat = 2 Then
-                    EndString = "premium_low"
-                ElseIf JazzFormat = 3 Then
                     EndString = "premium_high"
-                ElseIf JazzFormat = 4 Then
-                    EndString = "premium"
-                ElseIf JazzFormat = 5 Then
+                ElseIf JazzFormat = 2 Then
                     EndString = "premium_wma"
+                ElseIf JazzFormat = 3 Then
+                    EndString = "premium_low"
                 End If
 
             ElseIf StationChooser.Text = RockRadio.Text Then
@@ -1205,19 +1221,19 @@ Public Class Player
             If StationChooser.Text = DIFM.Text Then
 
                 If DIFormat = 0 Then
-                    EndString = "public2"
+                    EndString = "public1"
                 ElseIf DIFormat = 1 Then
                     EndString = "public3"
                 ElseIf DIFormat = 2 Then
-                    EndString = "public5"
+                    EndString = "public2"
                 End If
 
             ElseIf StationChooser.Text = SKYFM.Text Then
 
                 If SKYFormat = 0 Then
-                    EndString = "public1"
-                ElseIf SKYFormat = 1 Then
                     EndString = "public3"
+                ElseIf SKYFormat = 1 Then
+                    EndString = "public1"
                 ElseIf SKYFormat = 2 Then
                     EndString = "public5"
                 End If
@@ -1225,9 +1241,9 @@ Public Class Player
             ElseIf StationChooser.Text = JazzRadio.Text Then
 
                 If JazzFormat = 0 Then
-                    EndString = "public1"
-                ElseIf JazzFormat = 1 Then
                     EndString = "public3"
+                ElseIf JazzFormat = 1 Then
+                    EndString = "public1"
                 ElseIf JazzFormat = 2 Then
                     EndString = "public5"
                 End If
@@ -1279,20 +1295,20 @@ Public Class Player
             End If
         End If
 
-        Dim serverno As Integer = 1
+        Dim serverno As Byte = 1
 
         Dim reader As New IO.StreamReader(file)
 
         If SelectedChannel.Text = "My Favorites" Then
             Do While (reader.Peek > -1)
                 Dim name As String = reader.ReadLine
-                Dim key As String
+                Dim key As String = ""
 
                 Dim r2 As New IO.StreamReader(chdb)
 
                 Do While (r2.Peek > -1)
                     Dim splitter = Split(r2.ReadLine, "|")
-                    If splitter(0) = name Then
+                    If splitter(2) = name Then
                         key = splitter(1)
                     End If
                 Loop
@@ -1352,8 +1368,8 @@ Public Class Player
         reader.Dispose()
     End Sub
 
-    Private Sub ServersDownloader_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles ServersDownloader.RunWorkerCompleted
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & StationChooser.Text & "\channels.db") Then
+    Private Sub ServersDownloader_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles ServersDownloader.RunWorkerCompleted
+        If My.Computer.FileSystem.FileExists(dataFolder & "servers\" & StationChooser.Text & "\channels.db") Then
             Marquee.Hide()
             SelectedChannel.Enabled = True
 
@@ -1387,15 +1403,15 @@ Public Class Player
                 HistoryList.Hide()
                 History.ImageAlign = ContentAlignment.BottomRight
                 History.Image = My.Resources.history
-                Events.Enabled = False
+                showEvents.Enabled = False
                 EventsPanel.Hide()
-                Events.ImageAlign = ContentAlignment.MiddleCenter
-                Events.Image = My.Resources.events
+                showEvents.ImageAlign = ContentAlignment.MiddleCenter
+                showEvents.Image = My.Resources.events
             ElseIf StationChooser.Text = JazzRadio.Text = False And StationChooser.Text = RockRadio.Text = False Then
                 History.Enabled = True
 
                 If StationChooser.Text = SKYFM.Text = False Then
-                    Events.Enabled = True
+                    showEvents.Enabled = True
                 End If
             End If
 
@@ -1409,6 +1425,8 @@ Public Class Player
                 RetryServers.Show()
             End If
         End If
+
+        Options.lookForChannels.Enabled = True
     End Sub
 
     Private Sub Bufer_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles Bufer.DoWork
@@ -1418,6 +1436,7 @@ again:
             stream = Bass.BASS_StreamCreateURL(ServersArray.Items.Item(SelectedServer.SelectedIndex).Text, 2, BASSFlag.BASS_STREAM_AUTOFREE Or BASSFlag.BASS_STREAM_PRESCAN, Nothing, Nothing)
 
             Bass.BASS_ChannelSetAttribute(stream, BASSAttribute.BASS_ATTRIB_VOL, Volume.Value / 100)
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATETHREADS, 24)
 
             If Bass.BASS_ChannelPlay(stream, False) = False Then
 
@@ -1454,6 +1473,7 @@ again:
 
                 End If
 
+                Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATETHREADS, 0)
             Else
 
                 Try
@@ -1485,12 +1505,12 @@ again:
                 Bass.BASS_ChannelSetSync(stream, BASSSync.BASS_SYNC_META, 0, _mySync, IntPtr.Zero)
 
                 SetUpEq()
-                UpdateEQ(0, Band0)
-                UpdateEQ(1, Band1)
-                UpdateEQ(2, Band2)
-                UpdateEQ(3, Band3)
-                UpdateEQ(4, Band4)
-                UpdateEQ(5, Band5)
+                UpdateEq(0, Band0)
+                UpdateEq(1, Band1)
+                UpdateEq(2, Band2)
+                UpdateEq(3, Band3)
+                UpdateEq(4, Band4)
+                UpdateEq(5, Band5)
 
                 PlayStop.Image = My.Resources.StopPlayback
                 PlayStop.Tag = "Stop"
@@ -1517,10 +1537,9 @@ again:
         RefreshFavorites.Enabled = True
     End Sub
 
-    Private Sub GetUpdates_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetUpdates.DoWork
+    Private Sub GetUpdates_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles GetUpdates.DoWork
 
         Dim WebClient As Net.WebClient = New Net.WebClient()
-        Dim file As String = exeFolder & "\Info.txt"
         Dim DownloadedString As String
 
         Try
@@ -1529,13 +1548,9 @@ again:
             Exit Sub
         End Try
 
-        Dim writer As New IO.StreamWriter(file, False)
-        writer.Write(DownloadedString)
-        writer.Close()
-        writer.Dispose()
         WebClient.Dispose()
 
-        Dim reader As New IO.StreamReader(file)
+        Dim reader As New IO.StringReader(DownloadedString)
 
         Do While (reader.Peek > -1)
             Dim whole As String = reader.ReadLine
@@ -1558,9 +1573,9 @@ again:
 
     End Sub
 
-    Private Sub GetUpdates_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles GetUpdates.RunWorkerCompleted
+    Private Sub GetUpdates_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles GetUpdates.RunWorkerCompleted
         Dim updating As Boolean = False
-        If My.Computer.FileSystem.FileExists(exeFolder & "\Info.txt") Then
+        If TotalVersionString = "Didn't download" = False And LatestVersionString = "Didn't download" = False Then
             Dim FullLine As String = LatestVersionString
             Dim Splitter As String() = Split(FullLine, ".")
 
@@ -1607,10 +1622,7 @@ again:
 
             AtStartup = False
 
-            Kill(exeFolder & "\Info.txt")
         End If
-
-
 
         Options.UndefinedProgress.Hide()
         Options.Status.Text = "Status: Idle"
@@ -1620,7 +1632,7 @@ again:
 
     End Sub
 
-    Private Sub GetHistory_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetHistory.DoWork
+    Private Sub GetHistory_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles GetHistory.DoWork
         Dim channel As String
 
         HistoryList.ForeColor = SystemColors.ControlText
@@ -1639,57 +1651,88 @@ startover:
         HistoryList.Items.Item(0).SubItems.Add("Please wait, downloading history...")
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim HistoryLog As String
-        Dim file As String = exeFolder & "\servers\historytemp"
-
 
         Try
-            Dim writer As New IO.StreamWriter(file)
 
             If SelectedChannel.Text = "My Favorites" Then
-                HistoryLog = WebClient.DownloadString("http://tobiass.eu/api/history/text/" & KeysArray.Items.Item(SelectedServer.Text).Tag)
+                HistoryLog = WebClient.DownloadString("http://api.audioaddict.com/v1/di/track_history/channel/" & KeysArray.Items.Item(SelectedServer.Text).Tag)
             Else
-                HistoryLog = WebClient.DownloadString("http://tobiass.eu/api/history/text/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
+                HistoryLog = WebClient.DownloadString("http://api.audioaddict.com/v1/di/track_history/channel/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
             End If
-
-
-            writer.Write(HistoryLog)
-            writer.Close()
-            writer.Dispose()
-
             If channel = SelectedChannel.Text = False And channel = SelectedServer.Text = False Then
                 GoTo startover
             End If
 
-            Dim reader As New IO.StreamReader(file)
+            Dim reader As New IO.StringReader(HistoryLog.Replace("""", Nothing).Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(",", vbNewLine))
 
             HistoryList.Items.Clear()
 
             Do While (reader.Peek > -1)
 
                 Dim line As String = reader.ReadLine
-                Dim splitter() As String = Split(line, "|")
+                Dim duration As String
+                Dim started As String
 
+                If line.StartsWith("duration:") Then
 
+                    If Integer.TryParse(Split(line, ":")(1), Nothing) Then
+                        duration = Split(line, ":")(1)
+                    Else
+                        duration = Nothing
+                    End If
 
-                HistoryList.Items.Add(ReturnDate(splitter(2), "hourmin"))
+                ElseIf line.StartsWith("started:") Then
 
-                HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(splitter(0))
+                    If Integer.TryParse(Split(line, ":")(1), Nothing) Then
+                        started = Split(line, ":")(1)
+                    Else
+                        started = Nothing
+                    End If
 
-                Dim span As TimeSpan
-                span = TimeSpan.FromSeconds(splitter(1))
+                ElseIf line.StartsWith("track:") And String.IsNullOrEmpty(started) = False And String.IsNullOrEmpty(duration) = False Then
 
-                If span.Hours < 1 Then
-                    HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}", span.Minutes, span.Seconds))
-                Else
-                    HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}:{2:00}", span.Hours, span.Minutes, span.Seconds))
+                    HistoryList.Items.Add(ReturnDate(started, "hourmin", True))
+                    HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(Split(line, "track:")(1))
+                    Dim span As TimeSpan
+                    span = TimeSpan.FromSeconds(duration)
+
+                    If span.Hours < 1 Then
+                        HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}", span.Minutes, span.Seconds))
+                    Else
+                        HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(String.Format("{0:00}:{1:00}:{2:00}", span.Hours, span.Minutes, span.Seconds))
+                    End If
+
                 End If
 
             Loop
 
+            If HistoryList.Items.Count < 20 Then
+                If ShowSongStart = False Then
+                    Time.Width = 0
+                    Title.Width = 276
+                ElseIf ShowSongStart = True And New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
+                    Title.Width = 236
+                    Time.Width = 40
+                Else
+                    Title.Width = 226
+                    Time.Width = 50
+                End If
+            Else
+                If ShowSongStart = False Then
+                    Time.Width = 0
+                    Title.Width = 259
+                ElseIf ShowSongStart = True And New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") Then
+                    Title.Width = 219
+                    Time.Width = 40
+                Else
+                    Title.Width = 209
+                    Time.Width = 50
+                End If
+            End If
+
             reader.Close()
             reader.Dispose()
 
-            Kill(exeFolder & "\servers\historytemp")
             HistoryList.Enabled = True
 
             If ChangeWholeBackground = True And BackgroundColour < -8323328 Then
@@ -1705,10 +1748,10 @@ startover:
         End Try
     End Sub
 
-    Private Sub GetEvents_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
+    Private Sub GetEvents_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles GetEvents.DoWork
         Dim channel As String
         ExportButton.Enabled = False
-        ExportButton.Text = "Export"
+        ExportButton.Text = "Options"
 
 startover:
 
@@ -1732,15 +1775,13 @@ startover:
         EventDescription.Text = Nothing
         Dim WebClient As Net.WebClient = New Net.WebClient()
         Dim EventsLog As String
-        Dim file As String = exeFolder & "\servers\eventstemp"
-        Dim writer As New IO.StreamWriter(file)
 
         Try
 
             If SelectedChannel.Text = "My Favorites" Then
-                EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(SelectedServer.Text).Tag)
+                EventsLog = WebClient.DownloadString("http://api.audioaddict.com/v1/di/events/channel/" & KeysArray.Items.Item(SelectedServer.Text).Tag)
             Else
-                EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/channel/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
+                EventsLog = WebClient.DownloadString("http://api.audioaddict.com/v1/di/events/channel/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
             End If
 
         Catch
@@ -1748,42 +1789,52 @@ startover:
             SelectedEvent.Items.Add("Couldn't download events. Please retry.")
             SelectedEvent.SelectedIndex = 0
             ExportButton.Text = "Retry"
-            writer.Close()
-            writer.Dispose()
-            Kill(file)
             ExportButton.Enabled = True
             Exit Sub
         End Try
 
-
-        writer.Write(EventsLog)
-        writer.Close()
-        writer.Dispose()
         SelectedEvent.Items.RemoveAt(0)
 
         If channel = SelectedChannel.Text = False And channel = SelectedServer.Text = False Then
             GoTo startover
         End If
 
-        Dim reader As New IO.StreamReader(file)
+        Dim reader As New IO.StringReader(EventsLog.Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(",""", vbNewLine))
 
         Dim thistime As Integer
-        thistime = (DateTime.UtcNow - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
+        thistime = (DateTime.Now - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
 
+        Dim id As String = ""
+        Dim start_at As Date
+        Dim end_at As Date
+        Dim name As String = ""
+        Dim artists_tagline As String
 
         Do While (reader.Peek > -1)
 
             Dim line As String = reader.ReadLine
-            Dim splitter() As String = Split(line, "|&|")
 
-            SelectedEvent.Items.Add(ReturnDate(splitter(1), "fulldate") & ": " & splitter(3))
-            EventsArray.Items.Add(splitter(3))
-            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(4))
-            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(1))
-            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(2))
-            EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(splitter(0))
+            If line.StartsWith("""id""") OrElse line.StartsWith("id""") Then
+                id = Split(line, ":")(1)
+            ElseIf line.StartsWith("start_at") Then
+                start_at = Split(line, """:""")(1).Replace("""", Nothing)
+            ElseIf line.StartsWith("end_at") Then
+                end_at = Split(line, """:""")(1).Replace("""", Nothing)
+            ElseIf line.StartsWith("name") Then
+                name = Split(line, """:""")(1).Replace("""", Nothing)
+            ElseIf line.StartsWith("artists_tagline") Then
+                artists_tagline = Split(line, """:""")(1).Replace("""", Nothing)
 
-            If thistime > splitter(1) And thistime < splitter(2) Then
+                SelectedEvent.Items.Add(ReturnDate((start_at - New DateTime(1970, 1, 1)).TotalSeconds, "fulldate") & ": " & name)
+                EventsArray.Items.Add(name)
+                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(artists_tagline)
+                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add((start_at - New DateTime(1970, 1, 1)).TotalSeconds)
+                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add((end_at - New DateTime(1970, 1, 1)).TotalSeconds)
+                EventsArray.Items.Item(EventsArray.Items.Count - 1).SubItems.Add(id)
+
+            End If
+
+            If thistime > (start_at - New DateTime(1970, 1, 1)).TotalSeconds And thistime < (end_at - New DateTime(1970, 1, 1)).TotalSeconds Then
                 SelectedEvent.SelectedIndex = SelectedEvent.Items.Count - 1
             End If
 
@@ -1791,8 +1842,6 @@ startover:
 
         reader.Close()
         reader.Dispose()
-
-        Kill(file)
 
         If SelectedEvent.Items.Count > 0 Then
             SelectedEvent.Enabled = True
@@ -1809,9 +1858,9 @@ startover:
 
     End Sub
 
-    Private Sub GetEventDetails_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles GetEventDetails.DoWork
+    Private Sub GetEventDetails_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles GetEventDetails.DoWork
         Dim WebClient As Net.WebClient = New Net.WebClient()
-        Dim EventsLog As String
+        Dim EventDetails As String
         Dim channel As String
 startover:
 
@@ -1819,15 +1868,27 @@ startover:
 
         Try
 
-            EventsLog = WebClient.DownloadString("http://a.pi1.nl/calendar/di/filter/event/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text)
-            Dim splitter() As String = Split(EventsLog, "|&|")
-
             If SelectedEvent.Text.ToLower.StartsWith("there are no") = False And SelectedEvent.Text.ToLower.StartsWith("please wait") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False Then
 
                 If channel = SelectedEvent.Text = False Then
                     GoTo startover
                 Else
-                    EventDescription.Text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Default.GetBytes(splitter(5).Replace("**", Nothing).Replace("_", Nothing))).ToString
+
+                    EventDetails = WebClient.DownloadString("http://api.audioaddict.com/v1/di/events/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text)
+                    Dim reader As New IO.StringReader(EventDetails.Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(",""", vbNewLine))
+
+                    Do While (reader.Peek > -1)
+
+                        Dim line As String = reader.ReadLine
+
+                        If line.StartsWith("description""") Then
+                            EventDescription.Text = Split(line, """:""")(1).Replace("\n", vbNewLine).Replace("**", Nothing).Replace("\""", """").Replace("_", Nothing)
+                            EventDescription.Text = EventDescription.Text.Remove(EventDescription.Text.Length - 1, 1)
+                            Exit Do
+                        End If
+
+                    Loop
+
                 End If
 
             End If
@@ -1837,7 +1898,7 @@ startover:
         End Try
     End Sub
 
-    Private Sub CheckForums_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles CheckForums.DoWork
+    Private Sub CheckForums_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles CheckForums.DoWork
         Dim WebClient As Net.WebClient = New Net.WebClient()
 
         Try
@@ -1849,10 +1910,10 @@ startover:
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
 
-    Private Sub DownloadDb_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles DownloadDb.DoWork
+    Private Sub DownloadDb_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles DownloadDb.DoWork
 
-        Dim chdb = exeFolder & "\servers\" & StationChooser.Text & "\channels.db"
-        My.Computer.FileSystem.CreateDirectory(exeFolder & "\servers\" & StationChooser.Text)
+        Dim chdb = dataFolder & "servers\" & StationChooser.Text & "\channels.db"
+        My.Computer.FileSystem.CreateDirectory(dataFolder & "servers\" & StationChooser.Text)
 
         Try
 
@@ -1862,10 +1923,11 @@ startover:
             Do While (readerChdb.Peek > -1)
                 Dim line = readerChdb.ReadLine()
                 Dim splitter = Split(line, "|")
-                SelectedChannel.Items.Add(splitter(0))
-                KeysArray.Items.Add(splitter(0))
-                KeysArray.Items.Item(KeysArray.Items.Count - 1).Tag = splitter(2)
-                KeysArray.Items.Item(KeysArray.Items.Count - 1).Name = splitter(0)
+                SelectedChannel.Items.Add(splitter(2))
+                KeysArray.Items.Add(splitter(2))
+                KeysArray.Items.Item(KeysArray.Items.Count - 1).Tag = splitter(0)
+                KeysArray.Items.Item(KeysArray.Items.Count - 1).Name = splitter(2)
+                KeysArray.Items.Item(KeysArray.Items.Count - 1).SubItems.Add(splitter(1))
             Loop
 
             readerChdb.Close()
@@ -1892,29 +1954,29 @@ startover:
 
     End Sub
 
-    Private Sub DownloadDb_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadDb.RunWorkerCompleted
-        If My.Computer.FileSystem.FileExists(exeFolder & "\servers\" & StationChooser.Text & "\channels.db") And SelectedChannel.Items.Count > 1 Then
+    Private Sub DownloadDb_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadDb.RunWorkerCompleted
+        If My.Computer.FileSystem.FileExists(dataFolder & "servers\" & StationChooser.Text & "\channels.db") And SelectedChannel.Items.Count > 1 Then
             If StationChooser.Text = DIFM.Text Then
 
                 SelectedChannel.SelectedItem = DIChannel
-                Events.Enabled = True
+                showEvents.Enabled = True
                 History.Enabled = True
 
             ElseIf StationChooser.Text = SKYFM.Text Then
 
                 SelectedChannel.SelectedItem = SKYChannel
-                Events.Enabled = False
-                Events.ImageAlign = ContentAlignment.MiddleCenter
-                Events.Image = My.Resources.events
+                showEvents.Enabled = False
+                showEvents.ImageAlign = ContentAlignment.MiddleCenter
+                showEvents.Image = My.Resources.events
                 EventsPanel.Visible = False
                 History.Enabled = True
 
             ElseIf StationChooser.Text = JazzRadio.Text Then
 
                 SelectedChannel.SelectedItem = JazzChannel
-                Events.Enabled = False
-                Events.ImageAlign = ContentAlignment.MiddleCenter
-                Events.Image = My.Resources.events
+                showEvents.Enabled = False
+                showEvents.ImageAlign = ContentAlignment.MiddleCenter
+                showEvents.Image = My.Resources.events
                 EventsPanel.Visible = False
                 History.Enabled = False
                 HistoryList.Visible = False
@@ -1925,9 +1987,9 @@ startover:
             ElseIf StationChooser.Text = RockRadio.Text Then
 
                 SelectedChannel.SelectedItem = RockChannel
-                Events.Enabled = False
-                Events.ImageAlign = ContentAlignment.MiddleCenter
-                Events.Image = My.Resources.events
+                showEvents.Enabled = False
+                showEvents.ImageAlign = ContentAlignment.MiddleCenter
+                showEvents.Image = My.Resources.events
                 EventsPanel.Visible = False
                 History.Enabled = False
                 HistoryList.Visible = False
@@ -1941,7 +2003,7 @@ startover:
             StationChooser.Enabled = True
         End If
 
-
+        PlayStop.Focus()
 
     End Sub
 
@@ -1949,7 +2011,7 @@ startover:
 
 #Region "Timers"
 
-    Private Sub FadeOut_Tick(sender As System.Object, e As System.EventArgs) Handles FadeOut.Tick
+    Private Sub FadeOut_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles FadeOut.Tick
 
         If Volume.Value - 2 > 0 Then
             Volume.Value -= 2
@@ -1978,21 +2040,21 @@ startover:
                 Select Case VisualisationType
 
                     Case 0
-                        drawing.CreateSpectrumBean(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
+                        Drawing.CreateSpectrumBean(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
                     Case 1
-                        drawing.CreateSpectrumDot(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
+                        Drawing.CreateSpectrumDot(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
                     Case 2
-                        drawing.CreateSpectrum(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), LinealRepresentation, FullSoundRange, False)
+                        Drawing.CreateSpectrum(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), LinealRepresentation, FullSoundRange, False)
                     Case 3
-                        drawing.CreateSpectrumEllipse(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 3, 1, LinealRepresentation, FullSoundRange, HighQualityVis)
+                        Drawing.CreateSpectrumEllipse(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 3, 1, LinealRepresentation, FullSoundRange, HighQualityVis)
                     Case 4
-                        drawing.CreateSpectrumLine(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
+                        Drawing.CreateSpectrumLine(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, 1, LinealRepresentation, FullSoundRange, False)
                     Case 5
-                        drawing.CreateSpectrumLinePeak(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(PeakColour), Color.FromArgb(BackgroundColour), 5, 5, 1, 100, LinealRepresentation, FullSoundRange, False)
+                        Drawing.CreateSpectrumLinePeak(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(PeakColour), Color.FromArgb(BackgroundColour), 5, 5, 1, 100, LinealRepresentation, FullSoundRange, False)
                     Case 6
-                        drawing.CreateSpectrumWave(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
+                        Drawing.CreateSpectrumWave(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), 5, LinealRepresentation, FullSoundRange, HighQualityVis)
                     Case 7
-                        drawing.CreateWaveForm(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), Color.FromArgb(BackgroundColour), 5, FullSoundRange, False, HighQualityVis)
+                        Drawing.CreateWaveForm(stream, g, SpectrumRectangle, Color.FromArgb(MainColour), Color.FromArgb(SecondaryColour), Color.FromArgb(BackgroundColour), Color.FromArgb(BackgroundColour), 5, FullSoundRange, False, HighQualityVis)
                 End Select
 
             End Using
@@ -2038,11 +2100,11 @@ startover:
 
 #Region "Context menus and other events"
 
-    Private Sub TrayMenu_Opening(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles TrayMenu.Opening
+    Private Sub TrayMenu_Opening(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles TrayMenu.Opening
         PlayStopTray.Enabled = PlayStop.Enabled
         PlayStopTray.Text = PlayStop.Tag
         PlayStopTray.Image = PlayStop.Image
-        CalendarTray.Enabled = Events.Enabled
+        CalendarTray.Enabled = showEvents.Enabled
         TrackHistoryTray.Enabled = History.Enabled
         ForumsTray.Enabled = Forums.Enabled
 
@@ -2097,7 +2159,7 @@ startover:
         End If
     End Sub
 
-    Private Sub ExitTray_Click(sender As System.Object, e As System.EventArgs) Handles ExitTray.Click
+    Private Sub ExitTray_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExitTray.Click
         Me.Close()
     End Sub
 
@@ -2106,7 +2168,7 @@ startover:
         Clipboard.SetDataObject(RadioString.Text)
     End Sub
 
-    Private Sub TrackHistoryTray_Click(sender As System.Object, e As System.EventArgs) Handles TrackHistoryTray.Click
+    Private Sub TrackHistoryTray_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TrackHistoryTray.Click
         If Me.WindowState = FormWindowState.Minimized And TrayIcon.Visible = True Then
             TrayIcon_MouseDoubleClick(Me, Nothing)
         Else
@@ -2118,7 +2180,7 @@ startover:
         End If
     End Sub
 
-    Private Sub CalendarTray_Click(sender As System.Object, e As System.EventArgs) Handles CalendarTray.Click
+    Private Sub CalendarTray_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CalendarTray.Click
 
         If Me.WindowState = FormWindowState.Minimized And TrayIcon.Visible = True Then
             TrayIcon_MouseDoubleClick(Me, Nothing)
@@ -2127,12 +2189,12 @@ startover:
         End If
 
         If EventsPanel.Visible = False Then
-            Events_Click(Me, Nothing)
+            showEvents_Click(Me, Nothing)
         End If
 
     End Sub
 
-    Private Sub CopyHistoryMenu_Opening(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles CopyHistoryMenu.Opening
+    Private Sub CopyHistoryMenu_Opening(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles CopyHistoryMenu.Opening
         If HistoryList.SelectedItems.Count > 0 Then
             CopyHistory.Enabled = True
             GoogleHistory.Enabled = True
@@ -2142,34 +2204,34 @@ startover:
         End If
     End Sub
 
-    Private Sub CopyHistory_Click(sender As System.Object, e As System.EventArgs) Handles CopyHistory.Click
+    Private Sub CopyHistory_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CopyHistory.Click
         Clipboard.Clear()
         Clipboard.SetDataObject(HistoryList.SelectedItems.Item(0).SubItems(1).Text)
     End Sub
 
-    Private Sub GoogleHistory_Click(sender As System.Object, e As System.EventArgs) Handles GoogleHistory.Click
+    Private Sub GoogleHistory_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GoogleHistory.Click
         Process.Start("https://www.google.com/search?q=" & HistoryList.SelectedItems.Item(0).SubItems(1).Text.Replace("&", "%26"))
     End Sub
 
     ' These only call to the event function of their respective main form button counterparts
 
-    Private Sub PlayStopTray_Click(sender As System.Object, e As System.EventArgs) Handles PlayStopTray.Click
+    Private Sub PlayStopTray_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PlayStopTray.Click
         PlayStop_Click(sender, e)
     End Sub
 
-    Private Sub MuteTray_Click(sender As System.Object, e As System.EventArgs) Handles MuteTray.Click
+    Private Sub MuteTray_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MuteTray.Click
         Mute_Click(sender, e)
     End Sub
 
-    Private Sub CopyTitleTray_Click(sender As System.Object, e As System.EventArgs) Handles CopyTitleTray.Click
+    Private Sub CopyTitleTray_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CopyTitleTray.Click
         CopyToolStripMenuItem_Click(sender, e)
     End Sub
 
-    Private Sub ForumsTray_Click(sender As System.Object, e As System.EventArgs) Handles ForumsTray.Click
+    Private Sub ForumsTray_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ForumsTray.Click
         Forums_Click(sender, e)
     End Sub
 
-    Private Sub OptionsTray_Click(sender As System.Object, e As System.EventArgs) Handles OptionsTray.Click
+    Private Sub OptionsTray_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OptionsTray.Click
         OptionsButton_Click(sender, e)
     End Sub
 
@@ -2179,10 +2241,10 @@ startover:
 
     ' ----------------------------------------------------------------------------------------
 
-    Private Sub CopyServerURLToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles CopyServerURLToolStripMenuItem.Click
+    Private Sub CopyServerURLToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CopyServerURLToolStripMenuItem.Click
         Clipboard.Clear()
 
-        If ListenKey = Nothing = False Then
+        If ListenKey = Nothing = False And removeKey Then
             Clipboard.SetDataObject(ServersArray.Items.Item(SelectedServer.SelectedIndex).Text.Replace(ListenKey, "*listen key removed*"))
         Else
             Clipboard.SetDataObject(ServersArray.Items.Item(SelectedServer.SelectedIndex).Text)
@@ -2193,44 +2255,144 @@ startover:
         Process.Start("https://www.google.com/search?q=" & RadioString.Text.Replace("&", "%26"))
     End Sub
 
-    Private Sub DIFM_Click(sender As System.Object, e As System.EventArgs) Handles DIFM.Click
+    Private Sub DIFM_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DIFM.Click
         StationChooser.Image = DIFM.Image
         StationChooser.Tag = "di.fm"
         StationChooser.Text = DIFM.Text
         StationChooser.ToolTipText = DIFM.Text
+        Options.radioStation = DIFM.Text
         Me.Text = Me.Text.Replace("JazzRadio", "DI")
         Me.Text = Me.Text.Replace("SKY.FM", "DI")
         Me.Text = Me.Text.Replace("RockRadio", "DI")
     End Sub
 
-    Private Sub JazzRadio_Click(sender As System.Object, e As System.EventArgs) Handles JazzRadio.Click
+    Private Sub JazzRadio_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles JazzRadio.Click
         StationChooser.Image = JazzRadio.Image
         StationChooser.Tag = "jazzradio.com"
         StationChooser.Text = JazzRadio.Text
         StationChooser.ToolTipText = JazzRadio.Text
+        Options.radioStation = JazzRadio.Text
         Me.Text = Me.Text.Replace("DI", "JazzRadio")
         Me.Text = Me.Text.Replace("SKY.FM", "JazzRadio")
         Me.Text = Me.Text.Replace("RockRadio", "JazzRadio")
     End Sub
 
-    Private Sub SKYFM_Click(sender As System.Object, e As System.EventArgs) Handles SKYFM.Click
+    Private Sub SKYFM_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SKYFM.Click
         StationChooser.Image = SKYFM.Image
         StationChooser.Tag = "sky.fm"
         StationChooser.Text = SKYFM.Text
         StationChooser.ToolTipText = SKYFM.Text
+        Options.radioStation = DIFM.Text
         Me.Text = Me.Text.Replace("DI", "SKY.FM")
         Me.Text = Me.Text.Replace("JazzRadio", "SKY.FM")
         Me.Text = Me.Text.Replace("RockRadio", "SKY.FM")
     End Sub
 
-    Private Sub RockRadio_Click(sender As System.Object, e As System.EventArgs) Handles RockRadio.Click
+    Private Sub RockRadio_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RockRadio.Click
         StationChooser.Image = RockRadio.Image
         StationChooser.Tag = "rockradio.com"
         StationChooser.Text = RockRadio.Text
         StationChooser.ToolTipText = RockRadio.Text
+        Options.radioStation = RockRadio.Text
         Me.Text = Me.Text.Replace("JazzRadio", "RockRadio")
         Me.Text = Me.Text.Replace("SKY.FM", "RockRadio")
         Me.Text = Me.Text.Replace("DI", "RockRadio")
+    End Sub
+
+    Private Sub ExportToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExportToolStripMenuItem.Click
+        Export.Location = New Point(Me.Location.X, Me.Location.Y)
+        Export.Show()
+        Export.BringToFront()
+    End Sub
+
+    Private Sub FacebookToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles FacebookToolStripMenuItem.Click
+        Process.Start("https://www.facebook.com/dialog/feed?display=page&show_error=true&link=http%3A%2F%2Fwww.di.fm%2Fcalendar%2Fevent%2F" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text & "&e2e=%7B%7D&app_id=109375636874&locale=en_US&sdk=joey&next=http%3A%2F%2Ffacebook.com")
+    End Sub
+
+    Private Sub TwitterToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TwitterToolStripMenuItem.Click
+        Dim channel As String
+        If SelectedChannel.Text = "My Favorites" Then
+            channel = SelectedServer.Text
+        Else
+            channel = SelectedChannel.Text
+        End If
+
+        Process.Start("https://twitter.com/intent/tweet?text=I'll%20be%20tuning%20in%20to%20'" & EventName.Text.Replace(" ", "%20") & "'%20on%20the%20" & channel & "%20channel%20at%20Digitally%20Imported%2C%20check%20it%20out%3A%20&url=http%3A%2F%2Fwww.di.fm%2Fcalendar%2Fevent%2F" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text)
+    End Sub
+
+    Private Sub EmailToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles EmailToolStripMenuItem.Click
+
+        Dim channel As String
+        If SelectedChannel.Text = "My Favorites" Then
+            channel = SelectedServer.Text
+        Else
+            channel = SelectedChannel.Text
+        End If
+
+        Try
+            Process.Start("mailto:?to=&subject=Check%20out%20'" & EventName.Text.Replace(" ", "%20") & "'%20on%20Digitally%20Imported&body=I%20will%20be%20tuning%20in%20to%20" & channel & "%20on%20Digitally%20Imported%20(http://www.di.fm/" & KeysArray.Items.Item(channel).SubItems(1).Text & ")%20to%20listen%20to%20'" & EventName.Text & "%20',%20and%20I%20thought%20you'd%20enjoy%20it%20too.%0ACheck it out here: http://www.di.fm/calendar/event/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text)
+        Catch ex As Exception
+            MessageBox.Show("It appears you don't have a default e-mail program configured." & vbNewLine & "Please set a program as your default e-mail handler and try again.", "Couldn't find e-mail program", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+
+    End Sub
+
+    Private Sub eventOptionsMenu_Opening(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles eventOptionsMenu.Opening
+        ShareToolStripMenuItem.Enabled = SelectedEvent.Enabled
+    End Sub
+
+    Private Sub shareChannelFB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles shareChannelFB.Click
+        Dim channel As String
+
+        If SelectedChannel.Text = "My Favorites" Then
+            channel = SelectedServer.Text
+        Else
+            channel = SelectedChannel.Text
+        End If
+
+        Process.Start("https://www.facebook.com/dialog/feed?display=page&show_error=true&link=http%3A%2F%2Fwww.di.fm%2F" & KeysArray.Items.Item(channel).SubItems(1).Text & "&e2e=%7B%7D&app_id=109375636874&locale=en_US&sdk=joey&next=http%3A%2F%2Ffacebook.com")
+    End Sub
+
+    Private Sub shareChannelTT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles shareChannelTT.Click
+        Dim channel As String
+
+        If SelectedChannel.Text = "My Favorites" Then
+            channel = SelectedServer.Text
+        Else
+            channel = SelectedChannel.Text
+        End If
+
+        Process.Start("https://twitter.com/intent/tweet?text=I'm%20enjoying%20the%20" & channel.Replace(" ", "%20") & "%20channel%20at%20%40diradio&url=http%3A%2F%2Fwww.di.fm%2F" & KeysArray.Items.Item(channel).SubItems(1).Text)
+    End Sub
+
+    Private Sub shareChannelEM_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles shareChannelEM.Click
+        Dim channel As String
+
+        If SelectedChannel.Text = "My Favorites" Then
+            channel = SelectedServer.Text
+        Else
+            channel = SelectedChannel.Text
+        End If
+
+        Try
+            Process.Start("mailto:?to=&subject=Check%20out%20the%20" & channel.Replace(" ", "%20") & "%20channel%20on%20Digitally%20Imported&body=I%20just%20heard%20an%20amazing%20song%20on%20the%20" & channel.Replace(" ", "%20") & "%20channel%20at%20Digitally%20Imported:%20http://www.di.fm/" & KeysArray.Items.Item(channel).SubItems(1).Text & ".%0AIt%20was%20so%20good%20that%20I%20had%20to%20tell%20you%20about%20it.")
+        Catch ex As Exception
+            MessageBox.Show("It appears you don't have a default e-mail program configured." & vbNewLine & "Please set a program as your default e-mail handler and try again.", "Couldn't find e-mail program", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Private Sub shareMenu_Opening(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles shareMenu.Opening
+        If StationChooser.Tag = DIFM.Tag Then
+            shareChannelFB.Enabled = True
+            shareChannelTT.Enabled = True
+            shareChannelEM.Enabled = True
+        Else
+            shareChannelFB.Enabled = False
+            shareChannelTT.Enabled = False
+            shareChannelEM.Enabled = False
+        End If
     End Sub
 
 #End Region
@@ -2300,7 +2462,7 @@ startover:
 
     Public Sub LoadOptions()
 
-        Dim file As String = exeFolder & "\options.ini"
+        Dim file As String = dataFolder & "options.ini"
 
         ' If the options file doesn't exist, create it with some default values
 
@@ -2312,8 +2474,17 @@ startover:
             writer.WriteLine(Options.NoTaskbarButton.Name & "=False")
             writer.WriteLine(Options.GoogleSearch.Name & "=True")
             writer.WriteLine(Options.ShowSongStart.Name & "=False")
+            writer.WriteLine(Options.removeListenKey.Name & "=True")
+            writer.WriteLine(Options.cacheList.Name & "=Every day")
+            writer.WriteLine("username=")
+            writer.WriteLine("password=")
+            writer.WriteLine("userinfo=")
+            writer.WriteLine("isLogged=False")
+            writer.WriteLine("isPremium=False")
+            writer.WriteLine("canTrial=False")
+            writer.WriteLine("apiKey=")
+            writer.WriteLine("userId=")
             writer.WriteLine(Options.ListenKey.Name & "=")
-            writer.WriteLine(Options.PremiumFormats.Name & "=False")
             writer.WriteLine("DIFormat=1")
             writer.WriteLine("SKYFormat=1")
             writer.WriteLine("JazzFormat=1")
@@ -2393,46 +2564,100 @@ startover:
                         Time.Width = 0
                         Title.Width = 255
                     End If
-                ElseIf splitter(0) = Options.PremiumFormats.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                ElseIf splitter(0) = Options.removeListenKey.Name And Boolean.TryParse(splitter(1), Nothing) Then
+                    removeKey = splitter(1)
+                ElseIf splitter(0) = Options.cacheList.Name Then
 
-                    PremiumFormats = splitter(1)
+                    cacheList = splitter(1)
+
+                ElseIf splitter(0) = "isLogged" And Boolean.TryParse(splitter(1), Nothing) Then
+
+                    isLogged = splitter(1)
+
+                ElseIf splitter(0) = "isPremium" And Boolean.TryParse(splitter(1), Nothing) And isLogged Then
+
+                    isPremium = splitter(1)
+
+                ElseIf splitter(0) = Options.ListenKey.Name And isLogged Then
+
+                    ListenKey = SimpleCrypt(splitter(1))
+
+                ElseIf splitter(0) = "username" And isLogged Then
+
+                    username = SimpleCrypt(splitter(1))
+
+                ElseIf splitter(0) = "password" And isLogged Then
+
+                    password = SimpleCrypt(splitter(1))
+
+                ElseIf splitter(0) = "userinfo" And isLogged = True Then
+
+                    userInfo = SimpleCrypt(splitter(1))
+
+                ElseIf splitter(0) = "canTrial" And isLogged Then
+
+                    canTrial = splitter(1)
+
+                ElseIf splitter(0) = "apiKey" And isLogged Then
+
+                    apiKey = SimpleCrypt(splitter(1))
+
+                ElseIf splitter(0) = "userId" And isLogged Then
+
+                    userId = SimpleCrypt(splitter(1))
 
                 ElseIf splitter(0) = "DIFormat" And Integer.TryParse(splitter(1), Nothing) Then
 
-                    If splitter(1) > 2 And PremiumFormats = True Then
+                    If isPremium And splitter(1) <= 3 Then
                         DIFormat = splitter(1)
-                    ElseIf splitter(1) <= 2 And PremiumFormats = False Then
+                    ElseIf splitter(1) <= 2 And isPremium = False Then
                         DIFormat = splitter(1)
                     Else
-                        DIFormat = 0
+                        DIFormat = 1
+
+                        If splitter(1) > 3 And My.Computer.FileSystem.DirectoryExists(dataFolder & "servers\Digitally Imported") Then
+                            My.Computer.FileSystem.DeleteDirectory(dataFolder & "servers\Digitally Imported", FileIO.DeleteDirectoryOption.DeleteAllContents)
+                        End If
                     End If
 
 
                 ElseIf splitter(0) = "SKYFormat" And Integer.TryParse(splitter(1), Nothing) Then
 
-                    If splitter(1) > 2 And PremiumFormats = True Then
+                    If isPremium And splitter(1) <= 5 Then
                         SKYFormat = splitter(1)
-                    ElseIf splitter(1) <= 2 And PremiumFormats = False Then
+                    ElseIf splitter(1) <= 2 And isPremium = False Then
                         SKYFormat = splitter(1)
                     Else
-                        SKYFormat = 0
+                        If isPremium Then
+                            SKYFormat = 1
+                        Else
+                            SKYFormat = 0
+                        End If
+
+                        If splitter(1) > 5 And My.Computer.FileSystem.DirectoryExists(dataFolder & "servers\SKY.FM") Then
+                            My.Computer.FileSystem.DeleteDirectory(dataFolder & "servers\SKY.FM", FileIO.DeleteDirectoryOption.DeleteAllContents)
+                        End If
                     End If
 
 
                 ElseIf splitter(0) = "JazzFormat" And Integer.TryParse(splitter(1), Nothing) Then
 
-                    If splitter(1) > 2 And PremiumFormats = True Then
+                    If isPremium And splitter(1) <= 3 Then
                         JazzFormat = splitter(1)
-                    ElseIf splitter(1) <= 2 And PremiumFormats = False Then
+                    ElseIf splitter(1) <= 2 And isPremium = False Then
                         JazzFormat = splitter(1)
                     Else
-                        JazzFormat = 0
+                        If isPremium Then
+                            JazzFormat = 1
+                        Else
+                            JazzFormat = 0
+                        End If
+
+                        If splitter(1) > 5 And My.Computer.FileSystem.DirectoryExists(dataFolder & "servers\JazzRadio") Then
+                            My.Computer.FileSystem.DeleteDirectory(dataFolder & "servers\JazzRadio", FileIO.DeleteDirectoryOption.DeleteAllContents)
+                        End If
                     End If
 
-
-                ElseIf splitter(0) = Options.ListenKey.Name OrElse splitter(0) = "PremiumKey" Then
-
-                    ListenKey = splitter(1)
 
                 ElseIf splitter(0) = Options.BetaVersions.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     BetaVersions = splitter(1)
@@ -2489,45 +2714,7 @@ startover:
                         ChangeWholeBackground = splitter(1)
                     End If
 
-                    If ChangeWholeBackground = True Then
-
-                        Me.BackColor = Color.FromArgb(BackgroundColour)
-                        ToolStrip1.BackColor = Color.FromArgb(BackgroundColour)
-                        StationChooser.BackColor = Color.FromArgb(BackgroundColour)
-                        Label1.BackColor = Color.FromArgb(BackgroundColour)
-                        Label2.BackColor = Color.FromArgb(BackgroundColour)
-                        EventDescription.BackColor = Color.FromArgb(BackgroundColour)
-                        HistoryList.BackColor = Color.FromArgb(BackgroundColour)
-                        RadioString.BackColor = Color.FromArgb(BackgroundColour)
-                        TimerString.BackColor = Color.FromArgb(BackgroundColour)
-
-                        If BackgroundColour < -8323328 Then
-                            RadioString.ForeColor = Color.White
-                            TimerString.ForeColor = Color.White
-                            EventName.ForeColor = Color.White
-                            EventDescription.ForeColor = Color.White
-                            EventTimes.ForeColor = Color.White
-                            EventTagline.ForeColor = Color.White
-                            HistoryList.ForeColor = Color.White
-                        Else
-                            RadioString.ForeColor = Color.Black
-                            TimerString.ForeColor = Color.Black
-                            EventName.ForeColor = Color.Black
-                            EventDescription.ForeColor = Color.Black
-                            EventTimes.ForeColor = Color.Black
-                            EventTagline.ForeColor = Color.Black
-                            HistoryList.ForeColor = Color.Black
-                        End If
-
-                        If BackgroundColour < -7105537 Then
-                            EditFavorites.LinkColor = Color.White
-                            RefreshFavorites.LinkColor = Color.White
-                        Else
-                            EditFavorites.LinkColor = Color.Blue
-                            RefreshFavorites.LinkColor = Color.Blue
-                        End If
-
-                    End If
+                    ApplyTheme()
 
                 ElseIf splitter(0) = Options.MultimediaKeys.Name And Boolean.TryParse(splitter(1), Nothing) Then
                     MultimediaKeys = splitter(1)
@@ -2750,11 +2937,6 @@ startover:
 
             End If
 
-            If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") = False And ShowSongStart = True Then
-                Time.Width = 50
-                Title.Width = 209
-            End If
-
         Catch ex As Exception
 
             MessageBox.Show("There was an error trying to load your options file. Please check the Options panel.", "Error loading options", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -2765,6 +2947,7 @@ startover:
         reader.Dispose()
 
         Me.CenterToScreen()
+        RadioString.Text = Greetings(userInfo)
     End Sub
 
     Sub DisplayMessage(ByVal text As String, ByVal style As MsgBoxStyle, ByVal title As String)
@@ -2796,7 +2979,7 @@ startover:
         Bass.BASS_FXSetParameters(EqBands(5), Eq)
     End Sub
 
-    Public Sub UpdateEq(band As Integer, gain As Single)
+    Public Sub UpdateEq(ByVal band As Integer, ByVal gain As Single)
         Dim Eq As New BASS_DX8_PARAMEQ()
 
         If Bass.BASS_FXGetParameters(EqBands(band), Eq) Then
@@ -2805,49 +2988,54 @@ startover:
         End If
     End Sub
 
-    Public Function ReturnDate(ByVal seconds As String, ByVal datetype As String)
+    Public Function ReturnDate(ByVal seconds As String, ByVal datetype As String, Optional ByVal toLocal As Boolean = False)
         Dim firstDay As DateTime = #1/1/1970#
         Dim time As DateTime = firstDay.AddSeconds(seconds)
-        Dim numeral As String
-        Dim datestring As String
 
-        If time.ToLocalTime.Day.ToString.EndsWith("1") And time.ToLocalTime.Day < 11 Then
+        If toLocal Then
+            time = time.ToLocalTime()
+        End If
+
+        Dim numeral As String
+        Dim datestring As String = ""
+
+        If time.Day.ToString.EndsWith("1") And time.Day < 11 Then
             numeral = "st"
-        ElseIf time.ToLocalTime.Day.ToString.EndsWith("2") And time.ToLocalTime.Day < 12 Then
+        ElseIf time.Day.ToString.EndsWith("2") And time.Day < 12 Then
             numeral = "nd"
-        ElseIf time.ToLocalTime.Day.ToString.EndsWith("3") And time.ToLocalTime.Day < 13 Then
+        ElseIf time.Day.ToString.EndsWith("3") And time.Day < 13 Then
             numeral = "rd"
         Else
             numeral = "th"
         End If
 
-        Dim ampm As String
+        Dim ampm As String = ""
         Dim hour As String
 
         If New DateTime(2000, 1, 1, 13, 0, 0).ToString.Contains("13") = False Then
-            If time.ToLocalTime.Hour >= 12 Then
+            If time.Hour >= 12 Then
                 ampm = "pm"
-                If time.ToLocalTime.Hour = 12 Then
-                    hour = time.ToLocalTime.Hour
+                If time.Hour = 12 Then
+                    hour = time.Hour
                 Else
-                    hour = time.ToLocalTime.Hour - 12
+                    hour = time.Hour - 12
                 End If
             Else
                 ampm = "am"
-                hour = time.ToLocalTime.Hour
+                hour = time.Hour
 
                 If hour = "0" Then
                     hour = "12"
                 End If
             End If
         Else
-            hour = time.ToLocalTime.Hour
+            hour = time.Hour
         End If
 
         If datetype = "fulldate" Then
-            datestring = time.ToLocalTime.DayOfWeek.ToString.Remove(3) & ". " & time.ToLocalTime.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute)
+            datestring = time.DayOfWeek.ToString.Remove(3) & ". " & time.Day & numeral & " - " & String.Format("{0:00}:{1:00}" & ampm, hour, time.Minute)
         ElseIf datetype = "hourmin" Then
-            datestring = String.Format("{0:00}:{1:00}" & ampm, hour, time.ToLocalTime.Minute)
+            datestring = String.Format("{0:00}:{1:00}" & ampm, hour, time.Minute)
         End If
 
         Return datestring
@@ -2867,6 +3055,8 @@ startover:
             StationChooser.BackColor = Color.FromArgb(BackgroundColour)
             Label1.BackColor = Color.FromArgb(BackgroundColour)
             Label2.BackColor = Color.FromArgb(BackgroundColour)
+            Label3.BackColor = Color.FromArgb(BackgroundColour)
+            Label4.BackColor = Color.FromArgb(BackgroundColour)
             EventDescription.BackColor = Color.FromArgb(BackgroundColour)
             HistoryList.BackColor = Color.FromArgb(BackgroundColour)
             TimerString.BackColor = Color.FromArgb(BackgroundColour)
@@ -2916,6 +3106,8 @@ startover:
             StationChooser.BackColor = SystemColors.Control
             Label1.BackColor = SystemColors.Control
             Label2.BackColor = SystemColors.Control
+            Label3.BackColor = SystemColors.Control
+            Label4.BackColor = SystemColors.Control
             EventDescription.BackColor = SystemColors.Control
             EventName.ForeColor = SystemColors.ControlText
             EventDescription.ForeColor = SystemColors.ControlText
@@ -2939,7 +3131,7 @@ startover:
 
     Public Sub ReadThemeFile(ByVal path As String)
         Dim reader As New IO.StreamReader(path)
-        Dim lineNumber As Integer = 0
+        Dim lineNumber As Byte = 0
 
         Do While (reader.Peek > -1)
             Dim line As String = reader.ReadLine
@@ -2984,7 +3176,7 @@ startover:
     End Sub
 
     Public Function SaveSettings(ByVal closing As Boolean)
-        Dim file As String = exeFolder & "\options.ini"
+        Dim file As String = dataFolder & "options.ini"
 
         Try
 
@@ -2995,11 +3187,20 @@ startover:
             writer.WriteLine(Options.NoTaskbarButton.Name & "=" & NoTaskbarButton)
             writer.WriteLine(Options.GoogleSearch.Name & "=" & GoogleSearch)
             writer.WriteLine(Options.ShowSongStart.Name & "=" & ShowSongStart)
-            writer.WriteLine(Options.PremiumFormats.Name & "=" & PremiumFormats)
+            writer.WriteLine(Options.removeListenKey.Name & "=" & removeKey)
+            writer.WriteLine(Options.cacheList.Name & "=" & cacheList)
+            writer.WriteLine("isLogged=" & isLogged)
+            writer.WriteLine("username=" & SimpleCrypt(username))
+            writer.WriteLine("password=" & SimpleCrypt(password))
+            writer.WriteLine("userinfo=" & SimpleCrypt(userInfo))
+            writer.WriteLine("isPremium=" & isPremium)
+            writer.WriteLine("canTrial=" & canTrial)
+            writer.WriteLine("apiKey=" & SimpleCrypt(apiKey))
+            writer.WriteLine("userId=" & SimpleCrypt(userId))
+            writer.WriteLine(Options.ListenKey.Name & "=" & SimpleCrypt(ListenKey))
             writer.WriteLine("DIFormat=" & DIFormat)
             writer.WriteLine("SKYFormat=" & SKYFormat)
             writer.WriteLine("JazzFormat=" & JazzFormat)
-            writer.WriteLine(Options.ListenKey.Name & "=" & ListenKey)
             writer.WriteLine(Options.BetaVersions.Name & "=" & BetaVersions)
             writer.WriteLine(Options.UpdatesAtStart.Name & "=" & UpdatesAtStart)
             writer.WriteLine(Options.Visualisation.Name & "=" & Visualisation)
@@ -3063,7 +3264,7 @@ startover:
     Public Sub LoadEqFile(ByVal path As String)
 
         Dim reader As New IO.StreamReader(path)
-        Dim band As Integer = 0
+        Dim band As Byte = 0
 
         Do While (reader.Peek > -1)
             Dim bandValue As String = reader.ReadLine
@@ -3136,15 +3337,78 @@ startover:
         reader.Close()
         reader.Dispose()
 
-        Options.Band0.Value = Band0
-        Options.Band1.Value = Band1
-        Options.Band2.Value = Band2
-        Options.Band3.Value = Band3
-        Options.Band4.Value = Band4
-        Options.Band5.Value = Band5
+        If Options.Visible = True Then
+            Options.Band0.Value = Band0
+            Options.Band1.Value = Band1
+            Options.Band2.Value = Band2
+            Options.Band3.Value = Band3
+            Options.Band4.Value = Band4
+            Options.Band5.Value = Band5
+        End If
 
+        If PlayNewOnChannelChange = True Then
+            SetUpEq()
+            UpdateEq(0, Band0)
+            UpdateEq(1, Band1)
+            UpdateEq(2, Band2)
+            UpdateEq(3, Band3)
+            UpdateEq(4, Band4)
+            UpdateEq(5, Band5)
+        End If
 
     End Sub
+
+    Public Function SimpleCrypt(ByVal Text As String) As String
+        ' Encrypts/decrypts the passed string using 
+        ' a simple ASCII value-swapping algorithm
+        ' Code by Karl Moore
+
+        Dim strTempChar As String = "", i As Integer
+        For i = 1 To Len(Text)
+            If Asc(Mid$(Text, i, 1)) < 128 Then
+                strTempChar = _
+          CType(Asc(Mid$(Text, i, 1)) + 128, String)
+            ElseIf Asc(Mid$(Text, i, 1)) > 128 Then
+                strTempChar = _
+          CType(Asc(Mid$(Text, i, 1)) - 128, String)
+            End If
+            Mid$(Text, i, 1) = _
+                Chr(CType(strTempChar, Integer))
+        Next i
+        Return Text
+    End Function
+
+    Public Function Greetings(ByVal name As String)
+        ' Why should everything be professional and serious?
+        ' Let's add some fun to the player :P
+
+        If String.IsNullOrEmpty(name) = False Then
+            Dim splitter() As String = Split(name, "|")
+            Dim messages As String() = {"Howdy, %s!",
+                                        "How are you today, %s?",
+                                        "Prepare your ears, %s!",
+                                        "Good to see you, %s!",
+                                        "Lookin' good today, %s!",
+                                        "Let's get crazy, %s!",
+                                        "%s! %s! %s!",
+                                        "Giving Dubstep a try, %s?",
+                                        "Your neighbors love you, %s.",
+                                        "Collect all the messages, %s!",
+                                        "What's up, %s?",
+                                        "Oh, behave! Yeah, %s, yeah! Woooh!",
+                                        "Rise and shine, %s.",
+                                        "Are you sitting comfortably, %s?",
+                                        "Close your eyes and relax, %s.",
+                                        "Hi, %s!",
+                                        "Ready for some eargasms, %s?"}
+            Dim Random As New Random()
+            Dim number As Byte = Random.Next(0, messages.Length)
+            Return messages(number).Replace("%s", splitter(0))
+        Else
+            Return Nothing
+        End If
+
+    End Function
 
     ' The following code thanks to _Tobias from the Digitally Imported forums.
 
@@ -3177,20 +3441,20 @@ startover:
         If My.Computer.FileSystem.FileExists(serversFolder & "\favorites.db") = False Then
             Dim wc As Net.WebClient = New Net.WebClient
             Try
-                data = wc.DownloadString("http://tobiass.eu/api/favorites/" & StationChooser.Tag & "/" & listenkey)
+                Dim list As List(Of String) = Audioaddict.ParsePlaylistFavorites(wc.DownloadString("http://listen." & StationChooser.Tag & "/premium/favorites.pls?" & listenkey))
+                data = String.Join(vbNewLine, list.ToArray)
             Catch ex As Exception
                 Return False
             End Try
         Else
             If My.Computer.FileSystem.FileExists(serversFolder & "\favorites.db") Then
-                Dim reader As IO.StreamReader = New IO.StreamReader(serversFolder & "\favorites.db")
-                data = reader.ReadToEnd()
-                reader.Close()
+                Using reader As IO.StreamReader = New IO.StreamReader(serversFolder & "\favorites.db")
+                    data = reader.ReadToEnd()
+                    reader.Close()
+                End Using
             Else
                 Return False
             End If
-
-
         End If
         Return Split(data, vbNewLine)
 
@@ -3199,20 +3463,74 @@ startover:
     Public Function channelDb(ByVal loc As String)
 
         Dim fileinfo As New IO.FileInfo(loc)
+        Dim download As Boolean = True
 
-        If My.Computer.FileSystem.FileExists(loc) = False Or fileinfo.LastWriteTime.Date = DateTime.UtcNow.Date = False Then
+        Select Case cacheList
+
+            Case "Every day"
+
+                If fileinfo.LastWriteTime.Date = DateTime.Now.Date Then
+                    download = False
+                End If
+
+            Case "Every week"
+
+                Dim theDate As DateTime = fileinfo.LastWriteTime.Date
+                Dim culture As System.Globalization.CultureInfo = System.Globalization.CultureInfo.CurrentCulture
+                Dim weekNumberFile As Byte = culture.Calendar.GetWeekOfYear(theDate, Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)
+                theDate = DateTime.Now.Date
+                Dim weekNumberToday As Byte = culture.Calendar.GetWeekOfYear(theDate, Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)
+
+                If weekNumberFile = weekNumberToday Then
+                    download = False
+                End If
+
+            Case "Every month"
+
+                If fileinfo.LastWriteTime.Month = DateTime.Now.Month Then
+                    download = False
+                End If
+
+            Case "Never"
+
+                download = False
+
+        End Select
+
+
+        If My.Computer.FileSystem.FileExists(loc) = False Or download = True Then
             Dim wc As Net.WebClient = New Net.WebClient
-            Dim data
-
+            Dim data As String
+            Dim finalstring As String = ""
+            Dim premium As String
             Try
-                data = wc.DownloadString("http://tobiass.eu/api/channels/" & StationChooser.Tag)
+
+                If isPremium Then
+                    premium = "premium"
+                Else
+                    premium = "public"
+                End If
+
+                data = wc.DownloadString("http://listen." & StationChooser.Tag & "/" & premium)
+
+                Dim splitter = Split(data.Replace("""", Nothing).Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace("id:", Nothing).Replace(",key:", "|").Replace(",name:", "|"), ",")
+                Dim item As Integer = 0
+
+                Do While item < splitter.Length
+
+                    If splitter(item).Contains("|") Then
+                        finalstring += splitter(item) & vbNewLine
+                    End If
+
+                    item += 1
+                Loop
             Catch ex As Exception
                 Return "Didn't download"
             End Try
 
             Dim writer As New IO.StreamWriter(loc, False)
 
-            writer.Write(data)
+            writer.Write(finalstring)
             writer.Close()
         End If
 

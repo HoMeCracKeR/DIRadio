@@ -100,7 +100,7 @@ Partial Class Export
         'SaveFile
         '
         Me.SaveFile.Enabled = False
-        Me.SaveFile.Location = New System.Drawing.Point(269, 424)
+        Me.SaveFile.Location = New System.Drawing.Point(270, 424)
         Me.SaveFile.Name = "SaveFile"
         Me.SaveFile.Size = New System.Drawing.Size(75, 23)
         Me.SaveFile.TabIndex = 4
@@ -207,7 +207,7 @@ Partial Class Export
         'ToDown
         '
         Me.ToDown.Image = CType(resources.GetObject("ToDown.Image"), System.Drawing.Image)
-        Me.ToDown.Location = New System.Drawing.Point(188, 180)
+        Me.ToDown.Location = New System.Drawing.Point(189, 180)
         Me.ToDown.Name = "ToDown"
         Me.ToDown.Size = New System.Drawing.Size(75, 24)
         Me.ToDown.TabIndex = 8
@@ -217,7 +217,7 @@ Partial Class Export
         '
         Me.ToUp.Enabled = False
         Me.ToUp.Image = CType(resources.GetObject("ToUp.Image"), System.Drawing.Image)
-        Me.ToUp.Location = New System.Drawing.Point(269, 180)
+        Me.ToUp.Location = New System.Drawing.Point(270, 180)
         Me.ToUp.Name = "ToUp"
         Me.ToUp.Size = New System.Drawing.Size(75, 24)
         Me.ToUp.TabIndex = 9
@@ -249,7 +249,7 @@ Partial Class Export
         '
         Me.Retry.Location = New System.Drawing.Point(178, 25)
         Me.Retry.Name = "Retry"
-        Me.Retry.Size = New System.Drawing.Size(75, 23)
+        Me.Retry.Size = New System.Drawing.Size(75, 24)
         Me.Retry.TabIndex = 12
         Me.Retry.Text = "Retry"
         Me.Retry.UseVisualStyleBackColor = True

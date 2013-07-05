@@ -26,22 +26,18 @@ Partial Class Options
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Options))
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.GroupBox5 = New System.Windows.Forms.GroupBox()
-        Me.StationSelector = New System.Windows.Forms.ComboBox()
-        Me.ValidateKey = New System.Windows.Forms.Button()
-        Me.PremiumFormats = New System.Windows.Forms.CheckBox()
-        Me.ListenLink = New System.Windows.Forms.LinkLabel()
-        Me.ListenKey = New System.Windows.Forms.TextBox()
-        Me.Label10 = New System.Windows.Forms.Label()
-        Me.FileFormat = New System.Windows.Forms.ComboBox()
-        Me.Label9 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.removeListenKey = New System.Windows.Forms.CheckBox()
         Me.ShowSongStart = New System.Windows.Forms.CheckBox()
         Me.GoogleSearch = New System.Windows.Forms.CheckBox()
         Me.NoTaskbarButton = New System.Windows.Forms.CheckBox()
         Me.PlayNewOnChannelChange = New System.Windows.Forms.CheckBox()
         Me.NotificationIcon = New System.Windows.Forms.CheckBox()
         Me.NotificationTitle = New System.Windows.Forms.CheckBox()
+        Me.GroupBox9 = New System.Windows.Forms.GroupBox()
+        Me.lookForChannels = New System.Windows.Forms.Button()
+        Me.cacheList = New System.Windows.Forms.ComboBox()
+        Me.Label26 = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.BetaVersions = New System.Windows.Forms.CheckBox()
         Me.ViewChangelog = New System.Windows.Forms.Button()
@@ -52,6 +48,37 @@ Partial Class Options
         Me.CurrentVersion = New System.Windows.Forms.Label()
         Me.LookNow = New System.Windows.Forms.Button()
         Me.UpdatesAtStart = New System.Windows.Forms.CheckBox()
+        Me.TabPage6 = New System.Windows.Forms.TabPage()
+        Me.GroupBox8 = New System.Windows.Forms.GroupBox()
+        Me.infoLogIn = New System.Windows.Forms.Label()
+        Me.startTrial = New System.Windows.Forms.Button()
+        Me.premiumTrial = New System.Windows.Forms.Label()
+        Me.pleaseWaitRefresh = New System.Windows.Forms.Label()
+        Me.Label25 = New System.Windows.Forms.Label()
+        Me.refreshInfo = New System.Windows.Forms.Button()
+        Me.ListenKey = New System.Windows.Forms.Label()
+        Me.listenKeyMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.CopyListenKeyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Label24 = New System.Windows.Forms.Label()
+        Me.premiumAccount = New System.Windows.Forms.Label()
+        Me.accountOwner = New System.Windows.Forms.Label()
+        Me.Label22 = New System.Windows.Forms.Label()
+        Me.Label23 = New System.Windows.Forms.Label()
+        Me.GroupBox6 = New System.Windows.Forms.GroupBox()
+        Me.createAccount = New System.Windows.Forms.Button()
+        Me.pleaseWait = New System.Windows.Forms.Label()
+        Me.logIn = New System.Windows.Forms.Button()
+        Me.forgotPass = New System.Windows.Forms.Button()
+        Me.passwordBox = New System.Windows.Forms.TextBox()
+        Me.Label21 = New System.Windows.Forms.Label()
+        Me.emailBox = New System.Windows.Forms.TextBox()
+        Me.Label20 = New System.Windows.Forms.Label()
+        Me.GroupBox5 = New System.Windows.Forms.GroupBox()
+        Me.qualityInfo = New System.Windows.Forms.Label()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.StationSelector = New System.Windows.Forms.ComboBox()
+        Me.FileFormat = New System.Windows.Forms.ComboBox()
+        Me.Label9 = New System.Windows.Forms.Label()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
         Me.RestoreColours = New System.Windows.Forms.Button()
@@ -118,6 +145,8 @@ Partial Class Options
         Me.Band1 = New System.Windows.Forms.TrackBar()
         Me.Band0 = New System.Windows.Forms.TrackBar()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.flattr = New System.Windows.Forms.PictureBox()
+        Me.payPal = New System.Windows.Forms.PictureBox()
         Me.AboutForums = New System.Windows.Forms.LinkLabel()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.AboutWebsite = New System.Windows.Forms.LinkLabel()
@@ -143,7 +172,6 @@ Partial Class Options
         Me.SaveTheme = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.GetMoreThemesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ValidateWorker = New System.ComponentModel.BackgroundWorker()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.OnlyModifiers = New System.Windows.Forms.ToolTip(Me.components)
         Me.DownloadUpdater = New System.ComponentModel.BackgroundWorker()
@@ -163,11 +191,19 @@ Partial Class Options
         Me.OpenPresetDialog = New System.Windows.Forms.OpenFileDialog()
         Me.OpenThemeDialog = New System.Windows.Forms.OpenFileDialog()
         Me.SaveThemeDialog = New System.Windows.Forms.SaveFileDialog()
+        Me.logInWorker = New System.ComponentModel.BackgroundWorker()
+        Me.resetPasswordWorker = New System.ComponentModel.BackgroundWorker()
+        Me.startTrialWorker = New System.ComponentModel.BackgroundWorker()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
-        Me.GroupBox5.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
+        Me.GroupBox9.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
+        Me.TabPage6.SuspendLayout()
+        Me.GroupBox8.SuspendLayout()
+        Me.listenKeyMenu.SuspendLayout()
+        Me.GroupBox6.SuspendLayout()
+        Me.GroupBox5.SuspendLayout()
         Me.TabPage2.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
         CType(Me.BackgroundColour, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -186,6 +222,8 @@ Partial Class Options
         CType(Me.Band1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage4.SuspendLayout()
+        CType(Me.flattr, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.payPal, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ThemesMenu.SuspendLayout()
         Me.PresetsMenu.SuspendLayout()
@@ -197,6 +235,7 @@ Partial Class Options
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TabControl1.Controls.Add(Me.TabPage1)
+        Me.TabControl1.Controls.Add(Me.TabPage6)
         Me.TabControl1.Controls.Add(Me.TabPage2)
         Me.TabControl1.Controls.Add(Me.TabPage3)
         Me.TabControl1.Controls.Add(Me.TabPage5)
@@ -205,139 +244,26 @@ Partial Class Options
         Me.TabControl1.Margin = New System.Windows.Forms.Padding(2)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(295, 424)
+        Me.TabControl1.Size = New System.Drawing.Size(321, 424)
         Me.TabControl1.TabIndex = 0
         '
         'TabPage1
         '
         Me.TabPage1.BackColor = System.Drawing.SystemColors.Window
-        Me.TabPage1.Controls.Add(Me.GroupBox5)
         Me.TabPage1.Controls.Add(Me.GroupBox1)
+        Me.TabPage1.Controls.Add(Me.GroupBox9)
         Me.TabPage1.Controls.Add(Me.GroupBox2)
         Me.TabPage1.Location = New System.Drawing.Point(4, 23)
         Me.TabPage1.Margin = New System.Windows.Forms.Padding(2)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(2)
-        Me.TabPage1.Size = New System.Drawing.Size(287, 397)
+        Me.TabPage1.Size = New System.Drawing.Size(313, 397)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Main"
         '
-        'GroupBox5
-        '
-        Me.GroupBox5.Controls.Add(Me.StationSelector)
-        Me.GroupBox5.Controls.Add(Me.ValidateKey)
-        Me.GroupBox5.Controls.Add(Me.PremiumFormats)
-        Me.GroupBox5.Controls.Add(Me.ListenLink)
-        Me.GroupBox5.Controls.Add(Me.ListenKey)
-        Me.GroupBox5.Controls.Add(Me.Label10)
-        Me.GroupBox5.Controls.Add(Me.FileFormat)
-        Me.GroupBox5.Controls.Add(Me.Label9)
-        Me.GroupBox5.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupBox5.Location = New System.Drawing.Point(2, 149)
-        Me.GroupBox5.Margin = New System.Windows.Forms.Padding(2)
-        Me.GroupBox5.Name = "GroupBox5"
-        Me.GroupBox5.Padding = New System.Windows.Forms.Padding(2)
-        Me.GroupBox5.Size = New System.Drawing.Size(283, 105)
-        Me.GroupBox5.TabIndex = 6
-        Me.GroupBox5.TabStop = False
-        Me.GroupBox5.Text = "File format, Listen Key && Premium support"
-        '
-        'StationSelector
-        '
-        Me.StationSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.StationSelector.FormattingEnabled = True
-        Me.Helper.SetHelpString(Me.StationSelector, "Select which radio station you'd like to change the file format for.")
-        Me.StationSelector.Items.AddRange(New Object() {"Digitally Imported", "JazzRadio", "RockRadio", "SKY.FM"})
-        Me.StationSelector.Location = New System.Drawing.Point(5, 36)
-        Me.StationSelector.Margin = New System.Windows.Forms.Padding(2)
-        Me.StationSelector.Name = "StationSelector"
-        Me.Helper.SetShowHelp(Me.StationSelector, True)
-        Me.StationSelector.Size = New System.Drawing.Size(131, 22)
-        Me.StationSelector.TabIndex = 8
-        '
-        'ValidateKey
-        '
-        Me.Helper.SetHelpString(Me.ValidateKey, resources.GetString("ValidateKey.HelpString"))
-        Me.ValidateKey.Location = New System.Drawing.Point(220, 77)
-        Me.ValidateKey.Name = "ValidateKey"
-        Me.Helper.SetShowHelp(Me.ValidateKey, True)
-        Me.ValidateKey.Size = New System.Drawing.Size(58, 22)
-        Me.ValidateKey.TabIndex = 12
-        Me.ValidateKey.Text = "Validate"
-        Me.ValidateKey.UseVisualStyleBackColor = True
-        '
-        'PremiumFormats
-        '
-        Me.Helper.SetHelpString(Me.PremiumFormats, "Selecting this check box will identify your Listen Key as a Premium one and will " & _
-        "enable support for Premium file formats.")
-        Me.PremiumFormats.Location = New System.Drawing.Point(139, 15)
-        Me.PremiumFormats.Margin = New System.Windows.Forms.Padding(2)
-        Me.PremiumFormats.Name = "PremiumFormats"
-        Me.Helper.SetShowHelp(Me.PremiumFormats, True)
-        Me.PremiumFormats.Size = New System.Drawing.Size(142, 17)
-        Me.PremiumFormats.TabIndex = 7
-        Me.PremiumFormats.Text = "Enable Premium formats"
-        Me.PremiumFormats.UseVisualStyleBackColor = True
-        '
-        'ListenLink
-        '
-        Me.ListenLink.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
-        Me.ListenLink.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Helper.SetHelpString(Me.ListenLink, resources.GetString("ListenLink.HelpString"))
-        Me.ListenLink.Location = New System.Drawing.Point(136, 60)
-        Me.ListenLink.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.ListenLink.Name = "ListenLink"
-        Me.Helper.SetShowHelp(Me.ListenLink, True)
-        Me.ListenLink.Size = New System.Drawing.Size(145, 14)
-        Me.ListenLink.TabIndex = 10
-        Me.ListenLink.TabStop = True
-        Me.ListenLink.Text = "Get or reset your Listen Key"
-        Me.ListenLink.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'ListenKey
-        '
-        Me.Helper.SetHelpString(Me.ListenKey, resources.GetString("ListenKey.HelpString"))
-        Me.ListenKey.Location = New System.Drawing.Point(5, 78)
-        Me.ListenKey.Margin = New System.Windows.Forms.Padding(2)
-        Me.ListenKey.MaxLength = 0
-        Me.ListenKey.Name = "ListenKey"
-        Me.Helper.SetShowHelp(Me.ListenKey, True)
-        Me.ListenKey.Size = New System.Drawing.Size(210, 20)
-        Me.ListenKey.TabIndex = 11
-        '
-        'Label10
-        '
-        Me.Label10.Location = New System.Drawing.Point(2, 60)
-        Me.Label10.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(130, 14)
-        Me.Label10.TabIndex = 4
-        Me.Label10.Text = "Listen Key:"
-        '
-        'FileFormat
-        '
-        Me.FileFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.FileFormat.FormattingEnabled = True
-        Me.Helper.SetHelpString(Me.FileFormat, resources.GetString("FileFormat.HelpString"))
-        Me.FileFormat.Items.AddRange(New Object() {"AAC-HE", "MP3", "Windows Media"})
-        Me.FileFormat.Location = New System.Drawing.Point(139, 36)
-        Me.FileFormat.Margin = New System.Windows.Forms.Padding(2)
-        Me.FileFormat.Name = "FileFormat"
-        Me.Helper.SetShowHelp(Me.FileFormat, True)
-        Me.FileFormat.Size = New System.Drawing.Size(139, 22)
-        Me.FileFormat.TabIndex = 9
-        '
-        'Label9
-        '
-        Me.Label9.Location = New System.Drawing.Point(2, 15)
-        Me.Label9.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(133, 15)
-        Me.Label9.TabIndex = 0
-        Me.Label9.Text = "Radio station:"
-        '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.removeListenKey)
         Me.GroupBox1.Controls.Add(Me.ShowSongStart)
         Me.GroupBox1.Controls.Add(Me.GoogleSearch)
         Me.GroupBox1.Controls.Add(Me.NoTaskbarButton)
@@ -349,19 +275,33 @@ Partial Class Options
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(2)
-        Me.GroupBox1.Size = New System.Drawing.Size(283, 144)
+        Me.GroupBox1.Size = New System.Drawing.Size(309, 170)
         Me.GroupBox1.TabIndex = 4
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "General"
+        '
+        'removeListenKey
+        '
+        Me.removeListenKey.Checked = True
+        Me.removeListenKey.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.Helper.SetHelpString(Me.removeListenKey, "Select this box to remove your Listen Key when copying the server URL from the ma" & _
+        "in screen.")
+        Me.removeListenKey.Location = New System.Drawing.Point(5, 149)
+        Me.removeListenKey.Name = "removeListenKey"
+        Me.Helper.SetShowHelp(Me.removeListenKey, True)
+        Me.removeListenKey.Size = New System.Drawing.Size(299, 17)
+        Me.removeListenKey.TabIndex = 18
+        Me.removeListenKey.Text = "Remove Listen Key when copying servers URL"
+        Me.removeListenKey.UseVisualStyleBackColor = True
         '
         'ShowSongStart
         '
         Me.Helper.SetHelpString(Me.ShowSongStart, "Selecting this box will make the application show the start time of a song on the" & _
         " left of the History list.")
-        Me.ShowSongStart.Location = New System.Drawing.Point(5, 122)
+        Me.ShowSongStart.Location = New System.Drawing.Point(5, 126)
         Me.ShowSongStart.Name = "ShowSongStart"
         Me.Helper.SetShowHelp(Me.ShowSongStart, True)
-        Me.ShowSongStart.Size = New System.Drawing.Size(273, 17)
+        Me.ShowSongStart.Size = New System.Drawing.Size(299, 17)
         Me.ShowSongStart.TabIndex = 6
         Me.ShowSongStart.Text = "Show song start time on History list"
         Me.ShowSongStart.UseVisualStyleBackColor = True
@@ -372,10 +312,10 @@ Partial Class Options
         Me.GoogleSearch.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Helper.SetHelpString(Me.GoogleSearch, "Selecting this check box will make the application perform a Google search when y" & _
         "ou click the current song's title.")
-        Me.GoogleSearch.Location = New System.Drawing.Point(5, 101)
+        Me.GoogleSearch.Location = New System.Drawing.Point(5, 103)
         Me.GoogleSearch.Name = "GoogleSearch"
         Me.Helper.SetShowHelp(Me.GoogleSearch, True)
-        Me.GoogleSearch.Size = New System.Drawing.Size(273, 17)
+        Me.GoogleSearch.Size = New System.Drawing.Size(299, 17)
         Me.GoogleSearch.TabIndex = 5
         Me.GoogleSearch.Text = "Open Google when clicking the song title"
         Me.GoogleSearch.UseVisualStyleBackColor = True
@@ -388,7 +328,7 @@ Partial Class Options
         Me.NoTaskbarButton.Location = New System.Drawing.Point(5, 80)
         Me.NoTaskbarButton.Name = "NoTaskbarButton"
         Me.Helper.SetShowHelp(Me.NoTaskbarButton, True)
-        Me.NoTaskbarButton.Size = New System.Drawing.Size(273, 17)
+        Me.NoTaskbarButton.Size = New System.Drawing.Size(299, 17)
         Me.NoTaskbarButton.TabIndex = 4
         Me.NoTaskbarButton.Text = "Use the tray icon as a taskbar button"
         Me.NoTaskbarButton.UseVisualStyleBackColor = True
@@ -401,7 +341,7 @@ Partial Class Options
         Me.PlayNewOnChannelChange.Margin = New System.Windows.Forms.Padding(2)
         Me.PlayNewOnChannelChange.Name = "PlayNewOnChannelChange"
         Me.Helper.SetShowHelp(Me.PlayNewOnChannelChange, True)
-        Me.PlayNewOnChannelChange.Size = New System.Drawing.Size(273, 17)
+        Me.PlayNewOnChannelChange.Size = New System.Drawing.Size(300, 17)
         Me.PlayNewOnChannelChange.TabIndex = 2
         Me.PlayNewOnChannelChange.Text = "Automatically play new channel when changing"
         Me.PlayNewOnChannelChange.UseVisualStyleBackColor = True
@@ -416,7 +356,7 @@ Partial Class Options
         Me.NotificationIcon.Margin = New System.Windows.Forms.Padding(2)
         Me.NotificationIcon.Name = "NotificationIcon"
         Me.Helper.SetShowHelp(Me.NotificationIcon, True)
-        Me.NotificationIcon.Size = New System.Drawing.Size(273, 17)
+        Me.NotificationIcon.Size = New System.Drawing.Size(300, 17)
         Me.NotificationIcon.TabIndex = 3
         Me.NotificationIcon.Text = "Minimise to notification area"
         Me.NotificationIcon.UseVisualStyleBackColor = True
@@ -431,10 +371,58 @@ Partial Class Options
         Me.NotificationTitle.Margin = New System.Windows.Forms.Padding(2)
         Me.NotificationTitle.Name = "NotificationTitle"
         Me.Helper.SetShowHelp(Me.NotificationTitle, True)
-        Me.NotificationTitle.Size = New System.Drawing.Size(273, 18)
+        Me.NotificationTitle.Size = New System.Drawing.Size(300, 18)
         Me.NotificationTitle.TabIndex = 1
         Me.NotificationTitle.Text = "Show title on song change"
         Me.NotificationTitle.UseVisualStyleBackColor = True
+        '
+        'GroupBox9
+        '
+        Me.GroupBox9.Controls.Add(Me.lookForChannels)
+        Me.GroupBox9.Controls.Add(Me.cacheList)
+        Me.GroupBox9.Controls.Add(Me.Label26)
+        Me.GroupBox9.Location = New System.Drawing.Point(2, 176)
+        Me.GroupBox9.Name = "GroupBox9"
+        Me.GroupBox9.Size = New System.Drawing.Size(309, 63)
+        Me.GroupBox9.TabIndex = 17
+        Me.GroupBox9.TabStop = False
+        Me.GroupBox9.Text = "Cache"
+        '
+        'lookForChannels
+        '
+        Me.lookForChannels.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.lookForChannels.Enabled = False
+        Me.Helper.SetHelpString(Me.lookForChannels, "Click this button to erase the cache.")
+        Me.lookForChannels.Location = New System.Drawing.Point(159, 34)
+        Me.lookForChannels.Name = "lookForChannels"
+        Me.Helper.SetShowHelp(Me.lookForChannels, True)
+        Me.lookForChannels.Size = New System.Drawing.Size(75, 24)
+        Me.lookForChannels.TabIndex = 2
+        Me.lookForChannels.Text = "Look now"
+        Me.lookForChannels.UseVisualStyleBackColor = True
+        '
+        'cacheList
+        '
+        Me.cacheList.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.cacheList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cacheList.FormattingEnabled = True
+        Me.Helper.SetHelpString(Me.cacheList, "Select how often should the player search for new channels or servers.")
+        Me.cacheList.Items.AddRange(New Object() {"Every day", "Every week", "Every month", "Never"})
+        Me.cacheList.Location = New System.Drawing.Point(5, 35)
+        Me.cacheList.Name = "cacheList"
+        Me.Helper.SetShowHelp(Me.cacheList, True)
+        Me.cacheList.Size = New System.Drawing.Size(148, 22)
+        Me.cacheList.TabIndex = 1
+        '
+        'Label26
+        '
+        Me.Label26.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.Label26.AutoSize = True
+        Me.Label26.Location = New System.Drawing.Point(2, 16)
+        Me.Label26.Name = "Label26"
+        Me.Label26.Size = New System.Drawing.Size(184, 14)
+        Me.Label26.TabIndex = 0
+        Me.Label26.Text = "Look for new channels and servers:"
         '
         'GroupBox2
         '
@@ -447,12 +435,11 @@ Partial Class Options
         Me.GroupBox2.Controls.Add(Me.CurrentVersion)
         Me.GroupBox2.Controls.Add(Me.LookNow)
         Me.GroupBox2.Controls.Add(Me.UpdatesAtStart)
-        Me.GroupBox2.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupBox2.Location = New System.Drawing.Point(2, 254)
+        Me.GroupBox2.Location = New System.Drawing.Point(2, 242)
         Me.GroupBox2.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Padding = New System.Windows.Forms.Padding(2)
-        Me.GroupBox2.Size = New System.Drawing.Size(283, 141)
+        Me.GroupBox2.Size = New System.Drawing.Size(309, 153)
         Me.GroupBox2.TabIndex = 5
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Updates"
@@ -461,10 +448,10 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.BetaVersions, "Selecting this check box will make the application display a notification at star" & _
         "tup when updates to beta versions are found.")
-        Me.BetaVersions.Location = New System.Drawing.Point(5, 37)
+        Me.BetaVersions.Location = New System.Drawing.Point(5, 39)
         Me.BetaVersions.Name = "BetaVersions"
         Me.Helper.SetShowHelp(Me.BetaVersions, True)
-        Me.BetaVersions.Size = New System.Drawing.Size(273, 17)
+        Me.BetaVersions.Size = New System.Drawing.Size(299, 17)
         Me.BetaVersions.TabIndex = 14
         Me.BetaVersions.Text = "Display notification for beta versions"
         Me.BetaVersions.UseVisualStyleBackColor = True
@@ -473,73 +460,73 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.ViewChangelog, "Click this button to read the changelog and know the various changes this applica" & _
         "tion has had.")
-        Me.ViewChangelog.Location = New System.Drawing.Point(147, 84)
+        Me.ViewChangelog.Location = New System.Drawing.Point(159, 89)
         Me.ViewChangelog.Margin = New System.Windows.Forms.Padding(2)
         Me.ViewChangelog.Name = "ViewChangelog"
         Me.Helper.SetShowHelp(Me.ViewChangelog, True)
-        Me.ViewChangelog.Size = New System.Drawing.Size(131, 23)
+        Me.ViewChangelog.Size = New System.Drawing.Size(146, 23)
         Me.ViewChangelog.TabIndex = 16
         Me.ViewChangelog.Text = "Read changelog"
         Me.ViewChangelog.UseVisualStyleBackColor = True
         '
         'UndefinedProgress
         '
-        Me.UndefinedProgress.Location = New System.Drawing.Point(5, 121)
+        Me.UndefinedProgress.Location = New System.Drawing.Point(5, 130)
         Me.UndefinedProgress.Margin = New System.Windows.Forms.Padding(2)
         Me.UndefinedProgress.Name = "UndefinedProgress"
-        Me.UndefinedProgress.Size = New System.Drawing.Size(273, 15)
+        Me.UndefinedProgress.Size = New System.Drawing.Size(299, 15)
         Me.UndefinedProgress.Style = System.Windows.Forms.ProgressBarStyle.Marquee
         Me.UndefinedProgress.TabIndex = 7
         Me.UndefinedProgress.Visible = False
         '
         'ProgressBar
         '
-        Me.ProgressBar.Location = New System.Drawing.Point(5, 121)
+        Me.ProgressBar.Location = New System.Drawing.Point(5, 130)
         Me.ProgressBar.Margin = New System.Windows.Forms.Padding(2)
         Me.ProgressBar.Name = "ProgressBar"
-        Me.ProgressBar.Size = New System.Drawing.Size(273, 15)
+        Me.ProgressBar.Size = New System.Drawing.Size(299, 15)
         Me.ProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         Me.ProgressBar.TabIndex = 6
         '
         'Status
         '
-        Me.Status.Location = New System.Drawing.Point(2, 107)
+        Me.Status.Location = New System.Drawing.Point(2, 114)
         Me.Status.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Status.Name = "Status"
-        Me.Status.Size = New System.Drawing.Size(273, 14)
+        Me.Status.Size = New System.Drawing.Size(302, 14)
         Me.Status.TabIndex = 5
         Me.Status.Text = "Status: Idle"
         '
         'LatestVersion
         '
         Me.Helper.SetHelpString(Me.LatestVersion, "The latest available version.")
-        Me.LatestVersion.Location = New System.Drawing.Point(2, 70)
+        Me.LatestVersion.Location = New System.Drawing.Point(2, 73)
         Me.LatestVersion.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LatestVersion.Name = "LatestVersion"
         Me.Helper.SetShowHelp(Me.LatestVersion, True)
-        Me.LatestVersion.Size = New System.Drawing.Size(276, 14)
+        Me.LatestVersion.Size = New System.Drawing.Size(302, 14)
         Me.LatestVersion.TabIndex = 4
         Me.LatestVersion.Text = "Latest version: Unknown"
         '
         'CurrentVersion
         '
         Me.Helper.SetHelpString(Me.CurrentVersion, "The version you're currently using.")
-        Me.CurrentVersion.Location = New System.Drawing.Point(2, 55)
+        Me.CurrentVersion.Location = New System.Drawing.Point(2, 59)
         Me.CurrentVersion.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.CurrentVersion.Name = "CurrentVersion"
         Me.Helper.SetShowHelp(Me.CurrentVersion, True)
-        Me.CurrentVersion.Size = New System.Drawing.Size(276, 14)
+        Me.CurrentVersion.Size = New System.Drawing.Size(302, 14)
         Me.CurrentVersion.TabIndex = 3
         Me.CurrentVersion.Text = "Current version:"
         '
         'LookNow
         '
         Me.Helper.SetHelpString(Me.LookNow, "Click this button to look for online updates.")
-        Me.LookNow.Location = New System.Drawing.Point(5, 84)
+        Me.LookNow.Location = New System.Drawing.Point(5, 89)
         Me.LookNow.Margin = New System.Windows.Forms.Padding(2)
         Me.LookNow.Name = "LookNow"
         Me.Helper.SetShowHelp(Me.LookNow, True)
-        Me.LookNow.Size = New System.Drawing.Size(138, 23)
+        Me.LookNow.Size = New System.Drawing.Size(148, 23)
         Me.LookNow.TabIndex = 15
         Me.LookNow.Text = "Look for updates now"
         Me.LookNow.UseVisualStyleBackColor = True
@@ -554,10 +541,330 @@ Partial Class Options
         Me.UpdatesAtStart.Margin = New System.Windows.Forms.Padding(2)
         Me.UpdatesAtStart.Name = "UpdatesAtStart"
         Me.Helper.SetShowHelp(Me.UpdatesAtStart, True)
-        Me.UpdatesAtStart.Size = New System.Drawing.Size(273, 17)
+        Me.UpdatesAtStart.Size = New System.Drawing.Size(299, 17)
         Me.UpdatesAtStart.TabIndex = 13
         Me.UpdatesAtStart.Text = "Look for updates at start"
         Me.UpdatesAtStart.UseVisualStyleBackColor = True
+        '
+        'TabPage6
+        '
+        Me.TabPage6.Controls.Add(Me.GroupBox8)
+        Me.TabPage6.Controls.Add(Me.GroupBox6)
+        Me.TabPage6.Controls.Add(Me.GroupBox5)
+        Me.TabPage6.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage6.Name = "TabPage6"
+        Me.TabPage6.Size = New System.Drawing.Size(313, 397)
+        Me.TabPage6.TabIndex = 5
+        Me.TabPage6.Text = "Account"
+        Me.TabPage6.UseVisualStyleBackColor = True
+        '
+        'GroupBox8
+        '
+        Me.GroupBox8.Controls.Add(Me.infoLogIn)
+        Me.GroupBox8.Controls.Add(Me.startTrial)
+        Me.GroupBox8.Controls.Add(Me.premiumTrial)
+        Me.GroupBox8.Controls.Add(Me.pleaseWaitRefresh)
+        Me.GroupBox8.Controls.Add(Me.Label25)
+        Me.GroupBox8.Controls.Add(Me.refreshInfo)
+        Me.GroupBox8.Controls.Add(Me.ListenKey)
+        Me.GroupBox8.Controls.Add(Me.Label24)
+        Me.GroupBox8.Controls.Add(Me.premiumAccount)
+        Me.GroupBox8.Controls.Add(Me.accountOwner)
+        Me.GroupBox8.Controls.Add(Me.Label22)
+        Me.GroupBox8.Controls.Add(Me.Label23)
+        Me.GroupBox8.Location = New System.Drawing.Point(2, 136)
+        Me.GroupBox8.Name = "GroupBox8"
+        Me.GroupBox8.Size = New System.Drawing.Size(309, 175)
+        Me.GroupBox8.TabIndex = 8
+        Me.GroupBox8.TabStop = False
+        Me.GroupBox8.Text = "Account information"
+        '
+        'infoLogIn
+        '
+        Me.infoLogIn.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.infoLogIn.Location = New System.Drawing.Point(3, 16)
+        Me.infoLogIn.Name = "infoLogIn"
+        Me.infoLogIn.Size = New System.Drawing.Size(303, 156)
+        Me.infoLogIn.TabIndex = 12
+        Me.infoLogIn.Text = "Login to view information about your account."
+        Me.infoLogIn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'startTrial
+        '
+        Me.Helper.SetHelpString(Me.startTrial, "Click this button to start a 7-day Premium trial.")
+        Me.startTrial.Location = New System.Drawing.Point(90, 129)
+        Me.startTrial.Name = "startTrial"
+        Me.Helper.SetShowHelp(Me.startTrial, True)
+        Me.startTrial.Size = New System.Drawing.Size(75, 23)
+        Me.startTrial.TabIndex = 11
+        Me.startTrial.Text = "Start trial"
+        Me.startTrial.UseVisualStyleBackColor = True
+        Me.startTrial.Visible = False
+        '
+        'premiumTrial
+        '
+        Me.premiumTrial.Location = New System.Drawing.Point(6, 85)
+        Me.premiumTrial.Name = "premiumTrial"
+        Me.premiumTrial.Size = New System.Drawing.Size(294, 13)
+        Me.premiumTrial.TabIndex = 10
+        Me.premiumTrial.Text = "info goes here"
+        '
+        'pleaseWaitRefresh
+        '
+        Me.pleaseWaitRefresh.Location = New System.Drawing.Point(6, 155)
+        Me.pleaseWaitRefresh.Name = "pleaseWaitRefresh"
+        Me.pleaseWaitRefresh.Size = New System.Drawing.Size(297, 14)
+        Me.pleaseWaitRefresh.TabIndex = 7
+        Me.pleaseWaitRefresh.Text = "Please wait, refreshing account information..."
+        Me.pleaseWaitRefresh.Visible = False
+        '
+        'Label25
+        '
+        Me.Label25.Location = New System.Drawing.Point(6, 72)
+        Me.Label25.Name = "Label25"
+        Me.Label25.Size = New System.Drawing.Size(294, 13)
+        Me.Label25.TabIndex = 9
+        Me.Label25.Text = "Premium trial:"
+        '
+        'refreshInfo
+        '
+        Me.Helper.SetHelpString(Me.refreshInfo, "Click this button to refresh your account information.")
+        Me.refreshInfo.Location = New System.Drawing.Point(9, 129)
+        Me.refreshInfo.Name = "refreshInfo"
+        Me.Helper.SetShowHelp(Me.refreshInfo, True)
+        Me.refreshInfo.Size = New System.Drawing.Size(75, 23)
+        Me.refreshInfo.TabIndex = 6
+        Me.refreshInfo.Text = "Refresh"
+        Me.refreshInfo.UseVisualStyleBackColor = True
+        '
+        'ListenKey
+        '
+        Me.ListenKey.ContextMenuStrip = Me.listenKeyMenu
+        Me.ListenKey.Location = New System.Drawing.Point(6, 112)
+        Me.ListenKey.Name = "ListenKey"
+        Me.ListenKey.Size = New System.Drawing.Size(297, 14)
+        Me.ListenKey.TabIndex = 5
+        Me.ListenKey.Text = "listen key goes here"
+        '
+        'listenKeyMenu
+        '
+        Me.listenKeyMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyListenKeyToolStripMenuItem})
+        Me.listenKeyMenu.Name = "listenKeyMenu"
+        Me.listenKeyMenu.Size = New System.Drawing.Size(163, 26)
+        '
+        'CopyListenKeyToolStripMenuItem
+        '
+        Me.CopyListenKeyToolStripMenuItem.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CopyListenKeyToolStripMenuItem.Image = CType(resources.GetObject("CopyListenKeyToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.CopyListenKeyToolStripMenuItem.Name = "CopyListenKeyToolStripMenuItem"
+        Me.CopyListenKeyToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.CopyListenKeyToolStripMenuItem.Text = "Copy Listen Key"
+        '
+        'Label24
+        '
+        Me.Label24.ContextMenuStrip = Me.listenKeyMenu
+        Me.Label24.Location = New System.Drawing.Point(6, 98)
+        Me.Label24.Name = "Label24"
+        Me.Label24.Size = New System.Drawing.Size(297, 14)
+        Me.Label24.TabIndex = 4
+        Me.Label24.Text = "Listen Key:"
+        '
+        'premiumAccount
+        '
+        Me.premiumAccount.Location = New System.Drawing.Point(6, 58)
+        Me.premiumAccount.Name = "premiumAccount"
+        Me.premiumAccount.Size = New System.Drawing.Size(297, 14)
+        Me.premiumAccount.TabIndex = 3
+        Me.premiumAccount.Text = "info goes here"
+        '
+        'accountOwner
+        '
+        Me.accountOwner.Location = New System.Drawing.Point(6, 30)
+        Me.accountOwner.Name = "accountOwner"
+        Me.accountOwner.Size = New System.Drawing.Size(297, 14)
+        Me.accountOwner.TabIndex = 2
+        Me.accountOwner.Text = "name goes here"
+        '
+        'Label22
+        '
+        Me.Label22.Location = New System.Drawing.Point(6, 16)
+        Me.Label22.Name = "Label22"
+        Me.Label22.Size = New System.Drawing.Size(297, 14)
+        Me.Label22.TabIndex = 1
+        Me.Label22.Text = "Account owner:"
+        '
+        'Label23
+        '
+        Me.Label23.Location = New System.Drawing.Point(6, 44)
+        Me.Label23.Name = "Label23"
+        Me.Label23.Size = New System.Drawing.Size(297, 14)
+        Me.Label23.TabIndex = 0
+        Me.Label23.Text = "Premium account:"
+        '
+        'GroupBox6
+        '
+        Me.GroupBox6.Controls.Add(Me.createAccount)
+        Me.GroupBox6.Controls.Add(Me.pleaseWait)
+        Me.GroupBox6.Controls.Add(Me.logIn)
+        Me.GroupBox6.Controls.Add(Me.forgotPass)
+        Me.GroupBox6.Controls.Add(Me.passwordBox)
+        Me.GroupBox6.Controls.Add(Me.Label21)
+        Me.GroupBox6.Controls.Add(Me.emailBox)
+        Me.GroupBox6.Controls.Add(Me.Label20)
+        Me.GroupBox6.Location = New System.Drawing.Point(2, 2)
+        Me.GroupBox6.Name = "GroupBox6"
+        Me.GroupBox6.Size = New System.Drawing.Size(309, 128)
+        Me.GroupBox6.TabIndex = 7
+        Me.GroupBox6.TabStop = False
+        Me.GroupBox6.Text = "Login"
+        '
+        'createAccount
+        '
+        Me.Helper.SetHelpString(Me.createAccount, "Click this button to open an account creation dialog.")
+        Me.createAccount.Location = New System.Drawing.Point(158, 32)
+        Me.createAccount.Name = "createAccount"
+        Me.Helper.SetShowHelp(Me.createAccount, True)
+        Me.createAccount.Size = New System.Drawing.Size(109, 23)
+        Me.createAccount.TabIndex = 13
+        Me.createAccount.Text = "Create account"
+        Me.createAccount.UseVisualStyleBackColor = True
+        '
+        'pleaseWait
+        '
+        Me.pleaseWait.Location = New System.Drawing.Point(87, 103)
+        Me.pleaseWait.Name = "pleaseWait"
+        Me.pleaseWait.Size = New System.Drawing.Size(216, 14)
+        Me.pleaseWait.TabIndex = 8
+        Me.pleaseWait.Text = "Please wait, logging in..."
+        Me.pleaseWait.Visible = False
+        '
+        'logIn
+        '
+        Me.Helper.SetHelpString(Me.logIn, "Click this button to login or logout.")
+        Me.logIn.Location = New System.Drawing.Point(6, 99)
+        Me.logIn.Name = "logIn"
+        Me.Helper.SetShowHelp(Me.logIn, True)
+        Me.logIn.Size = New System.Drawing.Size(75, 23)
+        Me.logIn.TabIndex = 11
+        Me.logIn.Text = "Login"
+        Me.logIn.UseVisualStyleBackColor = True
+        '
+        'forgotPass
+        '
+        Me.Helper.SetHelpString(Me.forgotPass, "Click this button to ask for a password reset email to be delivered to the email " & _
+        "address you wrote.")
+        Me.forgotPass.Location = New System.Drawing.Point(158, 72)
+        Me.forgotPass.Name = "forgotPass"
+        Me.Helper.SetShowHelp(Me.forgotPass, True)
+        Me.forgotPass.Size = New System.Drawing.Size(109, 23)
+        Me.forgotPass.TabIndex = 12
+        Me.forgotPass.Text = "Forgot password?"
+        Me.forgotPass.UseVisualStyleBackColor = True
+        '
+        'passwordBox
+        '
+        Me.Helper.SetHelpString(Me.passwordBox, "Write the password associated with the email address you wrote above.")
+        Me.passwordBox.Location = New System.Drawing.Point(6, 73)
+        Me.passwordBox.Name = "passwordBox"
+        Me.passwordBox.PasswordChar = Global.Microsoft.VisualBasic.ChrW(9679)
+        Me.Helper.SetShowHelp(Me.passwordBox, True)
+        Me.passwordBox.Size = New System.Drawing.Size(146, 20)
+        Me.passwordBox.TabIndex = 10
+        '
+        'Label21
+        '
+        Me.Label21.Location = New System.Drawing.Point(3, 56)
+        Me.Label21.Name = "Label21"
+        Me.Label21.Size = New System.Drawing.Size(297, 14)
+        Me.Label21.TabIndex = 9
+        Me.Label21.Text = "Password:"
+        '
+        'emailBox
+        '
+        Me.Helper.SetHelpString(Me.emailBox, "Write the email address you used to register your account.")
+        Me.emailBox.Location = New System.Drawing.Point(6, 33)
+        Me.emailBox.Name = "emailBox"
+        Me.Helper.SetShowHelp(Me.emailBox, True)
+        Me.emailBox.Size = New System.Drawing.Size(146, 20)
+        Me.emailBox.TabIndex = 8
+        '
+        'Label20
+        '
+        Me.Label20.Location = New System.Drawing.Point(3, 15)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(297, 14)
+        Me.Label20.TabIndex = 0
+        Me.Label20.Text = "Email address:"
+        '
+        'GroupBox5
+        '
+        Me.GroupBox5.Controls.Add(Me.qualityInfo)
+        Me.GroupBox5.Controls.Add(Me.Label10)
+        Me.GroupBox5.Controls.Add(Me.StationSelector)
+        Me.GroupBox5.Controls.Add(Me.FileFormat)
+        Me.GroupBox5.Controls.Add(Me.Label9)
+        Me.GroupBox5.Location = New System.Drawing.Point(2, 316)
+        Me.GroupBox5.Margin = New System.Windows.Forms.Padding(2)
+        Me.GroupBox5.Name = "GroupBox5"
+        Me.GroupBox5.Padding = New System.Windows.Forms.Padding(2)
+        Me.GroupBox5.Size = New System.Drawing.Size(309, 79)
+        Me.GroupBox5.TabIndex = 6
+        Me.GroupBox5.TabStop = False
+        Me.GroupBox5.Text = "Streaming quality"
+        '
+        'qualityInfo
+        '
+        Me.qualityInfo.Location = New System.Drawing.Point(3, 59)
+        Me.qualityInfo.Name = "qualityInfo"
+        Me.qualityInfo.Size = New System.Drawing.Size(303, 14)
+        Me.qualityInfo.TabIndex = 11
+        Me.qualityInfo.Text = "Only Free quality options are available for anonymous users."
+        '
+        'Label10
+        '
+        Me.Label10.Location = New System.Drawing.Point(156, 18)
+        Me.Label10.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(151, 15)
+        Me.Label10.TabIndex = 10
+        Me.Label10.Text = "Quality:"
+        '
+        'StationSelector
+        '
+        Me.StationSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.StationSelector.FormattingEnabled = True
+        Me.Helper.SetHelpString(Me.StationSelector, "Select which radio station you'd like to change the file format for.")
+        Me.StationSelector.Items.AddRange(New Object() {"Digitally Imported", "JazzRadio", "RockRadio", "SKY.FM"})
+        Me.StationSelector.Location = New System.Drawing.Point(6, 35)
+        Me.StationSelector.Margin = New System.Windows.Forms.Padding(2)
+        Me.StationSelector.Name = "StationSelector"
+        Me.Helper.SetShowHelp(Me.StationSelector, True)
+        Me.StationSelector.Size = New System.Drawing.Size(146, 22)
+        Me.StationSelector.TabIndex = 8
+        '
+        'FileFormat
+        '
+        Me.FileFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.FileFormat.FormattingEnabled = True
+        Me.Helper.SetHelpString(Me.FileFormat, "Select your preferred file format for listening to Digitally Imported, SKY.FM or " & _
+        "JazzRadio. Currently RockRadio is in Beta stage and only supports MP3 at 96kbits" & _
+        "/sec.")
+        Me.FileFormat.Items.AddRange(New Object() {"AAC-HE", "MP3", "Windows Media"})
+        Me.FileFormat.Location = New System.Drawing.Point(159, 35)
+        Me.FileFormat.Margin = New System.Windows.Forms.Padding(2)
+        Me.FileFormat.Name = "FileFormat"
+        Me.Helper.SetShowHelp(Me.FileFormat, True)
+        Me.FileFormat.Size = New System.Drawing.Size(146, 22)
+        Me.FileFormat.TabIndex = 9
+        '
+        'Label9
+        '
+        Me.Label9.Location = New System.Drawing.Point(4, 18)
+        Me.Label9.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(148, 15)
+        Me.Label9.TabIndex = 0
+        Me.Label9.Text = "Radio station:"
         '
         'TabPage2
         '
@@ -568,7 +875,7 @@ Partial Class Options
         Me.TabPage2.Margin = New System.Windows.Forms.Padding(2)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(2)
-        Me.TabPage2.Size = New System.Drawing.Size(287, 397)
+        Me.TabPage2.Size = New System.Drawing.Size(313, 397)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Visualisation"
         '
@@ -594,7 +901,7 @@ Partial Class Options
         Me.GroupBox4.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Padding = New System.Windows.Forms.Padding(2)
-        Me.GroupBox4.Size = New System.Drawing.Size(283, 205)
+        Me.GroupBox4.Size = New System.Drawing.Size(309, 205)
         Me.GroupBox4.TabIndex = 1
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Colours"
@@ -603,7 +910,7 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.RestoreColours, "Clicking this button will restore the visualisation's colours to their default va" & _
         "lues.")
-        Me.RestoreColours.Location = New System.Drawing.Point(174, 18)
+        Me.RestoreColours.Location = New System.Drawing.Point(200, 18)
         Me.RestoreColours.Name = "RestoreColours"
         Me.Helper.SetShowHelp(Me.RestoreColours, True)
         Me.RestoreColours.Size = New System.Drawing.Size(105, 23)
@@ -618,7 +925,7 @@ Partial Class Options
         Me.ChangeWholeBackground.Location = New System.Drawing.Point(5, 185)
         Me.ChangeWholeBackground.Name = "ChangeWholeBackground"
         Me.Helper.SetShowHelp(Me.ChangeWholeBackground, True)
-        Me.ChangeWholeBackground.Size = New System.Drawing.Size(274, 17)
+        Me.ChangeWholeBackground.Size = New System.Drawing.Size(299, 17)
         Me.ChangeWholeBackground.TabIndex = 32
         Me.ChangeWholeBackground.Text = "Change the whole background"
         Me.ChangeWholeBackground.UseVisualStyleBackColor = True
@@ -627,7 +934,7 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.Themes, "Clicking this button will display a list of included colour themes and options to" & _
         " load and save colour themes files.")
-        Me.Themes.Location = New System.Drawing.Point(94, 18)
+        Me.Themes.Location = New System.Drawing.Point(120, 18)
         Me.Themes.Name = "Themes"
         Me.Helper.SetShowHelp(Me.Themes, True)
         Me.Themes.Size = New System.Drawing.Size(74, 23)
@@ -644,7 +951,7 @@ Partial Class Options
         Me.BackgroundColour.Margin = New System.Windows.Forms.Padding(2)
         Me.BackgroundColour.Name = "BackgroundColour"
         Me.Helper.SetShowHelp(Me.BackgroundColour, True)
-        Me.BackgroundColour.Size = New System.Drawing.Size(245, 20)
+        Me.BackgroundColour.Size = New System.Drawing.Size(271, 20)
         Me.BackgroundColour.TabIndex = 14
         Me.BackgroundColour.TabStop = False
         '
@@ -658,7 +965,7 @@ Partial Class Options
         Me.PeakColour.Margin = New System.Windows.Forms.Padding(2)
         Me.PeakColour.Name = "PeakColour"
         Me.Helper.SetShowHelp(Me.PeakColour, True)
-        Me.PeakColour.Size = New System.Drawing.Size(245, 20)
+        Me.PeakColour.Size = New System.Drawing.Size(271, 20)
         Me.PeakColour.TabIndex = 13
         Me.PeakColour.TabStop = False
         '
@@ -671,7 +978,7 @@ Partial Class Options
         Me.SecondaryColour.Margin = New System.Windows.Forms.Padding(2)
         Me.SecondaryColour.Name = "SecondaryColour"
         Me.Helper.SetShowHelp(Me.SecondaryColour, True)
-        Me.SecondaryColour.Size = New System.Drawing.Size(245, 20)
+        Me.SecondaryColour.Size = New System.Drawing.Size(271, 20)
         Me.SecondaryColour.TabIndex = 12
         Me.SecondaryColour.TabStop = False
         '
@@ -684,33 +991,35 @@ Partial Class Options
         Me.MainColour.Margin = New System.Windows.Forms.Padding(2)
         Me.MainColour.Name = "MainColour"
         Me.Helper.SetShowHelp(Me.MainColour, True)
-        Me.MainColour.Size = New System.Drawing.Size(245, 20)
+        Me.MainColour.Size = New System.Drawing.Size(271, 20)
         Me.MainColour.TabIndex = 11
         Me.MainColour.TabStop = False
         '
         'MainButton
         '
         Me.Helper.SetHelpString(Me.MainButton, "This button will open a colour selection dialog.")
-        Me.MainButton.Location = New System.Drawing.Point(254, 46)
+        Me.MainButton.Location = New System.Drawing.Point(280, 45)
         Me.MainButton.Margin = New System.Windows.Forms.Padding(2)
         Me.MainButton.Name = "MainButton"
         Me.Helper.SetShowHelp(Me.MainButton, True)
-        Me.MainButton.Size = New System.Drawing.Size(25, 20)
+        Me.MainButton.Size = New System.Drawing.Size(25, 22)
         Me.MainButton.TabIndex = 28
         Me.MainButton.Text = "..."
+        Me.MainButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.ToolTip.SetToolTip(Me.MainButton, "Select colour")
         Me.MainButton.UseVisualStyleBackColor = True
         '
         'BackgroundButton
         '
         Me.Helper.SetHelpString(Me.BackgroundButton, "This button will open a colour selection dialog.")
-        Me.BackgroundButton.Location = New System.Drawing.Point(254, 160)
+        Me.BackgroundButton.Location = New System.Drawing.Point(280, 159)
         Me.BackgroundButton.Margin = New System.Windows.Forms.Padding(2)
         Me.BackgroundButton.Name = "BackgroundButton"
         Me.Helper.SetShowHelp(Me.BackgroundButton, True)
-        Me.BackgroundButton.Size = New System.Drawing.Size(25, 20)
+        Me.BackgroundButton.Size = New System.Drawing.Size(25, 22)
         Me.BackgroundButton.TabIndex = 31
         Me.BackgroundButton.Text = "..."
+        Me.BackgroundButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.ToolTip.SetToolTip(Me.BackgroundButton, "Select colour")
         Me.BackgroundButton.UseVisualStyleBackColor = True
         '
@@ -719,20 +1028,21 @@ Partial Class Options
         Me.Label5.Location = New System.Drawing.Point(2, 144)
         Me.Label5.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(277, 14)
+        Me.Label5.Size = New System.Drawing.Size(303, 14)
         Me.Label5.TabIndex = 9
         Me.Label5.Text = "Background colour:"
         '
         'PeakButton
         '
         Me.Helper.SetHelpString(Me.PeakButton, "This button will open a colour selection dialog.")
-        Me.PeakButton.Location = New System.Drawing.Point(254, 122)
+        Me.PeakButton.Location = New System.Drawing.Point(280, 121)
         Me.PeakButton.Margin = New System.Windows.Forms.Padding(2)
         Me.PeakButton.Name = "PeakButton"
         Me.Helper.SetShowHelp(Me.PeakButton, True)
-        Me.PeakButton.Size = New System.Drawing.Size(25, 20)
+        Me.PeakButton.Size = New System.Drawing.Size(25, 22)
         Me.PeakButton.TabIndex = 30
         Me.PeakButton.Text = "..."
+        Me.PeakButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.ToolTip.SetToolTip(Me.PeakButton, "Select colour")
         Me.PeakButton.UseVisualStyleBackColor = True
         '
@@ -741,20 +1051,21 @@ Partial Class Options
         Me.Label4.Location = New System.Drawing.Point(2, 106)
         Me.Label4.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(277, 14)
+        Me.Label4.Size = New System.Drawing.Size(303, 14)
         Me.Label4.TabIndex = 6
         Me.Label4.Text = "Peak colour:"
         '
         'SecondaryButton
         '
         Me.Helper.SetHelpString(Me.SecondaryButton, "This button will open a colour selection dialog.")
-        Me.SecondaryButton.Location = New System.Drawing.Point(254, 84)
+        Me.SecondaryButton.Location = New System.Drawing.Point(280, 83)
         Me.SecondaryButton.Margin = New System.Windows.Forms.Padding(2)
         Me.SecondaryButton.Name = "SecondaryButton"
         Me.Helper.SetShowHelp(Me.SecondaryButton, True)
-        Me.SecondaryButton.Size = New System.Drawing.Size(25, 20)
+        Me.SecondaryButton.Size = New System.Drawing.Size(25, 22)
         Me.SecondaryButton.TabIndex = 29
         Me.SecondaryButton.Text = "..."
+        Me.SecondaryButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.ToolTip.SetToolTip(Me.SecondaryButton, "Select colour")
         Me.SecondaryButton.UseVisualStyleBackColor = True
         '
@@ -763,7 +1074,7 @@ Partial Class Options
         Me.Label3.Location = New System.Drawing.Point(2, 68)
         Me.Label3.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(277, 14)
+        Me.Label3.Size = New System.Drawing.Size(303, 14)
         Me.Label3.TabIndex = 3
         Me.Label3.Text = "Secondary colour:"
         '
@@ -772,7 +1083,7 @@ Partial Class Options
         Me.Label2.Location = New System.Drawing.Point(2, 30)
         Me.Label2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(167, 14)
+        Me.Label2.Size = New System.Drawing.Size(113, 14)
         Me.Label2.TabIndex = 0
         Me.Label2.Text = "Main colour:"
         '
@@ -793,7 +1104,7 @@ Partial Class Options
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(2)
-        Me.GroupBox3.Size = New System.Drawing.Size(283, 180)
+        Me.GroupBox3.Size = New System.Drawing.Size(309, 180)
         Me.GroupBox3.TabIndex = 0
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "General"
@@ -805,7 +1116,7 @@ Partial Class Options
         Me.HighQualityVis.Margin = New System.Windows.Forms.Padding(2)
         Me.HighQualityVis.Name = "HighQualityVis"
         Me.Helper.SetShowHelp(Me.HighQualityVis, True)
-        Me.HighQualityVis.Size = New System.Drawing.Size(149, 22)
+        Me.HighQualityVis.Size = New System.Drawing.Size(175, 22)
         Me.HighQualityVis.TabIndex = 22
         Me.HighQualityVis.Text = "High quality"
         Me.HighQualityVis.UseVisualStyleBackColor = True
@@ -813,7 +1124,7 @@ Partial Class Options
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(235, 160)
+        Me.Label8.Location = New System.Drawing.Point(261, 160)
         Me.Label8.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(44, 14)
@@ -840,7 +1151,7 @@ Partial Class Options
         Me.Visualisation.Margin = New System.Windows.Forms.Padding(2)
         Me.Visualisation.Name = "Visualisation"
         Me.Helper.SetShowHelp(Me.Visualisation, True)
-        Me.Visualisation.Size = New System.Drawing.Size(274, 18)
+        Me.Visualisation.Size = New System.Drawing.Size(300, 18)
         Me.Visualisation.TabIndex = 20
         Me.Visualisation.Text = "Show visualisation"
         Me.Visualisation.UseVisualStyleBackColor = True
@@ -857,7 +1168,7 @@ Partial Class Options
         Me.Smoothness.Minimum = 15
         Me.Smoothness.Name = "Smoothness"
         Me.Helper.SetShowHelp(Me.Smoothness, True)
-        Me.Smoothness.Size = New System.Drawing.Size(274, 23)
+        Me.Smoothness.Size = New System.Drawing.Size(300, 23)
         Me.Smoothness.TabIndex = 25
         Me.Smoothness.TickStyle = System.Windows.Forms.TickStyle.None
         Me.Smoothness.Value = 27
@@ -867,7 +1178,7 @@ Partial Class Options
         Me.Label6.Location = New System.Drawing.Point(2, 119)
         Me.Label6.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(277, 14)
+        Me.Label6.Size = New System.Drawing.Size(303, 14)
         Me.Label6.TabIndex = 3
         Me.Label6.Text = "Animation smoothness:"
         '
@@ -879,7 +1190,7 @@ Partial Class Options
         Me.FullSoundRange.Margin = New System.Windows.Forms.Padding(2)
         Me.FullSoundRange.Name = "FullSoundRange"
         Me.Helper.SetShowHelp(Me.FullSoundRange, True)
-        Me.FullSoundRange.Size = New System.Drawing.Size(274, 18)
+        Me.FullSoundRange.Size = New System.Drawing.Size(300, 18)
         Me.FullSoundRange.TabIndex = 24
         Me.FullSoundRange.Text = "Use full sound range"
         Me.FullSoundRange.UseVisualStyleBackColor = True
@@ -892,7 +1203,7 @@ Partial Class Options
         Me.LinealRepresentation.Margin = New System.Windows.Forms.Padding(2)
         Me.LinealRepresentation.Name = "LinealRepresentation"
         Me.Helper.SetShowHelp(Me.LinealRepresentation, True)
-        Me.LinealRepresentation.Size = New System.Drawing.Size(274, 18)
+        Me.LinealRepresentation.Size = New System.Drawing.Size(300, 18)
         Me.LinealRepresentation.TabIndex = 23
         Me.LinealRepresentation.Text = "Use lineal representation"
         Me.LinealRepresentation.UseVisualStyleBackColor = True
@@ -915,7 +1226,7 @@ Partial Class Options
         Me.Label1.Location = New System.Drawing.Point(2, 35)
         Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(277, 14)
+        Me.Label1.Size = New System.Drawing.Size(303, 14)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "Visualisation:"
         '
@@ -927,7 +1238,7 @@ Partial Class Options
         Me.TabPage3.Location = New System.Drawing.Point(4, 23)
         Me.TabPage3.Margin = New System.Windows.Forms.Padding(2)
         Me.TabPage3.Name = "TabPage3"
-        Me.TabPage3.Size = New System.Drawing.Size(287, 397)
+        Me.TabPage3.Size = New System.Drawing.Size(313, 397)
         Me.TabPage3.TabIndex = 2
         Me.TabPage3.Text = "Hotkeys"
         '
@@ -938,11 +1249,11 @@ Partial Class Options
         Me.Helper.SetHelpString(Me.MultimediaKeys, "Selecting this check box will allow the application to use the Play, Pause, Stop," & _
         " Volume Up, Volume Down and Mute buttons on your keyboard or your custom hotkeys" & _
         " set below.")
-        Me.MultimediaKeys.Location = New System.Drawing.Point(8, 4)
+        Me.MultimediaKeys.Location = New System.Drawing.Point(7, 4)
         Me.MultimediaKeys.Margin = New System.Windows.Forms.Padding(2)
         Me.MultimediaKeys.Name = "MultimediaKeys"
         Me.Helper.SetShowHelp(Me.MultimediaKeys, True)
-        Me.MultimediaKeys.Size = New System.Drawing.Size(277, 20)
+        Me.MultimediaKeys.Size = New System.Drawing.Size(304, 20)
         Me.MultimediaKeys.TabIndex = 33
         Me.MultimediaKeys.Text = "Use hotkeys when minimised to tray"
         Me.MultimediaKeys.UseVisualStyleBackColor = True
@@ -962,7 +1273,7 @@ Partial Class Options
         Me.GroupBox7.Controls.Add(Me.CustomVolumeDown)
         Me.GroupBox7.Location = New System.Drawing.Point(2, 27)
         Me.GroupBox7.Name = "GroupBox7"
-        Me.GroupBox7.Size = New System.Drawing.Size(283, 362)
+        Me.GroupBox7.Size = New System.Drawing.Size(309, 368)
         Me.GroupBox7.TabIndex = 22
         Me.GroupBox7.TabStop = False
         Me.GroupBox7.Text = "Customise hotkeys"
@@ -973,18 +1284,18 @@ Partial Class Options
         Me.Label11.Location = New System.Drawing.Point(3, 16)
         Me.Label11.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(277, 85)
+        Me.Label11.Size = New System.Drawing.Size(303, 74)
         Me.Label11.TabIndex = 0
         Me.Label11.Text = resources.GetString("Label11.Text")
         '
         'HotkeyPlayStop
         '
         Me.Helper.SetHelpString(Me.HotkeyPlayStop, "Select this check box to use a custom set of hotkeys for Play/Stop")
-        Me.HotkeyPlayStop.Location = New System.Drawing.Point(5, 105)
+        Me.HotkeyPlayStop.Location = New System.Drawing.Point(5, 101)
         Me.HotkeyPlayStop.Margin = New System.Windows.Forms.Padding(2)
         Me.HotkeyPlayStop.Name = "HotkeyPlayStop"
         Me.Helper.SetShowHelp(Me.HotkeyPlayStop, True)
-        Me.HotkeyPlayStop.Size = New System.Drawing.Size(272, 22)
+        Me.HotkeyPlayStop.Size = New System.Drawing.Size(298, 22)
         Me.HotkeyPlayStop.TabIndex = 34
         Me.HotkeyPlayStop.Text = "Use a custom hotkey for Play/Stop"
         Me.HotkeyPlayStop.UseVisualStyleBackColor = True
@@ -992,7 +1303,7 @@ Partial Class Options
         'CustomShowHide
         '
         Me.CustomShowHide.Enabled = False
-        Me.CustomShowHide.Location = New System.Drawing.Point(5, 331)
+        Me.CustomShowHide.Location = New System.Drawing.Point(5, 327)
         Me.CustomShowHide.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomShowHide.Name = "CustomShowHide"
         Me.CustomShowHide.Size = New System.Drawing.Size(146, 20)
@@ -1002,7 +1313,7 @@ Partial Class Options
         'CustomPlayStop
         '
         Me.CustomPlayStop.Enabled = False
-        Me.CustomPlayStop.Location = New System.Drawing.Point(5, 131)
+        Me.CustomPlayStop.Location = New System.Drawing.Point(5, 127)
         Me.CustomPlayStop.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomPlayStop.Name = "CustomPlayStop"
         Me.CustomPlayStop.Size = New System.Drawing.Size(146, 20)
@@ -1013,11 +1324,11 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.HotkeyShowHide, "Select this check box to use a custom set of hotkeys to show the player when it's" & _
         " minimised to the notification tray")
-        Me.HotkeyShowHide.Location = New System.Drawing.Point(5, 305)
+        Me.HotkeyShowHide.Location = New System.Drawing.Point(5, 301)
         Me.HotkeyShowHide.Margin = New System.Windows.Forms.Padding(2)
         Me.HotkeyShowHide.Name = "HotkeyShowHide"
         Me.Helper.SetShowHelp(Me.HotkeyShowHide, True)
-        Me.HotkeyShowHide.Size = New System.Drawing.Size(272, 22)
+        Me.HotkeyShowHide.Size = New System.Drawing.Size(298, 22)
         Me.HotkeyShowHide.TabIndex = 42
         Me.HotkeyShowHide.Text = "Use a custom hotkey to show the player"
         Me.HotkeyShowHide.UseVisualStyleBackColor = True
@@ -1025,11 +1336,11 @@ Partial Class Options
         'HotkeyVolumeUp
         '
         Me.Helper.SetHelpString(Me.HotkeyVolumeUp, "Select this check box to use a custom set of hotkeys for Volume Up")
-        Me.HotkeyVolumeUp.Location = New System.Drawing.Point(5, 155)
+        Me.HotkeyVolumeUp.Location = New System.Drawing.Point(5, 151)
         Me.HotkeyVolumeUp.Margin = New System.Windows.Forms.Padding(2)
         Me.HotkeyVolumeUp.Name = "HotkeyVolumeUp"
         Me.Helper.SetShowHelp(Me.HotkeyVolumeUp, True)
-        Me.HotkeyVolumeUp.Size = New System.Drawing.Size(274, 22)
+        Me.HotkeyVolumeUp.Size = New System.Drawing.Size(298, 22)
         Me.HotkeyVolumeUp.TabIndex = 36
         Me.HotkeyVolumeUp.Text = "Use a custom hotkey for Volume Up"
         Me.HotkeyVolumeUp.UseVisualStyleBackColor = True
@@ -1037,7 +1348,7 @@ Partial Class Options
         'CustomMuteUnmute
         '
         Me.CustomMuteUnmute.Enabled = False
-        Me.CustomMuteUnmute.Location = New System.Drawing.Point(5, 281)
+        Me.CustomMuteUnmute.Location = New System.Drawing.Point(5, 277)
         Me.CustomMuteUnmute.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomMuteUnmute.Name = "CustomMuteUnmute"
         Me.CustomMuteUnmute.Size = New System.Drawing.Size(146, 20)
@@ -1047,7 +1358,7 @@ Partial Class Options
         'CustomVolumeUp
         '
         Me.CustomVolumeUp.Enabled = False
-        Me.CustomVolumeUp.Location = New System.Drawing.Point(5, 181)
+        Me.CustomVolumeUp.Location = New System.Drawing.Point(5, 177)
         Me.CustomVolumeUp.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomVolumeUp.Name = "CustomVolumeUp"
         Me.CustomVolumeUp.Size = New System.Drawing.Size(146, 20)
@@ -1057,11 +1368,11 @@ Partial Class Options
         'HotkeyMuteUnmute
         '
         Me.Helper.SetHelpString(Me.HotkeyMuteUnmute, "Select this check box to use a custom set of hotkeys for Mute/Unmute")
-        Me.HotkeyMuteUnmute.Location = New System.Drawing.Point(5, 255)
+        Me.HotkeyMuteUnmute.Location = New System.Drawing.Point(5, 251)
         Me.HotkeyMuteUnmute.Margin = New System.Windows.Forms.Padding(2)
         Me.HotkeyMuteUnmute.Name = "HotkeyMuteUnmute"
         Me.Helper.SetShowHelp(Me.HotkeyMuteUnmute, True)
-        Me.HotkeyMuteUnmute.Size = New System.Drawing.Size(272, 22)
+        Me.HotkeyMuteUnmute.Size = New System.Drawing.Size(298, 22)
         Me.HotkeyMuteUnmute.TabIndex = 40
         Me.HotkeyMuteUnmute.Text = "Use a custom hotkey for Mute/Unmute"
         Me.HotkeyMuteUnmute.UseVisualStyleBackColor = True
@@ -1069,11 +1380,11 @@ Partial Class Options
         'HotkeyVolumeDown
         '
         Me.Helper.SetHelpString(Me.HotkeyVolumeDown, "Select this check box to use a custom set of hotkeys for Volume Down")
-        Me.HotkeyVolumeDown.Location = New System.Drawing.Point(5, 205)
+        Me.HotkeyVolumeDown.Location = New System.Drawing.Point(5, 201)
         Me.HotkeyVolumeDown.Margin = New System.Windows.Forms.Padding(2)
         Me.HotkeyVolumeDown.Name = "HotkeyVolumeDown"
         Me.Helper.SetShowHelp(Me.HotkeyVolumeDown, True)
-        Me.HotkeyVolumeDown.Size = New System.Drawing.Size(272, 22)
+        Me.HotkeyVolumeDown.Size = New System.Drawing.Size(298, 22)
         Me.HotkeyVolumeDown.TabIndex = 38
         Me.HotkeyVolumeDown.Text = "Use a custom hotkey for Volume Down"
         Me.HotkeyVolumeDown.UseVisualStyleBackColor = True
@@ -1081,7 +1392,7 @@ Partial Class Options
         'CustomVolumeDown
         '
         Me.CustomVolumeDown.Enabled = False
-        Me.CustomVolumeDown.Location = New System.Drawing.Point(3, 231)
+        Me.CustomVolumeDown.Location = New System.Drawing.Point(5, 227)
         Me.CustomVolumeDown.Margin = New System.Windows.Forms.Padding(2)
         Me.CustomVolumeDown.Name = "CustomVolumeDown"
         Me.CustomVolumeDown.Size = New System.Drawing.Size(146, 20)
@@ -1115,7 +1426,7 @@ Partial Class Options
         Me.TabPage5.Controls.Add(Me.Band0)
         Me.TabPage5.Location = New System.Drawing.Point(4, 23)
         Me.TabPage5.Name = "TabPage5"
-        Me.TabPage5.Size = New System.Drawing.Size(287, 397)
+        Me.TabPage5.Size = New System.Drawing.Size(313, 397)
         Me.TabPage5.TabIndex = 4
         Me.TabPage5.Text = "Equalizer"
         '
@@ -1123,7 +1434,7 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.Presets, "Clicking this button will open a popup menu with several included presets for the" & _
         " equalizer and options to load and save presets.")
-        Me.Presets.Location = New System.Drawing.Point(10, 363)
+        Me.Presets.Location = New System.Drawing.Point(32, 363)
         Me.Presets.Name = "Presets"
         Me.Helper.SetShowHelp(Me.Presets, True)
         Me.Presets.Size = New System.Drawing.Size(64, 23)
@@ -1134,7 +1445,7 @@ Partial Class Options
         'AutoEq
         '
         Me.Helper.SetHelpString(Me.AutoEq, resources.GetString("AutoEq.HelpString"))
-        Me.AutoEq.Location = New System.Drawing.Point(150, 363)
+        Me.AutoEq.Location = New System.Drawing.Point(172, 363)
         Me.AutoEq.Name = "AutoEq"
         Me.Helper.SetShowHelp(Me.AutoEq, True)
         Me.AutoEq.Size = New System.Drawing.Size(64, 23)
@@ -1145,7 +1456,7 @@ Partial Class Options
         'RestoreEq
         '
         Me.Helper.SetHelpString(Me.RestoreEq, "Clicking this button will move the sliders to the last applied settings.")
-        Me.RestoreEq.Location = New System.Drawing.Point(80, 363)
+        Me.RestoreEq.Location = New System.Drawing.Point(102, 363)
         Me.RestoreEq.Name = "RestoreEq"
         Me.Helper.SetShowHelp(Me.RestoreEq, True)
         Me.RestoreEq.Size = New System.Drawing.Size(64, 23)
@@ -1157,7 +1468,7 @@ Partial Class Options
         '
         Me.Helper.SetHelpString(Me.Zero, "Clicking this button will set the sliders to the +0dB position, meaning that the " & _
         "equalizer will be disabled.")
-        Me.Zero.Location = New System.Drawing.Point(220, 363)
+        Me.Zero.Location = New System.Drawing.Point(242, 363)
         Me.Zero.Name = "Zero"
         Me.Helper.SetShowHelp(Me.Zero, True)
         Me.Zero.Size = New System.Drawing.Size(64, 23)
@@ -1167,7 +1478,7 @@ Partial Class Options
         '
         'Band6db
         '
-        Me.Band6db.Location = New System.Drawing.Point(240, 347)
+        Me.Band6db.Location = New System.Drawing.Point(256, 346)
         Me.Band6db.Name = "Band6db"
         Me.Band6db.Size = New System.Drawing.Size(45, 13)
         Me.Band6db.TabIndex = 38
@@ -1176,7 +1487,7 @@ Partial Class Options
         '
         'Band5db
         '
-        Me.Band5db.Location = New System.Drawing.Point(195, 347)
+        Me.Band5db.Location = New System.Drawing.Point(208, 346)
         Me.Band5db.Name = "Band5db"
         Me.Band5db.Size = New System.Drawing.Size(42, 13)
         Me.Band5db.TabIndex = 37
@@ -1185,7 +1496,7 @@ Partial Class Options
         '
         'Band4db
         '
-        Me.Band4db.Location = New System.Drawing.Point(146, 347)
+        Me.Band4db.Location = New System.Drawing.Point(156, 346)
         Me.Band4db.Name = "Band4db"
         Me.Band4db.Size = New System.Drawing.Size(44, 13)
         Me.Band4db.TabIndex = 36
@@ -1194,7 +1505,7 @@ Partial Class Options
         '
         'Band3db
         '
-        Me.Band3db.Location = New System.Drawing.Point(99, 347)
+        Me.Band3db.Location = New System.Drawing.Point(109, 346)
         Me.Band3db.Name = "Band3db"
         Me.Band3db.Size = New System.Drawing.Size(42, 13)
         Me.Band3db.TabIndex = 35
@@ -1203,7 +1514,7 @@ Partial Class Options
         '
         'Band2db
         '
-        Me.Band2db.Location = New System.Drawing.Point(51, 347)
+        Me.Band2db.Location = New System.Drawing.Point(61, 346)
         Me.Band2db.Name = "Band2db"
         Me.Band2db.Size = New System.Drawing.Size(42, 13)
         Me.Band2db.TabIndex = 34
@@ -1212,7 +1523,7 @@ Partial Class Options
         '
         'Band1db
         '
-        Me.Band1db.Location = New System.Drawing.Point(2, 347)
+        Me.Band1db.Location = New System.Drawing.Point(12, 346)
         Me.Band1db.Name = "Band1db"
         Me.Band1db.Size = New System.Drawing.Size(42, 13)
         Me.Band1db.TabIndex = 33
@@ -1221,7 +1532,7 @@ Partial Class Options
         '
         'Label18
         '
-        Me.Label18.Location = New System.Drawing.Point(240, 334)
+        Me.Label18.Location = New System.Drawing.Point(256, 333)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(45, 13)
         Me.Label18.TabIndex = 32
@@ -1230,7 +1541,7 @@ Partial Class Options
         '
         'Label17
         '
-        Me.Label17.Location = New System.Drawing.Point(195, 334)
+        Me.Label17.Location = New System.Drawing.Point(208, 333)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(42, 13)
         Me.Label17.TabIndex = 31
@@ -1239,7 +1550,7 @@ Partial Class Options
         '
         'Label16
         '
-        Me.Label16.Location = New System.Drawing.Point(146, 334)
+        Me.Label16.Location = New System.Drawing.Point(156, 333)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(44, 13)
         Me.Label16.TabIndex = 30
@@ -1248,7 +1559,7 @@ Partial Class Options
         '
         'Label15
         '
-        Me.Label15.Location = New System.Drawing.Point(99, 334)
+        Me.Label15.Location = New System.Drawing.Point(109, 333)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(42, 13)
         Me.Label15.TabIndex = 29
@@ -1257,7 +1568,7 @@ Partial Class Options
         '
         'Label14
         '
-        Me.Label14.Location = New System.Drawing.Point(51, 334)
+        Me.Label14.Location = New System.Drawing.Point(61, 333)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(42, 13)
         Me.Label14.TabIndex = 28
@@ -1266,7 +1577,7 @@ Partial Class Options
         '
         'Label13
         '
-        Me.Label13.Location = New System.Drawing.Point(2, 334)
+        Me.Label13.Location = New System.Drawing.Point(12, 333)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(42, 13)
         Me.Label13.TabIndex = 27
@@ -1278,7 +1589,7 @@ Partial Class Options
         Me.Band5.AutoSize = False
         Me.Band5.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.Band5.LargeChange = 1
-        Me.Band5.Location = New System.Drawing.Point(243, 4)
+        Me.Band5.Location = New System.Drawing.Point(259, 3)
         Me.Band5.Maximum = 15
         Me.Band5.Minimum = -15
         Me.Band5.Name = "Band5"
@@ -1292,7 +1603,7 @@ Partial Class Options
         Me.Band4.AutoSize = False
         Me.Band4.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.Band4.LargeChange = 1
-        Me.Band4.Location = New System.Drawing.Point(195, 4)
+        Me.Band4.Location = New System.Drawing.Point(208, 3)
         Me.Band4.Maximum = 15
         Me.Band4.Minimum = -15
         Me.Band4.Name = "Band4"
@@ -1306,7 +1617,7 @@ Partial Class Options
         Me.Band3.AutoSize = False
         Me.Band3.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.Band3.LargeChange = 1
-        Me.Band3.Location = New System.Drawing.Point(147, 4)
+        Me.Band3.Location = New System.Drawing.Point(157, 3)
         Me.Band3.Maximum = 15
         Me.Band3.Minimum = -15
         Me.Band3.Name = "Band3"
@@ -1320,7 +1631,7 @@ Partial Class Options
         Me.Band2.AutoSize = False
         Me.Band2.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.Band2.LargeChange = 1
-        Me.Band2.Location = New System.Drawing.Point(99, 4)
+        Me.Band2.Location = New System.Drawing.Point(109, 3)
         Me.Band2.Maximum = 15
         Me.Band2.Minimum = -15
         Me.Band2.Name = "Band2"
@@ -1334,7 +1645,7 @@ Partial Class Options
         Me.Band1.AutoSize = False
         Me.Band1.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.Band1.LargeChange = 1
-        Me.Band1.Location = New System.Drawing.Point(51, 4)
+        Me.Band1.Location = New System.Drawing.Point(61, 3)
         Me.Band1.Maximum = 15
         Me.Band1.Minimum = -15
         Me.Band1.Name = "Band1"
@@ -1348,7 +1659,7 @@ Partial Class Options
         Me.Band0.AutoSize = False
         Me.Band0.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.Band0.LargeChange = 1
-        Me.Band0.Location = New System.Drawing.Point(3, 4)
+        Me.Band0.Location = New System.Drawing.Point(13, 3)
         Me.Band0.Maximum = 15
         Me.Band0.Minimum = -15
         Me.Band0.Name = "Band0"
@@ -1360,6 +1671,8 @@ Partial Class Options
         'TabPage4
         '
         Me.TabPage4.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.TabPage4.Controls.Add(Me.flattr)
+        Me.TabPage4.Controls.Add(Me.payPal)
         Me.TabPage4.Controls.Add(Me.AboutForums)
         Me.TabPage4.Controls.Add(Me.Label19)
         Me.TabPage4.Controls.Add(Me.AboutWebsite)
@@ -1371,16 +1684,41 @@ Partial Class Options
         Me.TabPage4.Location = New System.Drawing.Point(4, 23)
         Me.TabPage4.Margin = New System.Windows.Forms.Padding(2)
         Me.TabPage4.Name = "TabPage4"
-        Me.TabPage4.Size = New System.Drawing.Size(287, 397)
+        Me.TabPage4.Size = New System.Drawing.Size(313, 397)
         Me.TabPage4.TabIndex = 3
         Me.TabPage4.Text = "About"
+        '
+        'flattr
+        '
+        Me.flattr.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.flattr.Image = CType(resources.GetObject("flattr.Image"), System.Drawing.Image)
+        Me.flattr.Location = New System.Drawing.Point(155, 373)
+        Me.flattr.Name = "flattr"
+        Me.flattr.Size = New System.Drawing.Size(93, 20)
+        Me.flattr.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize
+        Me.flattr.TabIndex = 58
+        Me.flattr.TabStop = False
+        Me.ToolTip.SetToolTip(Me.flattr, "Click to flattr 'DI Radio' by ViRUS2012")
+        '
+        'payPal
+        '
+        Me.payPal.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.payPal.Image = CType(resources.GetObject("payPal.Image"), System.Drawing.Image)
+        Me.payPal.Location = New System.Drawing.Point(75, 373)
+        Me.payPal.Name = "payPal"
+        Me.payPal.Size = New System.Drawing.Size(74, 21)
+        Me.payPal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize
+        Me.payPal.TabIndex = 57
+        Me.payPal.TabStop = False
+        Me.payPal.Tag = ""
+        Me.ToolTip.SetToolTip(Me.payPal, "Your donation will be shared under the developers!")
         '
         'AboutForums
         '
         Me.AboutForums.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
         Me.AboutForums.AutoSize = True
         Me.AboutForums.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.AboutForums.Location = New System.Drawing.Point(223, 324)
+        Me.AboutForums.Location = New System.Drawing.Point(236, 324)
         Me.AboutForums.Name = "AboutForums"
         Me.AboutForums.Size = New System.Drawing.Size(52, 16)
         Me.AboutForums.TabIndex = 56
@@ -1392,7 +1730,7 @@ Partial Class Options
         '
         Me.Label19.AutoSize = True
         Me.Label19.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label19.Location = New System.Drawing.Point(206, 324)
+        Me.Label19.Location = New System.Drawing.Point(219, 324)
         Me.Label19.Name = "Label19"
         Me.Label19.Size = New System.Drawing.Size(11, 16)
         Me.Label19.TabIndex = 6
@@ -1403,7 +1741,7 @@ Partial Class Options
         Me.AboutWebsite.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
         Me.AboutWebsite.AutoSize = True
         Me.AboutWebsite.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.AboutWebsite.Location = New System.Drawing.Point(144, 324)
+        Me.AboutWebsite.Location = New System.Drawing.Point(157, 324)
         Me.AboutWebsite.Name = "AboutWebsite"
         Me.AboutWebsite.Size = New System.Drawing.Size(56, 16)
         Me.AboutWebsite.TabIndex = 55
@@ -1415,7 +1753,7 @@ Partial Class Options
         '
         Me.Label12.AutoSize = True
         Me.Label12.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.Location = New System.Drawing.Point(127, 324)
+        Me.Label12.Location = New System.Drawing.Point(140, 324)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(11, 16)
         Me.Label12.TabIndex = 4
@@ -1426,7 +1764,7 @@ Partial Class Options
         Me.AboutLicense.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
         Me.AboutLicense.AutoSize = True
         Me.AboutLicense.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.AboutLicense.Location = New System.Drawing.Point(12, 324)
+        Me.AboutLicense.Location = New System.Drawing.Point(25, 324)
         Me.AboutLicense.Name = "AboutLicense"
         Me.AboutLicense.Size = New System.Drawing.Size(109, 16)
         Me.AboutLicense.TabIndex = 54
@@ -1438,9 +1776,9 @@ Partial Class Options
         '
         Me.Copyright.Location = New System.Drawing.Point(3, 291)
         Me.Copyright.Name = "Copyright"
-        Me.Copyright.Size = New System.Drawing.Size(281, 13)
+        Me.Copyright.Size = New System.Drawing.Size(307, 13)
         Me.Copyright.TabIndex = 2
-        Me.Copyright.Text = "Copyright (C) 2012 - 2013, ViRUS"
+        Me.Copyright.Text = "Copyright (C) 2012 - "
         Me.Copyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'AboutLabel
@@ -1448,7 +1786,7 @@ Partial Class Options
         Me.AboutLabel.Font = New System.Drawing.Font("Arial", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.AboutLabel.Location = New System.Drawing.Point(3, 269)
         Me.AboutLabel.Name = "AboutLabel"
-        Me.AboutLabel.Size = New System.Drawing.Size(281, 22)
+        Me.AboutLabel.Size = New System.Drawing.Size(307, 22)
         Me.AboutLabel.TabIndex = 1
         Me.AboutLabel.Text = "Player name and version"
         Me.AboutLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1456,10 +1794,10 @@ Partial Class Options
         'PictureBox1
         '
         Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(38, 32)
+        Me.PictureBox1.Location = New System.Drawing.Point(3, 3)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(208, 234)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.Size = New System.Drawing.Size(307, 263)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.PictureBox1.TabIndex = 0
         Me.PictureBox1.TabStop = False
         '
@@ -1469,7 +1807,7 @@ Partial Class Options
         Me.OK.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.OK.Enabled = False
         Me.Helper.SetHelpString(Me.OK, "Clicking this button will accept any changes made while closing this window.")
-        Me.OK.Location = New System.Drawing.Point(71, 438)
+        Me.OK.Location = New System.Drawing.Point(97, 438)
         Me.OK.Margin = New System.Windows.Forms.Padding(2)
         Me.OK.Name = "OK"
         Me.Helper.SetShowHelp(Me.OK, True)
@@ -1483,7 +1821,7 @@ Partial Class Options
         Me.Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.Helper.SetHelpString(Me.Cancel, "Clicking this button will cancel any changes made while closing this window.")
-        Me.Cancel.Location = New System.Drawing.Point(150, 438)
+        Me.Cancel.Location = New System.Drawing.Point(176, 438)
         Me.Cancel.Margin = New System.Windows.Forms.Padding(2)
         Me.Cancel.Name = "Cancel"
         Me.Helper.SetShowHelp(Me.Cancel, True)
@@ -1505,7 +1843,7 @@ Partial Class Options
         Me.Apply.Enabled = False
         Me.Helper.SetHelpString(Me.Apply, "Clicking this button will accept any changes made while leaving this window open." & _
         "")
-        Me.Apply.Location = New System.Drawing.Point(230, 438)
+        Me.Apply.Location = New System.Drawing.Point(256, 438)
         Me.Apply.Margin = New System.Windows.Forms.Padding(2)
         Me.Apply.Name = "Apply"
         Me.Helper.SetShowHelp(Me.Apply, True)
@@ -1586,9 +1924,6 @@ Partial Class Options
         Me.GetMoreThemesToolStripMenuItem.Name = "GetMoreThemesToolStripMenuItem"
         Me.GetMoreThemesToolStripMenuItem.Size = New System.Drawing.Size(148, 22)
         Me.GetMoreThemesToolStripMenuItem.Text = "Get more themes!"
-        '
-        'ValidateWorker
-        '
         '
         'OnlyModifiers
         '
@@ -1695,14 +2030,23 @@ Partial Class Options
         Me.SaveThemeDialog.ShowHelp = True
         Me.SaveThemeDialog.Title = "Save colour theme file"
         '
+        'logInWorker
+        '
+        Me.logInWorker.WorkerSupportsCancellation = True
+        '
+        'resetPasswordWorker
+        '
+        '
+        'startTrialWorker
+        '
+        '
         'Options
         '
-        Me.AcceptButton = Me.OK
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.CancelButton = Me.Cancel
-        Me.ClientSize = New System.Drawing.Size(314, 466)
+        Me.ClientSize = New System.Drawing.Size(340, 466)
         Me.Controls.Add(Me.Apply)
         Me.Controls.Add(Me.OK)
         Me.Controls.Add(Me.Cancel)
@@ -1713,19 +2057,24 @@ Partial Class Options
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(2)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(320, 495)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(320, 495)
+        Me.MinimumSize = New System.Drawing.Size(346, 495)
         Me.Name = "Options"
         Me.Helper.SetShowHelp(Me, False)
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Me.Text = "Options"
         Me.TabControl1.ResumeLayout(False)
         Me.TabPage1.ResumeLayout(False)
-        Me.GroupBox5.ResumeLayout(False)
-        Me.GroupBox5.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox9.ResumeLayout(False)
+        Me.GroupBox9.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
+        Me.TabPage6.ResumeLayout(False)
+        Me.GroupBox8.ResumeLayout(False)
+        Me.listenKeyMenu.ResumeLayout(False)
+        Me.GroupBox6.ResumeLayout(False)
+        Me.GroupBox6.PerformLayout()
+        Me.GroupBox5.ResumeLayout(False)
         Me.TabPage2.ResumeLayout(False)
         Me.GroupBox4.ResumeLayout(False)
         CType(Me.BackgroundColour, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1747,6 +2096,8 @@ Partial Class Options
         CType(Me.Band0, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage4.ResumeLayout(False)
         Me.TabPage4.PerformLayout()
+        CType(Me.flattr, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.payPal, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ThemesMenu.ResumeLayout(False)
         Me.PresetsMenu.ResumeLayout(False)
@@ -1790,10 +2141,7 @@ Partial Class Options
     Friend WithEvents GroupBox5 As System.Windows.Forms.GroupBox
     Friend WithEvents FileFormat As System.Windows.Forms.ComboBox
     Friend WithEvents Label9 As System.Windows.Forms.Label
-    Friend WithEvents ListenKey As System.Windows.Forms.TextBox
-    Friend WithEvents Label10 As System.Windows.Forms.Label
     Friend WithEvents ColourPicker As System.Windows.Forms.ColorDialog
-    Friend WithEvents ListenLink As System.Windows.Forms.LinkLabel
     Friend WithEvents Apply As System.Windows.Forms.Button
     Friend WithEvents PlayNewOnChannelChange As System.Windows.Forms.CheckBox
     Friend WithEvents Helper As System.Windows.Forms.HelpProvider
@@ -1816,11 +2164,8 @@ Partial Class Options
     Friend WithEvents ViewChangelog As System.Windows.Forms.Button
     Friend WithEvents TabPage4 As System.Windows.Forms.TabPage
     Friend WithEvents HighQualityVis As System.Windows.Forms.CheckBox
-    Friend WithEvents PremiumFormats As System.Windows.Forms.CheckBox
     Friend WithEvents CustomShowHide As System.Windows.Forms.TextBox
     Friend WithEvents HotkeyShowHide As System.Windows.Forms.CheckBox
-    Friend WithEvents ValidateKey As System.Windows.Forms.Button
-    Friend WithEvents ValidateWorker As System.ComponentModel.BackgroundWorker
     Friend WithEvents ToolTip As System.Windows.Forms.ToolTip
     Friend WithEvents GroupBox7 As System.Windows.Forms.GroupBox
     Friend WithEvents NoTaskbarButton As System.Windows.Forms.CheckBox
@@ -1892,4 +2237,41 @@ Partial Class Options
     Friend WithEvents Label12 As System.Windows.Forms.Label
     Friend WithEvents AboutLicense As System.Windows.Forms.LinkLabel
     Friend WithEvents Copyright As System.Windows.Forms.Label
+    Friend WithEvents TabPage6 As System.Windows.Forms.TabPage
+    Friend WithEvents GroupBox6 As System.Windows.Forms.GroupBox
+    Friend WithEvents emailBox As System.Windows.Forms.TextBox
+    Friend WithEvents Label20 As System.Windows.Forms.Label
+    Friend WithEvents Label10 As System.Windows.Forms.Label
+    Friend WithEvents forgotPass As System.Windows.Forms.Button
+    Friend WithEvents passwordBox As System.Windows.Forms.TextBox
+    Friend WithEvents Label21 As System.Windows.Forms.Label
+    Friend WithEvents pleaseWait As System.Windows.Forms.Label
+    Friend WithEvents logIn As System.Windows.Forms.Button
+    Friend WithEvents GroupBox8 As System.Windows.Forms.GroupBox
+    Friend WithEvents Label23 As System.Windows.Forms.Label
+    Friend WithEvents accountOwner As System.Windows.Forms.Label
+    Friend WithEvents Label22 As System.Windows.Forms.Label
+    Friend WithEvents ListenKey As System.Windows.Forms.Label
+    Friend WithEvents Label24 As System.Windows.Forms.Label
+    Friend WithEvents premiumAccount As System.Windows.Forms.Label
+    Friend WithEvents createAccount As System.Windows.Forms.Button
+    Friend WithEvents logInWorker As System.ComponentModel.BackgroundWorker
+    Friend WithEvents pleaseWaitRefresh As System.Windows.Forms.Label
+    Friend WithEvents refreshInfo As System.Windows.Forms.Button
+    Friend WithEvents qualityInfo As System.Windows.Forms.Label
+    Friend WithEvents resetPasswordWorker As System.ComponentModel.BackgroundWorker
+    Friend WithEvents infoLogIn As System.Windows.Forms.Label
+    Friend WithEvents startTrial As System.Windows.Forms.Button
+    Friend WithEvents premiumTrial As System.Windows.Forms.Label
+    Friend WithEvents Label25 As System.Windows.Forms.Label
+    Friend WithEvents startTrialWorker As System.ComponentModel.BackgroundWorker
+    Friend WithEvents listenKeyMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents CopyListenKeyToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents removeListenKey As System.Windows.Forms.CheckBox
+    Friend WithEvents GroupBox9 As System.Windows.Forms.GroupBox
+    Friend WithEvents lookForChannels As System.Windows.Forms.Button
+    Friend WithEvents cacheList As System.Windows.Forms.ComboBox
+    Friend WithEvents Label26 As System.Windows.Forms.Label
+    Friend WithEvents flattr As System.Windows.Forms.PictureBox
+    Friend WithEvents payPal As System.Windows.Forms.PictureBox
 End Class

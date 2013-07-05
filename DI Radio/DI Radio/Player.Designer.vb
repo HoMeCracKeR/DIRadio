@@ -47,21 +47,29 @@ Partial Class Player
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ExitTray = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.History = New System.Windows.Forms.Button()
         Me.Forums = New System.Windows.Forms.Button()
-        Me.Events = New System.Windows.Forms.Button()
+        Me.showEvents = New System.Windows.Forms.Button()
         Me.Mute = New System.Windows.Forms.Button()
         Me.OptionsButton = New System.Windows.Forms.Button()
         Me.PlayStop = New System.Windows.Forms.Button()
-        Me.History = New System.Windows.Forms.Button()
         Me.Volume = New System.Windows.Forms.TrackBar()
         Me.TimerString = New System.Windows.Forms.Label()
         Me.RadioString = New System.Windows.Forms.Label()
         Me.SelectedChannel = New System.Windows.Forms.ComboBox()
+        Me.shareMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.shareChannelFB = New System.Windows.Forms.ToolStripMenuItem()
+        Me.shareChannelTT = New System.Windows.Forms.ToolStripMenuItem()
+        Me.shareChannelEM = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectedServer = New System.Windows.Forms.ComboBox()
         Me.ServerMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyServerURLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Marquee = New System.Windows.Forms.ProgressBar()
         Me.ControlsPanel = New System.Windows.Forms.Panel()
+        Me.RefreshFavorites = New System.Windows.Forms.LinkLabel()
+        Me.EditFavorites = New System.Windows.Forms.LinkLabel()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.RetryServers = New System.Windows.Forms.Button()
         Me.RetryChannels = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -73,8 +81,6 @@ Partial Class Player
         Me.JazzRadio = New System.Windows.Forms.ToolStripMenuItem()
         Me.RockRadio = New System.Windows.Forms.ToolStripMenuItem()
         Me.SKYFM = New System.Windows.Forms.ToolStripMenuItem()
-        Me.EditFavorites = New System.Windows.Forms.LinkLabel()
-        Me.RefreshFavorites = New System.Windows.Forms.LinkLabel()
         Me.GetUpdates = New System.ComponentModel.BackgroundWorker()
         Me.FadeOut = New System.Windows.Forms.Timer(Me.components)
         Me.DownloadDb = New System.ComponentModel.BackgroundWorker()
@@ -87,7 +93,6 @@ Partial Class Player
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.GoogleHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.GetHistory = New System.ComponentModel.BackgroundWorker()
-        Me.VisualisationBox = New System.Windows.Forms.PictureBox()
         Me.EventsPanel = New System.Windows.Forms.Panel()
         Me.EventName = New System.Windows.Forms.Label()
         Me.EventTagline = New System.Windows.Forms.Label()
@@ -98,15 +103,24 @@ Partial Class Player
         Me.GetEvents = New System.ComponentModel.BackgroundWorker()
         Me.GetEventDetails = New System.ComponentModel.BackgroundWorker()
         Me.CheckForums = New System.ComponentModel.BackgroundWorker()
+        Me.VisualisationBox = New System.Windows.Forms.PictureBox()
+        Me.eventOptionsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShareToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FacebookToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TwitterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EmailToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.shareMenu.SuspendLayout()
         Me.ServerMenu.SuspendLayout()
         Me.ControlsPanel.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
         Me.CopyHistoryMenu.SuspendLayout()
-        CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.EventsPanel.SuspendLayout()
+        CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.eventOptionsMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'CopyTitleMenu
@@ -245,6 +259,17 @@ Partial Class Player
         Me.ExitTray.Size = New System.Drawing.Size(173, 22)
         Me.ExitTray.Text = "Exit"
         '
+        'History
+        '
+        Me.History.Image = Global.DI_Radio.My.Resources.Resources.history
+        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
+        Me.History.Location = New System.Drawing.Point(98, 20)
+        Me.History.Name = "History"
+        Me.History.Size = New System.Drawing.Size(25, 25)
+        Me.History.TabIndex = 4
+        Me.ToolTip.SetToolTip(Me.History, "Show track history")
+        Me.History.UseVisualStyleBackColor = True
+        '
         'Forums
         '
         Me.Forums.Anchor = System.Windows.Forms.AnchorStyles.Top
@@ -257,16 +282,16 @@ Partial Class Player
         Me.ToolTip.SetToolTip(Me.Forums, "Open channel's forums")
         Me.Forums.UseVisualStyleBackColor = True
         '
-        'Events
+        'showEvents
         '
-        Me.Events.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.Events.Image = CType(resources.GetObject("Events.Image"), System.Drawing.Image)
-        Me.Events.Location = New System.Drawing.Point(67, 20)
-        Me.Events.Name = "Events"
-        Me.Events.Size = New System.Drawing.Size(25, 25)
-        Me.Events.TabIndex = 3
-        Me.ToolTip.SetToolTip(Me.Events, "Show events list")
-        Me.Events.UseVisualStyleBackColor = True
+        Me.showEvents.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.showEvents.Image = CType(resources.GetObject("showEvents.Image"), System.Drawing.Image)
+        Me.showEvents.Location = New System.Drawing.Point(67, 20)
+        Me.showEvents.Name = "showEvents"
+        Me.showEvents.Size = New System.Drawing.Size(25, 25)
+        Me.showEvents.TabIndex = 3
+        Me.ToolTip.SetToolTip(Me.showEvents, "Show events list")
+        Me.showEvents.UseVisualStyleBackColor = True
         '
         'Mute
         '
@@ -304,28 +329,16 @@ Partial Class Player
         Me.ToolTip.SetToolTip(Me.PlayStop, "Play")
         Me.PlayStop.UseVisualStyleBackColor = True
         '
-        'History
-        '
-        Me.History.Image = Global.DI_Radio.My.Resources.Resources.history
-        Me.History.ImageAlign = System.Drawing.ContentAlignment.BottomRight
-        Me.History.Location = New System.Drawing.Point(98, 20)
-        Me.History.Name = "History"
-        Me.History.Size = New System.Drawing.Size(25, 25)
-        Me.History.TabIndex = 4
-        Me.ToolTip.SetToolTip(Me.History, "Show track history")
-        Me.History.UseVisualStyleBackColor = True
-        '
         'Volume
         '
         Me.Volume.Anchor = System.Windows.Forms.AnchorStyles.Top
         Me.Volume.AutoSize = False
-        Me.Volume.Location = New System.Drawing.Point(191, 20)
+        Me.Volume.Location = New System.Drawing.Point(191, 12)
         Me.Volume.Maximum = 100
         Me.Volume.Name = "Volume"
-        Me.Volume.Size = New System.Drawing.Size(138, 25)
+        Me.Volume.Size = New System.Drawing.Size(138, 39)
         Me.Volume.TabIndex = 7
-        Me.Volume.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.Volume.Value = 100
+        Me.Volume.TickStyle = System.Windows.Forms.TickStyle.Both
         '
         'TimerString
         '
@@ -353,6 +366,7 @@ Partial Class Player
         'SelectedChannel
         '
         Me.SelectedChannel.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.SelectedChannel.ContextMenuStrip = Me.shareMenu
         Me.SelectedChannel.DropDownHeight = 408
         Me.SelectedChannel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.SelectedChannel.DropDownWidth = 149
@@ -366,6 +380,34 @@ Partial Class Player
         Me.SelectedChannel.Size = New System.Drawing.Size(149, 22)
         Me.SelectedChannel.Sorted = True
         Me.SelectedChannel.TabIndex = 8
+        '
+        'shareMenu
+        '
+        Me.shareMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.shareMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.shareChannelFB, Me.shareChannelTT, Me.shareChannelEM})
+        Me.shareMenu.Name = "shareMenu"
+        Me.shareMenu.Size = New System.Drawing.Size(129, 70)
+        '
+        'shareChannelFB
+        '
+        Me.shareChannelFB.Image = CType(resources.GetObject("shareChannelFB.Image"), System.Drawing.Image)
+        Me.shareChannelFB.Name = "shareChannelFB"
+        Me.shareChannelFB.Size = New System.Drawing.Size(128, 22)
+        Me.shareChannelFB.Text = "Facebook"
+        '
+        'shareChannelTT
+        '
+        Me.shareChannelTT.Image = CType(resources.GetObject("shareChannelTT.Image"), System.Drawing.Image)
+        Me.shareChannelTT.Name = "shareChannelTT"
+        Me.shareChannelTT.Size = New System.Drawing.Size(128, 22)
+        Me.shareChannelTT.Text = "Twitter"
+        '
+        'shareChannelEM
+        '
+        Me.shareChannelEM.Image = CType(resources.GetObject("shareChannelEM.Image"), System.Drawing.Image)
+        Me.shareChannelEM.Name = "shareChannelEM"
+        Me.shareChannelEM.Size = New System.Drawing.Size(128, 22)
+        Me.shareChannelEM.Text = "E-mail"
         '
         'SelectedServer
         '
@@ -382,16 +424,17 @@ Partial Class Player
         '
         'ServerMenu
         '
+        Me.ServerMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ServerMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyServerURLToolStripMenuItem})
         Me.ServerMenu.Name = "ServerMenu"
-        Me.ServerMenu.Size = New System.Drawing.Size(161, 26)
+        Me.ServerMenu.Size = New System.Drawing.Size(131, 26)
         '
         'CopyServerURLToolStripMenuItem
         '
         Me.CopyServerURLToolStripMenuItem.Image = CType(resources.GetObject("CopyServerURLToolStripMenuItem.Image"), System.Drawing.Image)
         Me.CopyServerURLToolStripMenuItem.Name = "CopyServerURLToolStripMenuItem"
-        Me.CopyServerURLToolStripMenuItem.Size = New System.Drawing.Size(160, 22)
-        Me.CopyServerURLToolStripMenuItem.Text = "Copy server URL"
+        Me.CopyServerURLToolStripMenuItem.Size = New System.Drawing.Size(130, 22)
+        Me.CopyServerURLToolStripMenuItem.Text = "Copy URL"
         '
         'Marquee
         '
@@ -407,6 +450,10 @@ Partial Class Player
         'ControlsPanel
         '
         Me.ControlsPanel.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.ControlsPanel.Controls.Add(Me.RefreshFavorites)
+        Me.ControlsPanel.Controls.Add(Me.EditFavorites)
+        Me.ControlsPanel.Controls.Add(Me.Label4)
+        Me.ControlsPanel.Controls.Add(Me.Label3)
         Me.ControlsPanel.Controls.Add(Me.History)
         Me.ControlsPanel.Controls.Add(Me.RetryServers)
         Me.ControlsPanel.Controls.Add(Me.RetryChannels)
@@ -414,13 +461,11 @@ Partial Class Player
         Me.ControlsPanel.Controls.Add(Me.DownloadingMessage)
         Me.ControlsPanel.Controls.Add(Me.Label1)
         Me.ControlsPanel.Controls.Add(Me.ToolStrip1)
-        Me.ControlsPanel.Controls.Add(Me.EditFavorites)
-        Me.ControlsPanel.Controls.Add(Me.RefreshFavorites)
         Me.ControlsPanel.Controls.Add(Me.Marquee)
         Me.ControlsPanel.Controls.Add(Me.SelectedServer)
         Me.ControlsPanel.Controls.Add(Me.Forums)
         Me.ControlsPanel.Controls.Add(Me.SelectedChannel)
-        Me.ControlsPanel.Controls.Add(Me.Events)
+        Me.ControlsPanel.Controls.Add(Me.showEvents)
         Me.ControlsPanel.Controls.Add(Me.RadioString)
         Me.ControlsPanel.Controls.Add(Me.TimerString)
         Me.ControlsPanel.Controls.Add(Me.Volume)
@@ -431,6 +476,43 @@ Partial Class Player
         Me.ControlsPanel.Name = "ControlsPanel"
         Me.ControlsPanel.Size = New System.Drawing.Size(330, 81)
         Me.ControlsPanel.TabIndex = 2
+        '
+        'RefreshFavorites
+        '
+        Me.RefreshFavorites.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
+        Me.RefreshFavorites.Location = New System.Drawing.Point(268, 46)
+        Me.RefreshFavorites.Name = "RefreshFavorites"
+        Me.RefreshFavorites.Size = New System.Drawing.Size(62, 11)
+        Me.RefreshFavorites.TabIndex = 24
+        Me.RefreshFavorites.TabStop = True
+        Me.RefreshFavorites.Text = "Refresh list"
+        Me.RefreshFavorites.Visible = False
+        '
+        'EditFavorites
+        '
+        Me.EditFavorites.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
+        Me.EditFavorites.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.EditFavorites.Location = New System.Drawing.Point(188, 46)
+        Me.EditFavorites.Name = "EditFavorites"
+        Me.EditFavorites.Size = New System.Drawing.Size(43, 11)
+        Me.EditFavorites.TabIndex = 23
+        Me.EditFavorites.TabStop = True
+        Me.EditFavorites.Text = "Edit list"
+        Me.EditFavorites.Visible = False
+        '
+        'Label4
+        '
+        Me.Label4.Location = New System.Drawing.Point(196, 43)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(133, 14)
+        Me.Label4.TabIndex = 22
+        '
+        'Label3
+        '
+        Me.Label3.Location = New System.Drawing.Point(193, 16)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(135, 5)
+        Me.Label3.TabIndex = 20
         '
         'RetryServers
         '
@@ -549,29 +631,6 @@ Partial Class Player
         Me.SKYFM.Tag = "sky.fm"
         Me.SKYFM.Text = "SKY.FM"
         '
-        'EditFavorites
-        '
-        Me.EditFavorites.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
-        Me.EditFavorites.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.EditFavorites.Location = New System.Drawing.Point(188, 46)
-        Me.EditFavorites.Name = "EditFavorites"
-        Me.EditFavorites.Size = New System.Drawing.Size(43, 11)
-        Me.EditFavorites.TabIndex = 10
-        Me.EditFavorites.TabStop = True
-        Me.EditFavorites.Text = "Edit list"
-        Me.EditFavorites.Visible = False
-        '
-        'RefreshFavorites
-        '
-        Me.RefreshFavorites.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight
-        Me.RefreshFavorites.Location = New System.Drawing.Point(268, 46)
-        Me.RefreshFavorites.Name = "RefreshFavorites"
-        Me.RefreshFavorites.Size = New System.Drawing.Size(62, 11)
-        Me.RefreshFavorites.TabIndex = 11
-        Me.RefreshFavorites.TabStop = True
-        Me.RefreshFavorites.Text = "Refresh list"
-        Me.RefreshFavorites.Visible = False
-        '
         'GetUpdates
         '
         '
@@ -604,12 +663,12 @@ Partial Class Player
         '
         'Time
         '
-        Me.Time.Width = 40
+        Me.Time.Width = 50
         '
         'Title
         '
         Me.Title.Text = "Title"
-        Me.Title.Width = 215
+        Me.Title.Width = 226
         '
         'Length
         '
@@ -645,18 +704,6 @@ Partial Class Player
         '
         'GetHistory
         '
-        '
-        'VisualisationBox
-        '
-        Me.VisualisationBox.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.VisualisationBox.Location = New System.Drawing.Point(12, 12)
-        Me.VisualisationBox.Name = "VisualisationBox"
-        Me.VisualisationBox.Size = New System.Drawing.Size(331, 342)
-        Me.VisualisationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
-        Me.VisualisationBox.TabIndex = 3
-        Me.VisualisationBox.TabStop = False
         '
         'EventsPanel
         '
@@ -708,11 +755,11 @@ Partial Class Player
         'ExportButton
         '
         Me.ExportButton.Enabled = False
-        Me.ExportButton.Location = New System.Drawing.Point(281, 0)
+        Me.ExportButton.Location = New System.Drawing.Point(280, -1)
         Me.ExportButton.Name = "ExportButton"
-        Me.ExportButton.Size = New System.Drawing.Size(50, 22)
+        Me.ExportButton.Size = New System.Drawing.Size(52, 24)
         Me.ExportButton.TabIndex = 13
-        Me.ExportButton.Text = "Export"
+        Me.ExportButton.Text = "Options"
         Me.ExportButton.UseVisualStyleBackColor = True
         '
         'EventDescription
@@ -732,12 +779,12 @@ Partial Class Player
         Me.SelectedEvent.BackColor = System.Drawing.SystemColors.Window
         Me.SelectedEvent.DropDownHeight = 338
         Me.SelectedEvent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.SelectedEvent.DropDownWidth = 330
+        Me.SelectedEvent.DropDownWidth = 331
         Me.SelectedEvent.FormattingEnabled = True
         Me.SelectedEvent.IntegralHeight = False
         Me.SelectedEvent.Location = New System.Drawing.Point(0, 0)
         Me.SelectedEvent.Name = "SelectedEvent"
-        Me.SelectedEvent.Size = New System.Drawing.Size(275, 22)
+        Me.SelectedEvent.Size = New System.Drawing.Size(276, 22)
         Me.SelectedEvent.TabIndex = 12
         '
         'GetEvents
@@ -748,6 +795,60 @@ Partial Class Player
         '
         'CheckForums
         '
+        '
+        'VisualisationBox
+        '
+        Me.VisualisationBox.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.VisualisationBox.Location = New System.Drawing.Point(12, 12)
+        Me.VisualisationBox.Name = "VisualisationBox"
+        Me.VisualisationBox.Size = New System.Drawing.Size(331, 342)
+        Me.VisualisationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
+        Me.VisualisationBox.TabIndex = 3
+        Me.VisualisationBox.TabStop = False
+        '
+        'eventOptionsMenu
+        '
+        Me.eventOptionsMenu.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.eventOptionsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExportToolStripMenuItem, Me.ShareToolStripMenuItem})
+        Me.eventOptionsMenu.Name = "eventOptionsMenu"
+        Me.eventOptionsMenu.ShowImageMargin = False
+        Me.eventOptionsMenu.Size = New System.Drawing.Size(84, 48)
+        '
+        'ExportToolStripMenuItem
+        '
+        Me.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem"
+        Me.ExportToolStripMenuItem.Size = New System.Drawing.Size(83, 22)
+        Me.ExportToolStripMenuItem.Text = "Export"
+        '
+        'ShareToolStripMenuItem
+        '
+        Me.ShareToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FacebookToolStripMenuItem, Me.TwitterToolStripMenuItem, Me.EmailToolStripMenuItem})
+        Me.ShareToolStripMenuItem.Name = "ShareToolStripMenuItem"
+        Me.ShareToolStripMenuItem.Size = New System.Drawing.Size(83, 22)
+        Me.ShareToolStripMenuItem.Text = "Share"
+        '
+        'FacebookToolStripMenuItem
+        '
+        Me.FacebookToolStripMenuItem.Image = CType(resources.GetObject("FacebookToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.FacebookToolStripMenuItem.Name = "FacebookToolStripMenuItem"
+        Me.FacebookToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
+        Me.FacebookToolStripMenuItem.Text = "Facebook"
+        '
+        'TwitterToolStripMenuItem
+        '
+        Me.TwitterToolStripMenuItem.Image = CType(resources.GetObject("TwitterToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.TwitterToolStripMenuItem.Name = "TwitterToolStripMenuItem"
+        Me.TwitterToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
+        Me.TwitterToolStripMenuItem.Text = "Twitter"
+        '
+        'EmailToolStripMenuItem
+        '
+        Me.EmailToolStripMenuItem.Image = CType(resources.GetObject("EmailToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.EmailToolStripMenuItem.Name = "EmailToolStripMenuItem"
+        Me.EmailToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
+        Me.EmailToolStripMenuItem.Text = "E-mail"
         '
         'Player
         '
@@ -771,13 +872,15 @@ Partial Class Player
         Me.CopyTitleMenu.ResumeLayout(False)
         Me.TrayMenu.ResumeLayout(False)
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.shareMenu.ResumeLayout(False)
         Me.ServerMenu.ResumeLayout(False)
         Me.ControlsPanel.ResumeLayout(False)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
         Me.CopyHistoryMenu.ResumeLayout(False)
-        CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.EventsPanel.ResumeLayout(False)
+        CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.eventOptionsMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -796,7 +899,7 @@ Partial Class Player
     Friend WithEvents Volume As System.Windows.Forms.TrackBar
     Friend WithEvents TimerString As System.Windows.Forms.Label
     Friend WithEvents RadioString As System.Windows.Forms.Label
-    Friend WithEvents Events As System.Windows.Forms.Button
+    Friend WithEvents showEvents As System.Windows.Forms.Button
     Friend WithEvents SelectedChannel As System.Windows.Forms.ComboBox
     Friend WithEvents Forums As System.Windows.Forms.Button
     Friend WithEvents SelectedServer As System.Windows.Forms.ComboBox
@@ -814,10 +917,8 @@ Partial Class Player
     Friend WithEvents MuteTray As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents PlayStopTray As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator2 As System.Windows.Forms.ToolStripSeparator
-    Friend WithEvents RefreshFavorites As System.Windows.Forms.LinkLabel
     Friend WithEvents GetUpdates As System.ComponentModel.BackgroundWorker
     Private WithEvents FadeOut As System.Windows.Forms.Timer
-    Friend WithEvents EditFavorites As System.Windows.Forms.LinkLabel
     Friend WithEvents GoogleSearchToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents GoogleSearchTray As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator4 As System.Windows.Forms.ToolStripSeparator
@@ -855,5 +956,19 @@ Partial Class Player
     Friend WithEvents EventTagline As System.Windows.Forms.Label
     Friend WithEvents EventTimes As System.Windows.Forms.Label
     Friend WithEvents CheckForums As System.ComponentModel.BackgroundWorker
+    Friend WithEvents RefreshFavorites As System.Windows.Forms.LinkLabel
+    Friend WithEvents EditFavorites As System.Windows.Forms.LinkLabel
+    Friend WithEvents Label4 As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents eventOptionsMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents ExportToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ShareToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents FacebookToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents TwitterToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents EmailToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents shareMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents shareChannelFB As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents shareChannelTT As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents shareChannelEM As System.Windows.Forms.ToolStripMenuItem
 
 End Class
