@@ -7,11 +7,11 @@
 
 #Region "Events caused by the controls on the main form"
 
-    Private Sub termsOfService_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles termsOfService.LinkClicked
+    Private Sub termsOfService_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles termsOfService.LinkClicked
         Process.Start("http://www." & Player.StationChooser.Tag & "/member/tos")
     End Sub
 
-    Private Sub signUpButton_Click(sender As System.Object, e As System.EventArgs) Handles signUpButton.Click
+    Private Sub signUpButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles signUpButton.Click
 
         If String.IsNullOrEmpty(firstName.Text) Then
             MessageBox.Show("Please write your first name.", "Account creation error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -41,7 +41,7 @@
 
     End Sub
 
-    Private Sub firstName_KeyDown(sender As System.Object, e As System.Windows.Forms.KeyEventArgs) Handles firstName.KeyDown
+    Private Sub firstName_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles firstName.KeyDown
         If e.KeyCode = Keys.Enter And signUpButton.Enabled = True Then
             signUpButton_Click(Me, Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
@@ -49,7 +49,7 @@
         End If
     End Sub
 
-    Private Sub lastName_KeyDown(sender As System.Object, e As System.Windows.Forms.KeyEventArgs) Handles lastName.KeyDown
+    Private Sub lastName_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles lastName.KeyDown
         If e.KeyCode = Keys.Enter And signUpButton.Enabled = True Then
             signUpButton_Click(Me, Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
@@ -57,7 +57,7 @@
         End If
     End Sub
 
-    Private Sub eMail_KeyDown(sender As System.Object, e As System.Windows.Forms.KeyEventArgs) Handles eMail.KeyDown
+    Private Sub eMail_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles eMail.KeyDown
         If e.KeyCode = Keys.Enter And signUpButton.Enabled = True Then
             signUpButton_Click(Me, Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
@@ -65,7 +65,7 @@
         End If
     End Sub
 
-    Private Sub passWord_KeyDown(sender As System.Object, e As System.Windows.Forms.KeyEventArgs) Handles passWord.KeyDown
+    Private Sub passWord_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles passWord.KeyDown
         If e.KeyCode = Keys.Enter And signUpButton.Enabled = True Then
             signUpButton_Click(Me, Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
@@ -73,7 +73,7 @@
         End If
     End Sub
 
-    Private Sub retypePassword_KeyDown(sender As System.Object, e As System.Windows.Forms.KeyEventArgs) Handles retypePassword.KeyDown
+    Private Sub retypePassword_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles retypePassword.KeyDown
         If e.KeyCode = Keys.Enter And signUpButton.Enabled = True Then
             signUpButton_Click(Me, Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
@@ -81,7 +81,7 @@
         End If
     End Sub
 
-    Private Sub signUpButton_KeyDown(sender As System.Object, e As System.Windows.Forms.KeyEventArgs) Handles signUpButton.KeyDown
+    Private Sub signUpButton_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles signUpButton.KeyDown
         If e.KeyCode = Keys.Enter And signUpButton.Enabled = True Then
             signUpButton_Click(Me, Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
@@ -93,7 +93,7 @@
 
 #Region "Background Worker"
 
-    Private Sub createAccountWorker_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles createAccountWorker.DoWork
+    Private Sub createAccountWorker_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles createAccountWorker.DoWork
         Dim sendstring As String = "member[email]=" & eMail.Text & "&member[first_name]=" & firstName.Text & "&member[last_name]=" & lastName.Text & "&member[password]=" & passWord.Text.Replace("%", "%25").Replace("&", "%26") & "&member[password_confirmation]=" & retypePassword.Text.Replace("%", "%25").Replace("&", "%26")
         Dim WebClient As Net.WebClient = New Net.WebClient()
         WebClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -122,7 +122,7 @@
 
     End Sub
 
-    Private Sub createAccountWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles createAccountWorker.RunWorkerCompleted
+    Private Sub createAccountWorker_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles createAccountWorker.RunWorkerCompleted
 
         If success Then
 

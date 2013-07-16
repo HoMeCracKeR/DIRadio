@@ -19,7 +19,7 @@
             Dim tabla() As String = Split(executable, "\")
             dataFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
         Else
-            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio"
+            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio\"
         End If
 
         Dim item As String
@@ -99,7 +99,7 @@
 
             If item.Tag.ToString.StartsWith(ChannelsList.Text) Then
                 AvailableBox.Items.Add(item.Text)
-                AvailableBox.Items.Item(SaveBox.Items.Count - 1).Tag = item.Tag
+                AvailableBox.Items.Item(AvailableBox.Items.Count - 1).Tag = item.Tag
             End If
 
             SaveBox.Items.Remove(item)
@@ -151,7 +151,8 @@
             End If
         Else
             Exporter.CancelAsync()
-            SaveFile.Enabled = True
+            SaveFile.Enabled = False
+            ExportLabel.Text += ", cancelling..."
         End If
 
     End Sub
@@ -205,6 +206,12 @@ startover:
 
             ExportLabel.Text = "Status: Reading events file..."
 
+            Dim id As String = ""
+            Dim start_at As Date
+            Dim end_at As Date
+            Dim name As String = ""
+            Dim artists_tagline As String
+
             Do While (reader.Peek > -1)
 
                 If channel = ChannelsList.Text = False Then
@@ -212,12 +219,6 @@ startover:
                 End If
 
                 Dim line As String = reader.ReadLine
-
-                Dim id As String = ""
-                Dim start_at As Date
-                Dim end_at As Date
-                Dim name As String = ""
-                Dim artists_tagline As String
 
 
                 If line.StartsWith("""id""") OrElse line.StartsWith("id""") Then
@@ -262,6 +263,7 @@ startover:
         Dim item As ListViewItem
         Dim firstDay As DateTime = #1/1/1970#
         Dim writer As New IO.StreamWriter(ExportICS.FileName)
+        Dim cancelled As Boolean = False
         writer.WriteLine("BEGIN:VCALENDAR")
         writer.WriteLine("VERSION:2.0")
         writer.WriteLine("PRODID:-//" & Player.Text)
@@ -269,6 +271,7 @@ startover:
         For Each item In SaveBox.Items
 
             If Exporter.CancellationPending = True Then
+                cancelled = True
                 Exit For
             End If
 
@@ -353,12 +356,19 @@ startover:
         OptionsBox.Enabled = True
         ChannelsList.Enabled = True
         AvailableBox.Enabled = True
+        AvailableBox_SelectedIndexChanged(Me, Nothing)
+        SaveBox_SelectedIndexChanged(Me, Nothing)
         SaveBox.Enabled = True
-        ToUp.Enabled = True
-        ToDown.Enabled = True
         SaveFile.Text = "Save to file"
         SaveFile.Enabled = True
-        ExportLabel.Text = "Status: Finished"
+
+        If cancelled Then
+            Kill(ExportICS.FileName)
+            ExportLabel.Text = "Status: Cancelled"
+        Else
+            ExportLabel.Text = "Status: Finished"
+        End If
+
     End Sub
 
 #End Region

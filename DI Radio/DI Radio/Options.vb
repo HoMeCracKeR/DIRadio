@@ -68,7 +68,7 @@
             Dim tabla() As String = Split(executable, "\")
             dataFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
         Else
-            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio"
+            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio\"
         End If
 
         AboutLabel.Text = Player.Text
@@ -241,7 +241,7 @@
 
         End If
 
-        Dim file As String = dataFolder & "\Updater.exe"
+        Dim file As String = dataFolder & "Updater.exe"
 
         If Player.UpdaterDownloaded = True And My.Computer.FileSystem.FileExists(file) Then
             LookNow.Text = "Run updater"
@@ -854,7 +854,7 @@
     End Sub
 
     Private Sub lookForChannels_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lookForChannels.Click
-        My.Computer.FileSystem.DeleteDirectory("servers", FileIO.DeleteDirectoryOption.DeleteAllContents)
+        My.Computer.FileSystem.DeleteDirectory(dataFolder & "servers", FileIO.DeleteDirectoryOption.DeleteAllContents)
         Player.StationChooser_TextChanged(Me, Nothing)
         lookForChannels.Enabled = False
     End Sub
@@ -1227,7 +1227,7 @@
         LookNow.Enabled = False
         UndefinedProgress.Hide()
 
-        Dim file As String = dataFolder & "\Updater.exe"
+        Dim file As String = dataFolder & "Updater.exe"
         Dim Message As New MsgBoxSafe(AddressOf DisplayMessage)
 
         Dim theResponse As Net.HttpWebResponse = Nothing
@@ -1273,7 +1273,7 @@
     Private Sub DownloadUpdater_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles DownloadUpdater.RunWorkerCompleted
         Status.Text = "Status: Updater downloaded. Launching and exiting..."
 
-        Dim file As String = dataFolder & "\Updater.exe"
+        Dim file As String = dataFolder & "Updater.exe"
 
         Try
             Process.Start(file)

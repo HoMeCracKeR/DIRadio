@@ -195,6 +195,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Package1.pkgxml" />
     <None Include="Resources\audio-volume-high.png" />
   </ItemGroup>
   <ItemGroup>

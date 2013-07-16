@@ -18,7 +18,7 @@
             Dim tabla() As String = Split(executable, "\")
             dataFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
         Else
-            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio"
+            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio\"
         End If
 
         GetThemes.RunWorkerAsync()

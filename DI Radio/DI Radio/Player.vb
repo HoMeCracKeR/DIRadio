@@ -134,7 +134,7 @@ Public Class Player
     Public AtStartup As String = False                              ' -> Used to tell the GetUpdates background worker that it's looking for updates at startup. Only becomes True if UpdatesAtStart is true
     Public TotalVersionString As String = "Didn't download"         ' -> Used to store the TotalVersion returned by the server
     Public LatestVersionString As String = "Didn't download"        ' -> Used to store the actual version number returned by the server
-    Public TotalVersionFixed As Byte = 60                           ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
+    Public TotalVersionFixed As Byte = 62                           ' -> For commodity, I don't use the actual version number of the application to know when there's an update. Instead I check if this number is higher.
     Public UpdaterDownloaded As Boolean = False                     ' -> Used when the updater file has been downloaded in this run, to avoid having to download it again
 
 #End Region
@@ -210,7 +210,7 @@ Public Class Player
             Dim tabla() As String = Split(executable, "\")
             dataFolder = Application.ExecutablePath.Replace(tabla(tabla.Length - 1), Nothing)
         Else
-            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio"
+            dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\DI Radio\"
         End If
 
         DownloadingMessage.SelectedIndex = 0
@@ -340,6 +340,9 @@ Public Class Player
             End If
         End If
 
+        Options.Close()
+        Me.Hide()
+
         ' Unregister hotkeys if they were set
 
         If HotkeysSet = True Then
@@ -363,7 +366,6 @@ Public Class Player
             Bass.BASS_PluginFree(0)
         End If
 
-        My.Settings.Save()
     End Sub
 
 #End Region
@@ -1659,21 +1661,24 @@ startover:
             Else
                 HistoryLog = WebClient.DownloadString("http://api.audioaddict.com/v1/di/track_history/channel/" & KeysArray.Items.Item(SelectedChannel.Text).Tag)
             End If
-            If channel = SelectedChannel.Text = False And channel = SelectedServer.Text = False Then
-                GoTo startover
-            End If
+      
 
-            Dim reader As New IO.StringReader(HistoryLog.Replace("""", Nothing).Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(",", vbNewLine))
+            Dim reader As New IO.StringReader(HistoryLog.Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(""",""", vbNewLine).Replace(",""", vbNewLine))
 
             HistoryList.Items.Clear()
 
             Do While (reader.Peek > -1)
 
+                If channel = SelectedChannel.Text = False And channel = SelectedServer.Text = False Then
+                    GoTo startover
+                End If
+
                 Dim line As String = reader.ReadLine
+
                 Dim duration As String
                 Dim started As String
 
-                If line.StartsWith("duration:") Then
+                If line.StartsWith("duration"":") Then
 
                     If Integer.TryParse(Split(line, ":")(1), Nothing) Then
                         duration = Split(line, ":")(1)
@@ -1681,7 +1686,7 @@ startover:
                         duration = Nothing
                     End If
 
-                ElseIf line.StartsWith("started:") Then
+                ElseIf line.StartsWith("started"":") Then
 
                     If Integer.TryParse(Split(line, ":")(1), Nothing) Then
                         started = Split(line, ":")(1)
@@ -1689,10 +1694,10 @@ startover:
                         started = Nothing
                     End If
 
-                ElseIf line.StartsWith("track:") And String.IsNullOrEmpty(started) = False And String.IsNullOrEmpty(duration) = False Then
+                ElseIf line.StartsWith("track"":""") And String.IsNullOrEmpty(started) = False And String.IsNullOrEmpty(duration) = False Then
 
                     HistoryList.Items.Add(ReturnDate(started, "hourmin", True))
-                    HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(Split(line, "track:")(1))
+                    HistoryList.Items.Item(HistoryList.Items.Count - 1).SubItems.Add(Split(line, "track"":""")(1))
                     Dim span As TimeSpan
                     span = TimeSpan.FromSeconds(duration)
 
@@ -1795,10 +1800,6 @@ startover:
 
         SelectedEvent.Items.RemoveAt(0)
 
-        If channel = SelectedChannel.Text = False And channel = SelectedServer.Text = False Then
-            GoTo startover
-        End If
-
         Dim reader As New IO.StringReader(EventsLog.Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(",""", vbNewLine))
 
         Dim thistime As Integer
@@ -1811,6 +1812,10 @@ startover:
         Dim artists_tagline As String
 
         Do While (reader.Peek > -1)
+
+            If channel = SelectedChannel.Text = False And channel = SelectedServer.Text = False Then
+                GoTo startover
+            End If
 
             Dim line As String = reader.ReadLine
 
@@ -1870,28 +1875,26 @@ startover:
 
             If SelectedEvent.Text.ToLower.StartsWith("there are no") = False And SelectedEvent.Text.ToLower.StartsWith("please wait") = False And SelectedEvent.Text.ToLower.StartsWith("couldn't download") = False Then
 
-                If channel = SelectedEvent.Text = False Then
-                    GoTo startover
-                Else
-
-                    EventDetails = WebClient.DownloadString("http://api.audioaddict.com/v1/di/events/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text)
+                EventDetails = WebClient.DownloadString("http://api.audioaddict.com/v1/di/events/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text)
                     Dim reader As New IO.StringReader(EventDetails.Replace("{", Nothing).Replace("[", Nothing).Replace("}", Nothing).Replace("]", Nothing).Replace(",""", vbNewLine))
 
-                    Do While (reader.Peek > -1)
+                Do While (reader.Peek > -1)
 
-                        Dim line As String = reader.ReadLine
+                    If channel = SelectedEvent.Text = False Then
+                        GoTo startover
+                    End If
 
-                        If line.StartsWith("description""") Then
-                            EventDescription.Text = Split(line, """:""")(1).Replace("\n", vbNewLine).Replace("**", Nothing).Replace("\""", """").Replace("_", Nothing)
-                            EventDescription.Text = EventDescription.Text.Remove(EventDescription.Text.Length - 1, 1)
-                            Exit Do
-                        End If
+                    Dim line As String = reader.ReadLine
 
-                    Loop
+                    If line.StartsWith("description""") Then
+                        EventDescription.Text = Split(line, """:""")(1).Replace("\n", vbNewLine).Replace("**", Nothing).Replace("\""", """").Replace("_", Nothing)
+                        EventDescription.Text = EventDescription.Text.Remove(EventDescription.Text.Length - 1, 1)
+                        Exit Do
+                    End If
+
+                Loop
 
                 End If
-
-            End If
 
         Catch
             EventDescription.Text = "Couldn't download event description. Please check http://www.di.fm/calendar/event/" & EventsArray.Items.Item(SelectedEvent.SelectedIndex).SubItems(4).Text & " for more information about this event."
@@ -2252,7 +2255,7 @@ startover:
     End Sub
 
     Private Sub GoogleSearchToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GoogleSearchToolStripMenuItem.Click
-        Process.Start("https://www.google.com/search?q=" & RadioString.Text.Replace("&", "%26"))
+        Process.Start("https://www.google.com/search?q=" & RadioString.Text.Replace("&", "%26").Replace("+", "%2B"))
     End Sub
 
     Private Sub DIFM_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DIFM.Click
@@ -3539,4 +3542,15 @@ startover:
 
 #End Region
 
+    Private Sub copyDescription_Opening(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles copyDescription.Opening
+        If String.IsNullOrEmpty(EventDescription.SelectedText) Then
+            copyText.Enabled = False
+        Else
+            copyText.Enabled = True
+        End If
+    End Sub
+
+    Private Sub copyText_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles copyText.Click
+        Clipboard.SetText(EventDescription.SelectedText.Replace(Chr(10), vbNewLine))
+    End Sub
 End Class

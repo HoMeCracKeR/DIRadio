@@ -110,6 +110,8 @@ Partial Class Player
         Me.FacebookToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TwitterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EmailToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.copyDescription = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.copyText = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyTitleMenu.SuspendLayout()
         Me.TrayMenu.SuspendLayout()
         CType(Me.Volume, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -121,6 +123,7 @@ Partial Class Player
         Me.EventsPanel.SuspendLayout()
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.eventOptionsMenu.SuspendLayout()
+        Me.copyDescription.SuspendLayout()
         Me.SuspendLayout()
         '
         'CopyTitleMenu
@@ -766,6 +769,7 @@ Partial Class Player
         '
         Me.EventDescription.AutoWordSelection = True
         Me.EventDescription.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.EventDescription.ContextMenuStrip = Me.copyDescription
         Me.EventDescription.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.EventDescription.Location = New System.Drawing.Point(0, 72)
         Me.EventDescription.Name = "EventDescription"
@@ -850,6 +854,21 @@ Partial Class Player
         Me.EmailToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
         Me.EmailToolStripMenuItem.Text = "E-mail"
         '
+        'copyDescription
+        '
+        Me.copyDescription.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.copyDescription.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.copyText})
+        Me.copyDescription.Name = "copyDescription"
+        Me.copyDescription.Size = New System.Drawing.Size(153, 48)
+        '
+        'copyText
+        '
+        Me.copyText.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.copyText.Image = CType(resources.GetObject("copyText.Image"), System.Drawing.Image)
+        Me.copyText.Name = "copyText"
+        Me.copyText.Size = New System.Drawing.Size(152, 22)
+        Me.copyText.Text = "Copy"
+        '
         'Player
         '
         Me.AllowDrop = True
@@ -881,6 +900,7 @@ Partial Class Player
         Me.EventsPanel.ResumeLayout(False)
         CType(Me.VisualisationBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.eventOptionsMenu.ResumeLayout(False)
+        Me.copyDescription.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -970,5 +990,7 @@ Partial Class Player
     Friend WithEvents shareChannelFB As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents shareChannelTT As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents shareChannelEM As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents copyDescription As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents copyText As System.Windows.Forms.ToolStripMenuItem
 
 End Class
